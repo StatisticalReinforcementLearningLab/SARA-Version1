@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <script src="js/phaser.min.js"></script>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+
+    <script type="text/javascript">
+    (function() {
+
+      scaleRatio = window.devicePixelRatio / 3;
+
+      //Create a new game instance and assign it to the 'gameArea' div
+
+      //game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 45 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
+ 
+      var game = new Phaser.Game(window.innerWidth, 600, Phaser.AUTO, 'gameArea', { preload: preload, create: create });
+ 
+      function preload () {
+            game.load.image('logo', 'img/ionic.png');
+        }
+
+      function create () {
+          var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+          logo.anchor.setTo(0.5, 0.5);
+      }
+
+    })();
+    </script>
+    -->
+
+
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+
+    <script src="js/app.js"></script>
+
+    <!--
+    <script type="text/javascript" src="js/game/index.js"></script>
+    <script type="text/javascript" src="js/game/game_controller.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    -->
+
+  </head>
+
+
+  <body ng-app="starter" ng-controller="MainCtrl">  
+
+      <!--
+        <div class="panel play" 
+          ng-repeat="room in ctrl.rooms track by room.id"
+          ui-sref='game.play({id: room.id})'>
+          <span ng-bind="room.players.length"></span> Players
+          <a ui-sref='game.play()'>Create a game</a>
+        </div>
+        <div id="gameCanvas"></div>
+      -->
+          <div w3-test-directive></div>
+          Holla
+          <button ng-click="startGame()">Click me</button>
+          
+
+
+    <!--
+    <div id = "gameArea"></div>
+    <div id = "ionicControls"  ng-app="starter">
+        <ion-nav-view> Hello world!! </ion-nav-view>
+    </div>
+    -->
+  </body>
+</html>
