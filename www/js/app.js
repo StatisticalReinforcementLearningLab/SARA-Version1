@@ -35,6 +35,22 @@ app.directive("w3TestDirective", function() {
         link : function(scope, element, attrs, injector){
             console.log("link function called");
 
+            
+            var game = new Phaser.Game(window.innerWidth, 500, Phaser.AUTO, 'gameArea');
+
+            //game.input.touch.enabled = false;
+            //game.input.mouse.enabled = false;
+
+            //Phaser.Canvas.setTouchAction(game.canvas, "auto");
+            //game.input.touch.preventDefault = false;
+
+            game.state.add('Boot', FishGame.Boot);
+            game.state.add('Preloader', FishGame.Preloader);
+            game.state.add('StartMenu', FishGame.StartMenu);
+            game.state.add('Game', FishGame.Game);
+            game.state.start('Boot');
+            
+            /*
             //I want change a directive
             scaleRatio = window.devicePixelRatio / 3;
 
@@ -42,7 +58,7 @@ app.directive("w3TestDirective", function() {
 
             //game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 45 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
        
-            var game = new Phaser.Game(window.innerWidth, 300, Phaser.AUTO, 'gameArea', { preload: preload, create: create });
+            var game = new Phaser.Game(window.innerWidth-20, 300, Phaser.AUTO, 'gameArea', { preload: preload, create: create });
        
             function preload () {
                   game.load.image('logo', 'img/ionic.png');
@@ -54,9 +70,13 @@ app.directive("w3TestDirective", function() {
                 var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
                 logo.anchor.setTo(0.5, 0.5);
 
+                Phaser.Canvas.setTouchAction(game.canvas, "auto");
+                game.input.touch.preventDefault = false;
+
                 //
                 scope.$emit('game:something', 'holla');  
             }
+            */
 
             //create the game here
 
@@ -77,11 +97,26 @@ app.directive("w3TestDirective", function() {
                 });
             */
 
+            //clown fish animation
+            //-- http://www.sevenoaksart.co.uk/clownfish.htm
+            //more fishes: http://www.sevenoaksart.co.uk/goldfish.htm
+            //shark -- http://www.sevenoaksart.co.uk/shark.htm
+            //dophins http://www.sevenoaksart.co.uk/dolphins.htm
+            //Convert gif to imgaes "http://ezgif.com/split"
+
             scope.$on('game:test', function() {
-                  console.log("game test called");
+                  //console.log(JSON.stringify(game, null, 4));
                   //call something like the follows
                   //-- Game.toggleMusic();
+
+                  //add a fish.
+                  //game.state.Game.test();
+                  //game.state["Game"].test();
+                  game.state.states["Game"].test();
+
             });
+
+
 
         }
     };
@@ -90,7 +125,7 @@ app.directive("w3TestDirective", function() {
 
 app.controller("MainCtrl", function($scope,$state) {
     $scope.startGame = function() {
-      console.log("came here");
+      //console.log("came here");
 
       $scope.$broadcast('game:test');//SUCCESS
 
