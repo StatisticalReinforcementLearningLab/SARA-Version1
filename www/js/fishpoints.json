@@ -1,0 +1,184 @@
+[
+  {
+    "name" : "Nemo-the clown fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 60,
+    "img" : "img/nemo.png",
+    "trivia": "Do you know the animators of \"Finding nemo\" studied dogs’ facial expressions and eyes to animate the fishes’ expressions?"
+  },
+  {
+    "name" : "Star fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 120,
+    "img" : "img/starfish.png",
+    "trivia": "Do you know starfishes have 2 stomachs and can regenerate their arms."
+  },
+  {
+    "name" : "Squid",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 180,
+    "img" : "img/squid.png",
+    "trivia": "Some species of squid can swim at speeds up to 25 miles per hour, as fast as some sharks."
+  },
+  {
+    "name" : "Gold fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 300,
+    "img" : "img/goldfish.png",
+    "trivia": "Do you know gold fishes can recognize faces?"
+  },
+  {
+    "name" : "Octopus",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 360,
+    "img" : "img/octopus.png",
+    "trivia": "Do you know octopuses have 3 hearts and they have blue blood?"
+  },
+  {
+    "name" : "Angel fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 470,
+    "img" : "img/angelfish.png"
+  },
+  {
+    "name" : "The crab",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 590,
+    "img" : "img/crabfish.png"
+  },
+  {
+    "name" : "Green fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 650,
+    "img" : "img/greenfish.png"
+  },
+  {
+    "name" : "Electric fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 770,
+    "img" : "img/electricfish.png"
+  },
+  {
+    "name" : "Discus fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 830,
+    "img" : "img/discus.png"
+  },
+  {
+    "name" : "Betta fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 940,
+    "img" : "img/betta.png"
+  },
+  {
+    "name" : "Sea horse",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 1000,
+    "img" : "img/seahorseyellow.png"
+  },
+  {
+    "name" : "Tiger barb",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 560,
+    "img" : "img/tigerbarb.png"
+  },
+  {
+    "name" : "Nemo Dory",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1060,
+    "img" : "img/nemodori.png"
+  },
+  {
+    "name" : "Jelly fish",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1120,
+    "img" : "img/jellyfish.png"
+  },
+  {
+    "name" : "Green Crab",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1180,
+    "img" : "img/greencrab.png"
+  },
+  {
+    "name" : "Red Crab",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1180,
+    "img" : "img/redcrab.png"
+  },
+  {
+    "name" : "Achovies",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1240,
+    "img" : "img/achovies.png"
+  },
+  {
+    "name" : "Bubbles",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1360,
+    "img" : "img/bubbles.png"
+  },
+  {
+    "name" : "Salmon",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1530,
+    "img" : "img/salmon.png"
+  },{
+    "name" : "Angry fish",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1650,
+    "img" : "img/angryfish.png"
+  },{
+    "name" : "Sword fish",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1710,
+    "img" : "img/swordfish.png"
+  },{
+    "name" : "Shark",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1830,
+    "img" : "img/shark.png"
+  },{
+    "name" : "Dophin",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1940,
+    "img" : "img/dolphin.png"
+  },{
+    "name" : "whale",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 2000,
+    "img" : "img/whale.png"
+  },{
+    "name" : "Kite fish",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 2060,
+    "img" : "img/kitefish.png"
+  }
+  
+]

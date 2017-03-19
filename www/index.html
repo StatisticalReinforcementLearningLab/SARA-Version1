@@ -11,12 +11,41 @@
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
 
-
-
+    <!-- 
+    <script src="lib/sjcl.js"></script> 
+    <script src="http://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+    <script type="text/javascript" src="http://cryptojs.altervista.org/api/functions_cryptography.js"></script>
+    <script src="lib/cryptcomponents/core.js"></script>
+    -->
+     
+    <script src="lib/cryptrollups/aes.js"></script>
+    <script src="lib/cryptrollups/pbkdf2.js"></script>
+    
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/angular-route.js"></script>
 
+    
+    <script src="lib/aws/aws-sdk-2.4.9.min.js"></script>
+    <script src="lib/aws/aws-cognito-sdk.min.js "></script>
+    <script src="lib/aws/amazon-cognito.min.js"></script>
+    <script src="lib/aws/amazon-cognito-identity.min.js"></script>
+    <script src="lib/aws/dependencies/sjcl.js"></script>
+    <script src="lib/aws/dependencies/jsbn.js"></script>
+    <script src="lib/aws/dependencies/jsbn2.js"></script>
+    <script src="lib/offlinejs/moment.min.js"></script>
+
+    <script src="lib/angular/angular-messages.min.js"></script>
+
+
+    <script src="js/factories/awsCognitoIdentity.factory.js"></script>
+    <script src="js/factories/awsCognitoSync.factory.js"></script>
+    <script src="js/factories/sara.data.factory.js"></script>
+
+    
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
@@ -24,10 +53,18 @@
     <script src="js/fishgame/Boot.js"></script>
     <script src="js/fishgame/Preloader.js"></script>
     <script src="js/fishgame/Game.js"></script>
+    <script src="js/fishgame/GamesSmall.js"></script>
+    <script src="js/fishgame/Level1.js"></script>
+    <script src="js/fishgame/Level1Small.js"></script>
 
-    <!-- your app's js -->
+    <!-- your app's js     <script src="js/routers.js"></script>-->
 
     <script src="js/app.js"></script>
+    <script src="js/daily_survey_controller.js"></script>
+    <script src="js/weekly_survey_controller.js"></script>
+    <script src="js/rewards_controller.js"></script>
+    <script src="js/points_controller.js"></script>
+
 
 
     <!--
@@ -39,7 +76,7 @@
   </head>
 
 
-  <body ng-app="starter" ng-controller="MainCtrl">  
+  <body ng-app="starter">  
 
       <!--
         <div class="panel play" 
@@ -51,75 +88,9 @@
         <div id="gameCanvas"></div>
       -->
 
-      <ion-view view-title="Login" name="login-view">
-
-          <ion-header-bar class="bar-stable" style="background:#3F51B5;">
-                <h1 class="title" style="color:#fff;">SARA</h1>
-          </ion-header-bar>
-
-
-          <ion-content class="padding">
-              <!-- <button ng-click="startGame()">Click me</button> -->
-
-              <div w3-test-directive></div>
-
-              <button class="button button-full button-positive" ng-click="startGame()">Add points</button>
-              <div class="list">
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/clownfish.png"  style="width:  75px;height: auto;margin: auto;">
-                    <h2>The Clown Fish</h2>
-                    <p>Point: 0</p>
-                  </a>
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/starfish.png"  style="width:  75px;height: auto;">
-                    <h2>The Star Fishes</h2>
-                    <p>Point: 50 </p>
-                  </a>
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/octopus.png"  style="width:  75px;height: auto;">
-                    <h2>The Octopus</h2>
-                    <p>Point: 100 </p>
-                  </a>
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/electricfish.png"  style="width:  75px;height: auto;">
-                    <h2>The Electric Fish</h2>
-                    <p>Point: 150</p>
-                  </a>
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/crabfish.png"  style="width:  75px;height: auto;">
-                    <h2>The Crab</h2>
-                    <p>Point: 200</p>
-                  </a>
-
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/greenfish.png"  style="width:  75px;height: auto;">
-                    <h2>The Green Fish</h2>
-                    <p>Point: 250</p>
-                  </a>
-
-                  <!-- https://jmsliu.com/products/sprite-sheet-decomposer/decomposer.php -->
-                  <a class="item item-thumbnail-left" href="#">
-                    <img src="img/seahorseyellow.png"  style="width:  auto;height: 100%;margin: auto;">
-                    <h2>The Horse Fish</h2>
-                    <p>Point: 250</p>
-                  </a>
-
-              </div>
-
-
-              <!--
-              <button class="button button-full button-positive" ng-click="startDailySurvey()">Weekly Survey</button>
-              <button class="button button-full button-positive" ng-click="startDailySurvey()">Active Tasks</button>
-              -->
-
-        </ion-content>
-      </ion-view>
-
+    <ion-pane>
+        <div ng-view=""></div>
+    </ion-pane>
 
     <!--
     <div id = "gameArea"></div>
@@ -127,5 +98,23 @@
         <ion-nav-view> Hello world!! </ion-nav-view>
     </div>
     -->
+
+    <script src="lib/offlinejs/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyC3NCY_zSmsKwZyUnUnO4jIlWk_cNVeNnM",
+        authDomain: "smartemaumich.firebaseapp.com",
+        databaseURL: "https://smartemaumich.firebaseio.com",
+        storageBucket: "smartemaumich.appspot.com",
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="lib/angular-swing/dist/angular-swing.min.js"></script>
+    <script src="js/ngProgress.min.js"></script>
+    <link rel="stylesheet" href="css/ngProgress.css"> 
   </body>
+
+
+
 </html>

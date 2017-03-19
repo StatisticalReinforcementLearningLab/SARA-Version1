@@ -1,1 +1,405 @@
 /* Empty. Add your own CSS if you like */
+#test{
+  width: 20%;
+}
+#test:before{
+  content:'';
+  padding:50% 0;/* vertical value as  100% equals width */
+  display:inline-block;
+  vertical-align:middle; /* or whatever */
+}
+
+.center {
+    text-align: center;
+    border: 3px solid blue;
+}
+
+
+img.shade {
+    -webkit-filter: grayscale(100%) blur(5px) opacity(70%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(80%) blur(5px) opacity(90%);
+}
+
+
+
+label > input{ /* HIDE RADIO */
+  display:none;
+}
+
+label > input + img{ /* IMAGE STYLES */
+  cursor:pointer;
+  border:2px solid transparent;
+}
+
+label > input:checked + img{ /* (CHECKED) IMAGE STYLES */
+  /* border:2px solid #f00; */
+  -webkit-filter: invert(100%); filter: invert(100%);
+}
+
+
+.radioimages {
+  justify-content: center;
+  padding-left: 10px;
+}
+
+.radiovertical ul{
+  position: relative;
+  list-style: none;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+ul li{
+  color: #000000;
+  display: block;
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 40px;
+}
+
+.radiohorizontal ul{
+  position: relative;
+  list-style: none;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+
+}
+
+.radiohorizontal ul li{
+  display:inline;
+  width: auto;
+}
+
+
+ul li input[type=radio]{
+  position: absolute;
+  visibility: hidden;
+}
+
+ul li label{
+  display: block;
+  position: relative;
+  font-size: 17px;
+  padding: 0px 25px 25px 60px;
+  margin: 0px auto;
+  height: 30px;
+  z-index: 9;
+  cursor: pointer;
+  -webkit-transition: all 0.25s linear;
+}
+
+
+
+.radiohorizontal {
+  padding-bottom: 10px;
+}
+
+.radiohorizontal ul li label{
+  display: block;
+  position: relative;
+  font-weight: 300;
+  font-size: 1.35em;
+  padding: 25px 25px 25px 15px;
+  margin: 4px auto;
+  height: 30px;
+  z-index: 9;
+  cursor: pointer;
+  -webkit-transition: all 0.25s linear;
+}
+
+.radiohorizontal ul li p{
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 14px;
+}
+
+ul li:hover label{
+  color: #004D40;
+}
+
+ul li .check{
+  display: block;
+  position: absolute;
+  border: 2px solid #303F9F;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  top: 2px;
+  left: 10px;
+  z-index: 5;
+  transition: border .25s linear;
+  -webkit-transition: border .25s linear;
+}
+
+.radiohorizontal ul li .check{
+  top: 6px;
+}
+
+ul li:hover .check {
+  border: 2px solid #004D40;
+}
+
+ul li .check::before {
+  display: block;
+  position: relative;
+  content: '';
+  border-radius: 100%;
+  height: 15px;
+  width: 15px;
+  top: 1.5px;
+  left: 0px;
+  margin: auto;
+  transition: background 0.25s linear;
+  -webkit-transition: background 0.25s linear;
+}
+
+input[type=radio]:checked ~ .check {
+  border: 3px solid #303F9F;
+}
+
+input[type=radio]:checked ~ .check::before{
+  background: #303F9F;
+}
+
+input[type=radio]:checked ~ label{
+  color: #303F9F;
+}
+
+.quetiontextstyle {
+	  padding: 8px;
+    background-color: #E8EAF6;
+    color: #303F9F;
+    font-size: 17px;
+    border-left: 2px solid #303F9F;
+    width: auto;
+}
+
+
+
+.item-checkbox {
+    padding-left: 60px; 
+}
+
+/* ================================================================================================================== */
+/*                                                                                                                    */
+/*                                              Recall                                                                */
+/*                                                                                                                    */
+/* ================================================================================================================== */
+.quetiontextstylerecall {
+    padding: 8px;
+    background-color: #F5F5F5;
+    color: #212121;
+    font-size: 17px;
+    border-left: 2px solid #424242;
+    width: auto;
+}
+
+.ng-map {
+  width: 100%;
+  height: 300px;
+}
+
+.sound .nvd3-svg{
+  background-color:#E0F2F1;
+}
+
+.activity .nvd3-svg{
+  background-color:#FCE4EC;
+}
+
+
+
+
+/* ================================================================================================================== */
+/*                                                                                                                    */
+/*                                              Main page                                                             */
+/*                                                                                                                    */
+/* ================================================================================================================== */
+.quetiontextstylemain {
+    padding: 8px;
+    background-color: #E0F2F1;
+    color: #004D40;
+    font-size: 17px;
+    border-left: 2px solid #004D40;
+    width: auto;
+}
+
+
+.bar.bar-main {
+    border-color: #6b46e5;
+    background-color: #009688;
+    background-image: linear-gradient(0deg, #6b46e5, #6b46e5 50%, transparent 50%);
+    color: #fff; }
+    .bar.bar-royal .title {
+      color: #fff; }
+    .bar.bar-royal.bar-footer {
+      background-image: linear-gradient(180deg, #6b46e5, #6b46e5 50%, transparent 50%); 
+}
+
+
+
+
+/* ================================================================================================================== */
+/*                                                                                                                    */
+/*                                              Generic                                                               */
+/*                                                                                                                    */
+/* ================================================================================================================== */
+.card{
+    border-top: 0px solid #004D40;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 25px;
+}
+
+
+.bar.bar-ema {
+    border-color: #607D8B;
+    background-color: #3F51B5;
+    background-image: linear-gradient(0deg, #607D8B, #607D8B 50%, transparent 50%);
+    color: #fff; }
+    .bar.bar-royal .title {
+      color: #fff; }
+    .bar.bar-royal.bar-footer {
+      background-image: linear-gradient(180deg, #607D8B, #607D8B 50%, transparent 50%); 
+}
+
+
+.bar.bar-recall {
+    border-color: #6b46e5;
+    background-color: #009688;
+    background-image: linear-gradient(0deg, #6b46e5, #6b46e5 50%, transparent 50%);
+    color: #fff; }
+    .bar.bar-royal .title {
+      color: #fff; }
+    .bar.bar-royal.bar-footer {
+      background-image: linear-gradient(180deg, #6b46e5, #6b46e5 50%, transparent 50%); 
+}
+
+
+/*
+*
+*
+*/
+.range.range-balanced input::-webkit - slider - thumb: before {
+    background: #8577b5;
+}
+
+
+#viewport {
+
+}
+
+#viewport .stack {
+    width: 100%;
+    height: 500px;
+    background: #FFFFFF;
+    position: absolute;
+    margin-left: 00px;
+    border-radius: 10px; 
+}
+
+#viewport li {
+    width: 100%;
+    height: 400px;
+    list-style: none;
+    background: #fff;
+    border-radius: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(0, 0, 0, 0.2);
+    line-height: 50px;
+    text-align: center;
+    font-size: 30px;
+    border: 10px solid #ECECEC;
+    box-sizing: border-box;
+    cursor: default; 
+}
+
+
+#rewards{
+    width: 100%;
+    height: 260px;
+    list-style: none;
+    background: #fff;
+    border-radius: 15px;
+    position: absolute;
+    top: 10;
+    left: 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(0, 0, 0, 0.2);
+    line-height: 25px;
+    text-align: center;
+    font-size: 20px;
+    border: 8px solid #ECECEC;
+    box-sizing: border-box;
+    cursor: default; 
+}
+
+#rewards.red{
+   background: #fff;
+   border: 12px solid #b30000;
+}
+
+#rewards.green{
+   background: #fff;
+   border: 12px solid #5c6948;
+}
+
+#rewards.blue{
+   background: #fff;
+   border: 12px solid #396aab;
+}
+
+#rewards.yellow{
+   background: #fff;
+   border: 12px solid #efad0d;
+}
+
+
+
+#buttons{
+    text-align: center;
+}
+
+#container {
+  width:55px;
+  position: relative;
+  float:left;
+}
+#text {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    font-size: 13px;
+    background-color: #34495e;
+    color: white;
+    height: 22px;
+    width: 22px;
+    -moz-border-radius: 11px;
+    border-radius: 11px;
+    padding-left: 7px;
+    font-weight: bold;
+}
+#image{
+    height:auto;
+    width:45px;
+    margin:5px;
+    max-width:200px;
+}
+
+
+
+
+

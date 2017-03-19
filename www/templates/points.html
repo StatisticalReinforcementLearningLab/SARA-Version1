@@ -1,0 +1,170 @@
+<ion-view view-title="Login" name="login-view">
+
+  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">Rewards</h1>
+  </ion-header-bar>
+
+
+  <ion-content class="padding">
+
+        <!--
+        <div class="center">
+          <h2>Congratulations!!!</h2>
+
+          <br>
+          <img src="img/green.png" alt="Paris" style="width:50px">
+          <p>You completed the daily survey 3 days in a row. Here is <b>50 cents</b> from us.</p>
+
+          <br>
+
+          <p></p>
+          <h2>60</h2>
+          <p>You also earned 60 points for completing the survey</p>
+
+          <br>
+          <img src="img/nemo.png" alt="Paris" style="width:40%">
+          <p><b>Nemo</b> has been unlocked. Check out Nemo swimming in the aquarium.</p>
+
+          <br>
+          <p><b>Fun fact:</b> Do you know the animators of "Finding nemo" studied dogs’ facial expressions and eyes to animate the fishes’ expressions?</p>
+
+        </div>
+        -->
+        <div>
+          <p>You have so far earned</p>
+          <p style="font-size:34px;">{{amount_earned}}</p>
+        <div>
+
+        <div style="clear: both;vertical-align: bottom;padding-top:40px;">
+          <p>Badges for completing active tasks</p>
+
+          
+          <div id="container" ng-repeat="x in active_tasks_badges">
+              <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
+              <p id="text" ng-show='x.count>1'>{{x.count}}</p>
+          </div> 
+          <!--
+          <div id="container">
+              <img id="image" src="img/badgeAT-none.png" style="width:39px;"/>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/badgeAT1.png"/>
+              <p id="text">2</p>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/badgeAT2.png" style="width:41px;" />
+              <p id="text">2</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/badgeAT3.png"/>
+              <p id="text" ng-show='false'>2x</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/badgeAT4.png" style="width:43px;"/>
+              <p id="text">2</p>
+          </div>
+
+
+          <div id="container">
+              <img id="image" src="img/badgeAT5.png"/>
+              <p id="text">2</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/badgeAT6.png" style="width:43px;"/>
+              <p id="text">2</p>
+          </div>
+          -->
+
+        </div>
+
+        <div style="clear: both;vertical-align: bottom;padding-top:10px;">
+          <p>Badges for daily surveys</p>
+          <div id="container" ng-repeat="x in daily_survey_badges">
+              <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
+              <p id="text" ng-show='x.count>1'>{{x.count}}</p>
+          </div> 
+          <!--
+          <div id="container">
+              <img id="image" src="img/backgroud_daily.png"/>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/green.png"/>
+              <p id="text">2</p>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/blue.png"/>
+              <p id="text">2</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/red.png"/>
+              <p id="text" ng-show='false'>2x</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/bronze.png"/>
+              <p id="text">2</p>
+          </div>
+
+
+          <div id="container">
+              <img id="image" src="img/silver.png"/>
+              <p id="text">2</p>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/gold.png"/>
+              <p id="text">2</p>
+          </div>
+          -->
+
+        </div>
+
+        <div style="clear: both;vertical-align: bottom;padding-top:10px;">
+          <p>Badges for weekly surveys</p>
+          <div id="container" ng-repeat="x in weekly_survey_badges">
+              <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
+              <p id="text" ng-show='x.count>1'>{{x.count}}</p>
+          </div> 
+          <!--
+          <div id="container">
+              <img id="image" src="img/trophy_background.png"/>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/green_trophy.png"/>
+          </div> 
+
+          <div id="container">
+              <img id="image" src="img/bronze_trophy.png"/>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/silver_trophy.png"/>
+          </div>
+
+          <div id="container">
+              <img id="image" src="img/gold_trophy.png"/>
+          </div>
+          -->
+        </div>
+
+
+        <div style="clear: both;vertical-align: bottom;padding-top:40px;">
+          <p style="padding-bottom:-30px;">Fishes for the aquarium</p>
+          <img ng-repeat="x in pointsdata" class={{x.class}} src={{x.img}}  
+            style="width:auto;height:75px;margin:5px;max-width:200px">
+        </div>      
+
+  </ion-content>
+</ion-view>

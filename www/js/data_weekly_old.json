@@ -1,0 +1,395 @@
+[
+  {
+    "name":"Q1",
+    "text":"In the past week, which of these things did you do during times of stress (check all that apply):",
+    "type":"checkbox",
+    "extra":{
+      "choices":["I made a plan or took action to make the situation better.", "I tried to see it in more positive light.", "I got support or advice from someone.", "I tried not to think about it.", "I prayed, meditated or other spiritual activity. "],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q2",
+    "text":"In the past week, how true was this: I get upset with myself for having certain thoughts or feelings.",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Never true = 0","Rarely true = 1","Sometimes true = 2","Often true =3","Always true = 4"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q3",
+    "text":"In the past week, overall how tempted were you to drink alcohol this week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>strong"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q4",
+    "text":"Did you drink alcohol this week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["yes","no"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q41",
+    "text":"Which days did you drink alcohol this week?",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "dependency":{
+        "question": "Q4", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q41sun",
+    "text":"On <b>Sunday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O0", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41mon",
+    "text":"On <b>Monday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O1", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41tue",
+    "text":"On <b>Tuesday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O2", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41wed",
+    "text":"On <b>Wednesday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O3", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41thu",
+    "text":"On <b>Thursday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O4", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41fri",
+    "text":"On <b>Friday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O5", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q41sat",
+    "text":"On <b>Saturday</b> this week, how many drinks did you have?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "dependency":{
+          "question": "Q41O6", 
+          "show": true,
+          "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q42",
+    "text":"Pick the top reason why you drank.",
+    "type":"checkbox",
+    "extra":{
+      "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed, anxious or angry", "To make social gatherings more fun"],
+      "dependency":{
+        "question": "Q4", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q43",
+    "text":"Pick the top reason(s) why you didn’t drink.",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Did not want to", "No chance/time", "Out of alcohol", "Trying to cut back", "More important things to do", "Cost"],
+      "dependency":{
+        "question": "Q4", 
+        "show": "no",
+        "hide": "yes"
+      }
+    }
+  },
+  {
+    "name":"Q6",
+    "text":"In the past week, overall how tempted were you to use marijuana this week? ",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>strong"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q7",
+    "text":"Did you use marijuana (hash, weed) this week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["yes","no"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q71",
+    "text":"Which days did you use marijuana (hash, weed) this week? ",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "dependency":{
+        "question": "Q7", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q71Sun",
+    "text":"On <b>Sunday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O0", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71Mon",
+    "text":"On <b>Monday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O1", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71tues",
+    "text":"On <b>Tuesday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O2", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71Wed",
+    "text":"On <b>Wednesday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O3", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71thu",
+    "text":"On <b>Thursday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O4", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71fri",
+    "text":"On <b>Friday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O5", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q71sat",
+    "text":"On <b>Saturday</b> this week, how much marijuana did you use on?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "dependency":{
+        "question": "Q71O6", 
+        "show": true,
+        "hide": false
+      }
+    }
+  },
+  {
+    "name":"Q72",
+    "text":"Pick the top reason(s) why you used marijuana:",
+    "type":"checkbox",
+    "extra":{
+      "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed, anxious or angry", "To make social gatherings more fun"],
+      "dependency":{
+        "question": "Q7", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q73",
+    "text":"Pick the top reason(s) why you didn’t use marijuana.",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Did not want to", "No chance/time", "Out of weed", "Trying to cut back", "More important things to do", "Cost"],
+      "dependency":{
+        "question": "Q7", 
+        "show": "no",
+        "hide": "yes"
+      }
+    }
+  },
+  {
+    "name":"Q9",
+    "text":"In the past week, did you do or say things without thinking?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q10",
+    "text":"In the past week, did you think and plan tasks carefully?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q11",
+    "text":"In the past week, did you have trouble concentrating?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q12",
+    "text":"How much do you think people your age risk harming themselves (physically or in other ways) if they smoke marijuana?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["None", "slight", "moderate", "very", "extremely"],
+      "orientation": "vertical",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q13",
+    "text":"How much do you think people your age risk harming themselves (physically or in other ways) drinking alcohol?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["None", "slight", "moderate", "very", "extremely"],
+      "orientation": "vertical",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q14",
+    "text":"In the next week, how likely are you to say no to using marijuana if offered?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>likely"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q15",
+    "text":"In the next week, how likely are you to say no to drinking alcohol if offered?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>likely"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  }
+]

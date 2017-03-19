@@ -1,0 +1,9 @@
+Each key frame on the sprite sheet is 512px wide by 372px high. 
+
+The first line on the sheet is an animation of the fish  resting facing towards the right and shows only slight movement of the mouth.
+
+the Second lin on the sheet is an animation of the fish resting but now facing left
+
+the third line on the sheet is the fish swimming towards the right. This displays faster and larger fin movement.
+
+the fourth line on the sheet is the fish swimming towards the left.

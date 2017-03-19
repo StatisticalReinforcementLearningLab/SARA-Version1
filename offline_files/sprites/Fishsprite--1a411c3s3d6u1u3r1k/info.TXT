@@ -1,0 +1,42 @@
+	
+	
+
+		This folder contains the fish sprite sheet.
+
+		In this folder and its subfolders you will find all you need to easily incorperate the sprite into your games. 
+
+		The main files are the original working vector files in .svg and .ai format. Use these if you want to edit the graphic.
+
+
+		
+		SPRITESHEETS- 
+
+		This folder contains the spritesheets of the fish animation in PNG format.The main file is a large sprite sheet with all animation key frames.
+
+		The other files are smaller spritesheets of each fishes action.
+
+		Each image on the sprite sheet is bounded by an invisble box measuring 256px x 256px. as you step through the sheet you will have to step through with multiples of 256px.
+
+		If you need bigger sprite just export gain from the included vector file.
+
+		
+
+
+
+		PNGs
+
+		As well as sprite sheets I apreciate that you may want to use individual png's as keyframe sequencies.
+
+		For this reason you will also find each keyframe for each animation sequence exported as an indiviual PNG file.
+
+		Each PNG file is 256px by 256px. If you need larger image sizes you will have to export the image again from the vector.
+
+
+
+
+
+
+
+
+
+		Robert Brooks.

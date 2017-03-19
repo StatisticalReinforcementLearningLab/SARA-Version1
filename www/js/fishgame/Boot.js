@@ -19,7 +19,10 @@ FishGame.Boot.prototype = {
 		//this.scale.setScreenSize(true);
 
 		this.input.addPointer();
-		this.stage.backgroundColor = '#171642';
+
+		//Change color here 
+		//-- http://www.w3schools.com/colors/colors_picker.asp
+		this.stage.backgroundColor = '#095e98';
         
         this.state.start('Preloader');
     }
