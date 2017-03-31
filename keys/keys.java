@@ -20,7 +20,7 @@ public class keys {
 
     public static void main(String[] args) throws Exception {
         // Generate RSA key pair of 1024 bits
-        KeyPair keypair = genKeyPair("RSA", 2048);
+        KeyPair keypair = genKeyPair("RSA", 1024);
         // Save to file system
         saveKeyPair(keyDir, keypair);
         // Loads from file system

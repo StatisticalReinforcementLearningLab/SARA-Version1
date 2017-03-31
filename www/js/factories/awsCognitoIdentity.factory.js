@@ -77,20 +77,22 @@ mod.factory('awsCognitoIdentityFactory', function() {
     cognitoUser = userPool.getCurrentUser();
 
     if (cognitoUser != null) {
+      console.log('session validity: ' + "cognitoUser not null");
       cognitoUser.getSession(function(err, session) {
         if (err) {
-          callback(err);
+          console.log('session validity: err ' + err.message);
+          callback(err,true);//because we have the user at least
           return false;
         }
-        //console.log('session validity: ' + session.isValid());
-        initConfigCredentials(session.idToken.jwtToken);
+        console.log('session validity: ' + session.isValid());
+        initConfigCredentials(session.getIdToken().getJwtToken());
         return callback(null, session.isValid());
       });
     }else{
       var err = {};
       err.message = "";
       if (err) {
-          callback(err);
+          callback(err,false);
           return false;
       }  
     }
@@ -128,6 +130,19 @@ mod.factory('awsCognitoIdentityFactory', function() {
       IdentityPoolId: identityPoolId,
       Logins: logins
     });
+
+    /*
+    var identityId = AWS.config.credentials.identityId;
+    console.log('identityId: ' + identityId);
+
+    //
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: identityPoolId,
+      IdentityId: identityId,
+      Logins: logins
+    });
+    */
+
   }
 
   return aws;

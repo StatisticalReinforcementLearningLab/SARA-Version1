@@ -29,8 +29,6 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
   $scope.progressbar.setColor('#0ff');
   $scope.progressbar.set(0);
 
-
-
   $scope.notification_id = $routeParams.id;  
 
   $scope.msg = "<h1>I love Surveys. Give me more.</h1>";
@@ -211,7 +209,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           //window.localStorage['weekly_survey_data'] = JSON.stringify(weekly_survey_data);
 
           //
-          saraDatafactory.storedata('weekly_survey',$scope.survey,moment().format('YYYYMMDD'));
+          //saraDatafactory.storedata('weekly_survey',$scope.survey,moment().format('YYYYMMDD'));
 
 
           var score_data = JSON.parse(window.localStorage['score_data'] || "{}");

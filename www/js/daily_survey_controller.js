@@ -249,17 +249,17 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         firebase.database().ref().update(updates);
 
         //
-        window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
+        //window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
 
         //
-        saraDatafactory.storedata('daily_survey', $scope.survey, moment().format('YYYYMMDD'));
+        //saraDatafactory.storedata('daily_survey2', $scope.survey, moment().format('YYYYMMDD'));
 
         //
         var score_data = JSON.parse(window.localStorage['score_data'] || "{}");
         console.log("DS: " + JSON.stringify(score_data));
         score_data['daily_survey'][moment().format('YYYYMMDD')] = 1;
         window.localStorage['score_data'] = JSON.stringify(score_data);
-        saraDatafactory.storedata('game_score', score_data, moment().format('YYYYMMDD'));
+        saraDatafactory.storedata('game_score2', score_data, moment().format('YYYYMMDD'));
         saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
 
 

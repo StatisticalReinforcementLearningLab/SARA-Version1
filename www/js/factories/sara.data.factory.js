@@ -22,6 +22,12 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     data = data_temp;
     key2 = key_temp;
     connect();
+
+    //save a local copy
+    //var value = data;
+    //window.localStorage['score_data'] = JSON.stringify(value);
+    console.log("storing: " + datasetname);
+
   }
   
   connect = function() {
@@ -69,6 +75,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
   
   sync = function(callback2=undefined) {
       return awsCognitoSyncFactory.synchronize(dataset, function(err, state) {
+        console.log("syncing: 2: " + err + ", " + datasetName);
         if (err) {
           //$scope.error.message = err.message;
           return false;
@@ -92,7 +99,13 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
       });
     }
   
-
+  //-- 'game_score', moment().format('YYYYMMDD') + "2", 
+  //sara.pullGameScoreData(callback2){
+  sara.pullRLData = function(callback2) {
+    //sync(function() {
+    sara.pullData('rl_data',"",callback2);
+    //});
+  }
 
   //-- 'game_score', moment().format('YYYYMMDD') + "2", 
   //sara.pullGameScoreData(callback2){
@@ -113,8 +126,10 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
       if (err) {
         //$scope.error.message = err.message;
         console.log(err.message);
-        $location.path("/");
-        return;
+        if(isValid==false){//means there is no user data in local storage.
+          $location.path("/");
+          return;
+        }
       }
       //if(isValid) $state.go('todo', {}, {reoload: true})
       if (isValid) {
@@ -143,7 +158,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
           }
         });
       } else
-        $location.path("/");
+        $location.path("/");//
 
       //$state.go('todo', {}, {reoload: true})
     });
@@ -159,13 +174,18 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
       if (err) {
         //$scope.error.message = err.message;
         console.log(err.message);
-        $location.path("/");
-        return;
+        if(isValid==false){//means there is no user data in local storage.
+          $location.path("/");
+          return;
+        }
       }
       //if(isValid) $state.go('todo', {}, {reoload: true})
       if (isValid) {
         awsCognitoSyncFactory.connect(datasetName, function(err, dataset_temp) {
-          if (err) $scope.error.message = err.message;
+          if (err) {
+            //$scope.error.message = err.message;
+            callback2(null);
+          }
           else {
             dataset = dataset_temp;
             //sync();
@@ -479,7 +499,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         padding: CryptoJS.pad.Pkcs7,
         mode: CryptoJS.mode.CBC
         
-      })
+      });
       return decrypted;
   };
 

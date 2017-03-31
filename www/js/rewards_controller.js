@@ -485,7 +485,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //
     if($routeParams.real=='true'){
         window.localStorage['badges'] = JSON.stringify($rootScope.badges);
-        saraDatafactory.storedata('badges', $rootScope.badges, moment().format('YYYYMMDD'));
+        //saraDatafactory.storedata('badges', $rootScope.badges, moment().format('YYYYMMDD'));
     }
 
     //////////////////////////////////////////////////////////////////////
