@@ -190,13 +190,13 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           var newPostKey = firebase.database().ref().child('SARA').child('Weekly').push().key;
 
           // Write the new post's data simultaneously in the posts list and the user's post list.
-          var updates = {};
+          //var updates = {};
           $scope.survey.reponse_ts = $scope.reponse_ts;
           $scope.survey.devicInfo = ionic.Platform.device();
           $scope.survey.id = $scope.email;
           //$scope.survey.randq = $scope.rand_index;
-          updates['/SARA/Weekly/' + newPostKey] = $scope.survey;
-          firebase.database().ref().update(updates);
+          //updates['/SARA/Weekly/' + newPostKey] = $scope.survey;
+          //firebase.database().ref().update(updates);
 
           $scope.progressbar.reset();
 
@@ -214,16 +214,30 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
           var score_data = JSON.parse(window.localStorage['score_data'] || "{}");
           console.log("DS: " +  JSON.stringify(score_data));
+          if(score_data.hasOwnProperty("weekly_survey")){
+          }else
+              score_data['weekly_survey'] = {};
+              
           score_data['weekly_survey'][moment().format('YYYYMMDD')] = 1;
           window.localStorage['score_data'] = JSON.stringify(score_data);
-          saraDatafactory.storedata('game_score',score_data,moment().format('YYYYMMDD'));
+          //saraDatafactory.storedata('game_score',score_data,moment().format('YYYYMMDD'));
 
+          var rl_data = JSON.parse(window.localStorage['cognito_data']);
+          rl_data['survey_data']['weekly_survey'][moment().format('YYYYMMDD')] = 1;
+          saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+          window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
           //
           var weekly_survey_data = score_data['weekly_survey'];//JSON.parse(window.localStorage['daily_survey_data'] || "{}");
           //daily_survey[moment().format('YYYYMMDD')] = 1;
           //console.log(JSON.stringify("Works: " +  JSON.stringify(daily_survey)));
           window.localStorage['weekly_survey_data'] = JSON.stringify(weekly_survey_data);
+
+          //
+          saraDatafactory.copyJSONToFile($scope.survey, 'weekly_survey');
+
+          //
+          saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
 
           /*
           //save the new notificaiton data

@@ -14,6 +14,7 @@ FishGame.Preloader.prototype = {
         this.load.image('titlescreen', 'img/TitleBG4.png');
         this.load.image('undersea', 'img/underwaterbr.jpg');
         this.load.image('connected', 'img/connected.png');
+        this.load.image('trivia', 'img/trivia.png');
         this.load.image('disconnected', 'img/disconnected.png');
     	this.load.image('coral', 'img/seabed.png');
         this.load.bitmapFont('eightbitwonder', 'fonts/eightbitwonder.png', 'fonts/eightbitwonder.fnt');

@@ -18,6 +18,10 @@ FishGame.Game = function(game) {
 
     this.ionic_scope;
     this.height;
+
+    this.active_task_connected;
+    this.progress_sprite;
+    this.prgress_bar_width;
 };
 
 FishGame.Game.prototype = {
@@ -50,6 +54,13 @@ FishGame.Game.prototype = {
         var titlescreen = this.add.image(0, this.height-160, 'titlescreen');
         titlescreen.scale.setTo(0.85, 0.85);
 
+        //
+        this.add.sprite(40, 40, 'timer', 1);
+
+        //
+        var fish_progress = this.add.image(20, 50, 'fish_progress');
+        fish_progress.scale.setTo(-0.15, 0.15);
+        fish_progress.anchor.setTo(.5,.5);
 
 
         this.buildFish();
@@ -62,12 +73,18 @@ FishGame.Game.prototype = {
         journal.events.onInputDown.add(this.logdata, this);
 
         //
+        var trivia = this.add.image(window.innerWidth - 60, 95, 'trivia');
+        trivia.scale.setTo(0.22, 0.22);
+        trivia.inputEnabled = true;
+        //trivia.events.onInputDown.add(this.logdata, this);
+
+        //
         this.active_task_connected = this.add.image(10, 40, 'disconnected');
         this.active_task_connected.set
         this.active_task_connected.scale.setTo(0.15, 0.15);
         this.active_task_connected.inputEnabled = true;
         this.active_task_connected.events.onInputDown.add(this.logdata, this);
-        this.active_task_connected.visible = true;
+        this.active_task_connected.visible = false;
         
 
         var treasure = this.add.image(90, this.height-70, 'treasure');
@@ -75,7 +92,6 @@ FishGame.Game.prototype = {
         treasure.inputEnabled = true;
         treasure.events.onInputDown.add(this.showunlockables, this);
 
-        //
 
 
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
@@ -181,6 +197,26 @@ FishGame.Game.prototype = {
               }
           }
 
+          //set the progres bar
+          var previoous_fish_point = 0;
+          var next_fish_point = 0;
+          for(var i = 0; i < data.length; i++) {
+              if(current_points < data[i].points){
+                next_fish_point = data[i].points;
+                break;
+              }else{
+                previoous_fish_point = data[i].points;
+              }
+          }
+          //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
+          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
+          var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
+          console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
+          rect.width = Math.max(0, percent * this.progress_sprite.width);
+
+          console.log("Width, " + rect.width  + "," + this.progress_sprite.width);
+          this.progress_sprite.crop(rect);
 
           
 
@@ -247,6 +283,25 @@ FishGame.Game.prototype = {
 
               }
           }
+
+          //set the progres bar
+          var previoous_fish_point = 0;
+          var next_fish_point = 0;
+          for(var i = 0; i < data.length; i++) {
+              if(current_points < data[i].points){
+                next_fish_point = data[i].points;
+                break;
+              }else{
+                previoous_fish_point = data[i].points;
+              }
+          }
+          //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
+          var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
+          var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
+          console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
+          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          rect.width = 1 * percent * this.progress_sprite.width;
+          this.progress_sprite.crop(rect);
 
     },
 

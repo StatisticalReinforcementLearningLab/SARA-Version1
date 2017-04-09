@@ -71,21 +71,30 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     $scope.added_fish_points = added_points;
 
     //all badges
-    var badges = JSON.parse(window.localStorage['badges'] || "{}");
-    if(!('weekly' in badges)){ //means things are empty.
+    var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+    var badges = cognito_data['badges'];
+    if(!('money' in badges)){ //means things are empty.
         badges['daily_survey'] = [0,0,0,0,0,0];
         badges['weekly_survey'] = [0,0,0,0];
         badges['active_tasks'] = [0,0,0,0,0,0];
         badges['money'] = 0;
 
-        if($routeParams.real=='true')
+        if($routeParams.real=='true'){
+            //TODO: update the local copy.
             window.localStorage['badges'] = JSON.stringify(badges);
+        }
     }
+
+    //--- this is for faking.
     if($rootScope.badges==undefined) //undefined means we need gate from another place.
       $rootScope.badges = badges;
 
 
-
+    //---------------------------------------------------------------------
+    //
+    //  --- The following is for fish display
+    //
+    //---------------------------------------------------------------------
     $http.get('js/fishpoints.json').success(function(data) {
       //console.log("Fishes: " + data);
 
@@ -96,6 +105,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
       $scope.fish_names = "";
       added_points = parseInt(added_points);
       $rootScope.total_score = parseInt($rootScope.total_score);
+      $rootScope.total_score += added_points;
 
       for(var i = 0; i < data.length; i++) {
           if((data[i].points > ($rootScope.total_score - added_points)) && (data[i].points <= $rootScope.total_score)){
@@ -139,10 +149,6 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
        
       $scope.pointsdata = data;
 
-
-      //console.log("Fishes: " + JSON.stringify($scope.pointsdata));
-      //$scope.$apply();
-
       var isreal2 = $routeParams.real=='true';
         if(isreal2 == true){
           //This will force a reload
@@ -150,18 +156,19 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $rootScope.total_score = undefined; 
       }
 
-      //$scope.$apply();
-      //call to adjust color.
       adjust_css();
 
     });
 
 
-    
+    //var cognito_data2 = JSON.parse(window.localStorage['cognito_data'] || "{}");
+    var monetary_reward = $rootScope.badges['money'] ;//cognito_data2['badges']['money'];
 
-    //////////////////////////////////////////////////////////////////////
-    //show the reward for badges, daily survey
-    //////////////////////////////////////////////////////////////////////
+    //---------------------------------------------------------------------
+    //
+    //  --- show the reward for badges, daily survey
+    //
+    //---------------------------------------------------------------------
     var isreal = $routeParams.real=='true';
     if(added_points=='30' && !$rootScope.rewardIsActiveTask){
         var daily_survey_day_by_day = [];
@@ -170,7 +177,9 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //this is the streak data
         //
         //daily_survey_day_by_day = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1];
-        reward_awarded_daily = JSON.parse(window.localStorage['reward_awarded_daily'] || "{}");
+        var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        reward_awarded_daily = cognito_data['daily_streak']||{};
+        //reward_awarded_daily = JSON.parse(window.localStorage['reward_awarded_daily'] || "{}");
 
         //if nothhing is there then initialize.
         if(Object.keys(reward_awarded_daily).length === 0){
@@ -190,9 +199,13 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         $scope.cards.push({name: "You earned 30 points for completing the daily survey", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: false});
 
         if(isreal == true || $rootScope.daily_survey_day_by_day == undefined){
-            var daily_survey = JSON.parse(window.localStorage['daily_survey_data'] || "{}");
+            //var daily_survey = JSON.parse(window.localStorage['daily_survey_data'] || "{}");
             //console.log(JSON.stringify(daily_survey));
             //scope.total_daily_surveys = 0;
+
+            //var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+            var daily_survey = cognito_data['survey_data']['daily_survey'];
+
             var last_date = '';
             var first_date = '';
             for (var key in daily_survey) {
@@ -252,9 +265,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //Streak: 30,18,12,6,3
         //rewards: 4,3,2,1,0.5
         $scope.showBadge = false;
-        var monetary_reward = 0;
         if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,30,isreal)){
-          monetary_reward = 4;
+          monetary_reward += 4;
           $scope.showBadge = true;
           $scope.badge_img = "img/gold.png";
           $scope.how_many_days = 30;
@@ -263,7 +275,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $rootScope.badges['daily_survey'][5] += 1;
         }else{
            if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,18,isreal)){
-              monetary_reward = 3;
+              monetary_reward += 3;
               $scope.showBadge = true;
               $scope.badge_img = "img/silver.png";
               $scope.how_many_days = 18;
@@ -272,7 +284,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
               $rootScope.badges['daily_survey'][4] += 1;
            }else{
               if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,12,isreal)){
-                monetary_reward = 2;
+                monetary_reward += 2;
                 $scope.showBadge = true;
                 $scope.badge_img = "img/bronze.png";
                 $scope.how_many_days = 12;
@@ -281,7 +293,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                 $rootScope.badges['daily_survey'][3] += 1;
               }else{
                   if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,6,isreal)){
-                    monetary_reward = 1;
+                    monetary_reward += 1;
                     $scope.showBadge = true;
                     $scope.badge_img = "img/blue.png";
                     $scope.how_many_days = 6;
@@ -290,7 +302,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                     $rootScope.badges['daily_survey'][1] += 1;
                   }else{
                       if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,3,isreal)){
-                        monetary_reward = 0.5;
+                        monetary_reward += 0.5;
                         $scope.showBadge = true;
                         $scope.badge_img = "img/green.png";
                         $scope.how_many_days = 3;
@@ -362,7 +374,187 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         $scope.cards.push({name: "You earned " + added_points + " points for completing the active task(s).", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: false});
 
         //
+        var reward_awarded_at = {};
+        var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        reward_awarded_at = cognito_data['at_streak']||{};
+
+        //
+        console.log("reward_awarded_at, " + JSON.stringify(reward_awarded_at));
+
+        //if nothhing is there then initialize.
+        if(Object.keys(reward_awarded_at).length === 0){
+            reward_awarded_at["30"] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            reward_awarded_at["18"] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            reward_awarded_at["12"] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            reward_awarded_at["6"] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            reward_awarded_at["3"] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            window.localStorage['reward_awarded_at'] = JSON.stringify(reward_awarded_at);
+        }
+
+        //
+        var at_day_by_day = [];
+        if(isreal == true || $rootScope.at_day_by_day == undefined){
+            //var daily_survey = JSON.parse(window.localStorage['daily_survey_data'] || "{}");
+            //console.log(JSON.stringify(daily_survey));
+            //scope.total_daily_surveys = 0;
+
+            //var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+            var active_tasks_survey = cognito_data['survey_data']['active_tasks_survey'];
+
+            var last_date = '';
+            var first_date = '';
+            for (var key in active_tasks_survey) {
+                //console.log(key);
+                //scope.total_daily_surveys += 1;
+                last_date = key;
+            }
+            for (var key in active_tasks_survey) {
+                first_date = key;
+                break;
+            }
+
+            //console.log("Is real: " + isreal);
+            //last_date = moment().format('YYYYMMDD');
+            var flag = true;
+            var current_date = first_date;
+            while(flag){
+              if(current_date in active_tasks_survey){
+                 //console.log("Exist: " + current_date);
+                 at_day_by_day.push(active_tasks_survey[current_date]);
+              }
+              else{
+                 //console.log("Doesn't exist: " + current_date);
+                 at_day_by_day.push(0);
+              }
+              
+              if(current_date === last_date)
+                 flag = false;
+
+              current_date = moment(current_date, "YYYYMMDD").add(1, 'day').format('YYYYMMDD');
+            }
+            console.log("at_day_by_day: " + at_day_by_day);
+
+
+            //console.log("x: " + ($rootScope.daily_survey_day_by_day == undefined) + ", " + (isreal==false) + ", " + (($rootScope.daily_survey_day_by_day == undefined) && (isreal == false)));
+            if(($rootScope.at_day_by_day == undefined) && (isreal == false)){
+                at_day_by_day.push(1);
+                //console.log("daily_survey_day_by_day 2: " + daily_survey_day_by_day);
+            }
+            $rootScope.at_day_by_day = at_day_by_day;
+            $rootScope.reward_awarded_at = reward_awarded_at;
+
+        }else{
+            if(isreal == false && added_points=='15'){ //means we have daily survey
+                $rootScope.at_day_by_day.push(1);
+                console.log("$rootScope.at_day_by_day: " + $rootScope.at_day_by_day);
+            }
+        }
         
+        //
+        at_day_by_day = $rootScope.at_day_by_day;
+        reward_awarded_at = $rootScope.reward_awarded_at;
+
+        //
+        //Streak: 30,18,12,6,3
+        //rewards: 4,3,2,1,0.5
+        $scope.showBadge = false;
+        //var monetary_reward = 0;
+        if(isNAtStreak(at_day_by_day,reward_awarded_at,30,isreal)){
+          monetary_reward += 4;
+          $scope.showBadge = true;
+          $scope.badge_img = "img/badgeAT6.png";
+          $scope.how_many_days = 30;
+          $scope.how_much = "4 dollars";
+          $scope.cards.push({name: "You earned 4 dollars for completing surveys 30 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
+          $rootScope.badges['active_tasks'][5] += 1;
+        }else{
+           if(isNAtStreak(at_day_by_day,reward_awarded_at,18,isreal)){
+              monetary_reward += 3;
+              $scope.showBadge = true;
+              $scope.badge_img = "img/badgeAT5.png";
+              $scope.how_many_days = 18;
+              $scope.how_much = "3 dollars";
+              $scope.cards.push({name: "You earned 3 dollars for completing surveys 18 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
+              $rootScope.badges['active_tasks'][4] += 1;
+           }else{
+              if(isNAtStreak(at_day_by_day,reward_awarded_at,12,isreal)){
+                monetary_reward += 2;
+                $scope.showBadge = true;
+                $scope.badge_img = "img/badgeAT4.png";
+                $scope.how_many_days = 12;
+                $scope.how_much = "2 dollars";
+                $scope.cards.push({name: "You earned of 2 dollars for completing surveys 12 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
+                $rootScope.badges['active_tasks'][3] += 1;
+              }else{
+                  if(isNAtStreak(at_day_by_day,reward_awarded_at,6,isreal)){
+                    monetary_reward += 1;
+                    $scope.showBadge = true;
+                    $scope.badge_img = "img/badgeAT2.png";
+                    $scope.how_many_days = 6;
+                    $scope.how_much = "1 dollar";
+                    $scope.cards.push({name: "You earned 1 dollar for completing surveys 6 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
+                    $rootScope.badges['active_tasks'][1] += 1;
+                  }else{
+                      if(isNAtStreak(at_day_by_day,reward_awarded_at,3,isreal)){
+                        monetary_reward += 0.5;
+                        $scope.showBadge = true;
+                        $scope.badge_img = "img/badgeAT1.png";
+                        $scope.how_many_days = 3;
+                        $scope.how_much = "50 cents";
+                        $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
+                        $rootScope.badges['active_tasks'][0] += 1;
+                      }
+                  }
+              }
+           }
+        }
+
+    }
+
+    function isNAtStreak(at_day_by_day,reward_awarded_daily,N,isreal){
+      var total_days = 0;
+      var isPaidInLastNDays = 0;
+        if(at_day_by_day.length >= N){
+
+            //
+            for(var i = at_day_by_day.length-1; i>=at_day_by_day.length-N ; i--){
+              if(at_day_by_day[i] > 0 )
+                total_days += 1; //at_day_by_day[i];
+            }
+
+            //
+            for(var i = at_day_by_day.length-1; i>=at_day_by_day.length-N ; i--){
+              isPaidInLastNDays += reward_awarded_daily[""+N][i];
+            }
+        }
+
+        //if paid in the last N days also once then we remove the reward.
+        //
+        //console.log(reward_awarded_daily[""+N].length);
+        //console.log(JSON.stringify(reward_awarded_daily));
+        //console.log(adherence_array);
+
+        if(total_days == N && isPaidInLastNDays == 0){
+          reward_awarded_daily[""+N][at_day_by_day.length-1] = 1;
+
+          //
+          if(N%3 == 0)
+            reward_awarded_daily["3"][at_day_by_day.length-1] = 1;
+          if(N%6 == 0)
+            reward_awarded_daily["6"][at_day_by_day.length-1] = 1;
+          if(N%12 == 0)
+            reward_awarded_daily["12"][at_day_by_day.length-1] = 1;
+          if(N%18 == 0)
+            reward_awarded_daily["18"][at_day_by_day.length-1] = 1;
+          if(N%30 == 0)
+            reward_awarded_daily["30"][at_day_by_day.length-1] = 1;
+
+          if(isreal==true)//save if it is the real one.
+            window.localStorage['at_streak'] = JSON.stringify(reward_awarded_daily);
+          return true;
+        }
+        else
+          return false;
     }
 
 
@@ -380,8 +572,13 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
         console.log("weekly_survey_day_by_day 'isreal': " + isreal);
         if(isreal == true || $rootScope.weekly_survey_day_by_day == undefined){
-            var weekly_survey = JSON.parse(window.localStorage['weekly_survey_data'] || "{}");
-            console.log(JSON.stringify("Weekly survey: " + JSON.stringify(weekly_survey)));
+            //var weekly_survey = JSON.parse(window.localStorage['weekly_survey_data'] || "{}");
+            //console.log(JSON.stringify("weekly survey: " + JSON.stringify(weekly_survey)));
+
+            //
+            var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+            var weekly_survey = cognito_data['survey_data']['weekly_survey'];
+
 
             last_date = '';
             first_date = '';
@@ -393,7 +590,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                     break;
             }
             //moment().startOf('week');
-            console.log("last date: " + moment().startOf('week').format('YYYYMMDD'));
+            //console.log("last date: " + moment().startOf('week').format('YYYYMMDD'));
             //console.log("Is real: " + isreal);
 
 
@@ -410,7 +607,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                      weekly_survey_day_by_day.push(0);
                 }
                   
-                if(current_date === last_date)
+                if(parseInt(current_date) > parseInt(last_date))
                      flag = false;
 
                 current_date = moment(current_date, "YYYYMMDD").add(7, 'day').format('YYYYMMDD');
@@ -439,18 +636,18 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           total_weekly_surveys += $rootScope.weekly_survey_day_by_day[i];
         
         //
-        if(total_weekly_surveys == 1){
-          monetary_reward = 0.5;
+        if(total_weekly_surveys%4 == 1){
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/green_trophy.png";
           $scope.how_many_days = 1;
           $scope.how_much = "50 cents";
-          $scope.cards.push({name: "You unlocked daily step count for completing your first weekly survey.", show: false, up:0, class: 'blue', img: "img/green_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing the first weekly surveys.", show: false, up:0, class: 'blue', img: "img/green_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][0] = 1;
         }
 
-        if(total_weekly_surveys == 2){
-          monetary_reward = 1;
+        if(total_weekly_surveys%4 == 2){
+          monetary_reward += 1;
           $scope.showBadge = true;
           $scope.badge_img = "img/bronze_trophy.png";
           $scope.how_many_days = 2;
@@ -459,8 +656,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $rootScope.badges['weekly_survey'][1] = 1;
         }
 
-        if(total_weekly_surveys == 3){
-          monetary_reward = 2;
+        if(total_weekly_surveys%4 == 3){
+          monetary_reward += 2;
           $scope.showBadge = true;
           $scope.badge_img = "img/silver_trophy.png";
           $scope.how_many_days = 3;
@@ -469,22 +666,31 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $rootScope.badges['weekly_survey'][2] = 1;
         }
 
-        if(total_weekly_surveys == 4){
-          monetary_reward = 3;
+        if(total_weekly_surveys%4 == 0){
+          monetary_reward += 3;
           $scope.showBadge = true;
           $scope.badge_img = "img/gold_trophy.png";
           $scope.how_many_days = 4;
           $scope.how_much = "3 dollars";
-          $scope.cards.push({name: "You earned 3 dollars for completing three weekly surveys.", show: false, up:0, class: 'blue', img: "img/gold_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 3 dollars for completing four weekly surveys.", show: false, up:0, class: 'blue', img: "img/gold_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][3] = 1;
         }
 
     }
-
+    $rootScope.badges['money'] = monetary_reward;
 
     //
     if($routeParams.real=='true'){
-        window.localStorage['badges'] = JSON.stringify($rootScope.badges);
+
+        var rl_data = JSON.parse(window.localStorage['cognito_data']);
+        rl_data['badges'] = $rootScope.badges;
+        //rl_data['badges']['money'] = monetary_reward;
+        rl_data['daily_streak'] = JSON.parse(window.localStorage['reward_awarded_daily'] || "{}");
+        cognito_data['at_streak']= JSON.parse(window.localStorage['at_streak'] || "{}");
+        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD')); //sync now
+        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+        //window.localStorage['badges'] = JSON.stringify($rootScope.badges);
         //saraDatafactory.storedata('badges', $rootScope.badges, moment().format('YYYYMMDD'));
     }
 

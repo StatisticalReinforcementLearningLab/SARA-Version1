@@ -103,17 +103,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
         restrict: "A",
         template: "<div id = 'gameArea'></div>",
         link: function(scope, element, attrs, injector, location, http, rootScope) {
-            //console.log("link function called");
-
 
             var game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
-
-            //game.input.touch.enabled = false;
-            //game.input.mouse.enabled = false;
-
-            //Phaser.Canvas.setTouchAction(game.canvas, "auto");
-            //game.input.touch.preventDefault = false;
-
             game.state.add('Boot', FishGame.Boot);
             game.state.add('Preloader', FishGame.Preloader);
             game.state.add('StartMenu', FishGame.StartMenu);
@@ -141,13 +132,14 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //
                 //console.log("json content: " + returnValue);
 
-                //ToDo: New user initialization.
-                if (returnValue == null)
+
+                //console.log(returnValue);
+                if (returnValue == null)//return value will be a null if no internet connection, or profile don't exist
                     returnValue = window.localStorage['cognito_data'] || "{}";
                 else
                     window.localStorage['cognito_data'] = returnValue;
 
-
+                //console.log(returnValue);
                 updateTheScore(returnValue);
 
                 game.state.states["Preloader"].assignscope(scope);
@@ -164,6 +156,10 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //Don't write this now, After I read AT, and other files I will do it.
                 //saraDatafactory.saveDataCollectionState(JSON.parse(returnValue));
+
+                //TODO: if user name is empty add to the rl_data.
+
+                //TODO: if IMEI name is empty add to the rl_data.
 
             });
             //saraDatafactory.storedata('game_score',json_data, moment().format('YYYYMMDD'));
@@ -206,12 +202,16 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 var active_tasks_survey = scoreValue['active_tasks_survey'];//JSON.parse(window.localStorage['active_tasks_survey_data'] || "{}");
                 console.log(JSON.stringify(active_tasks_survey));
                 scope.total_active_tasks_surveys = 0;
+                //---- window.localStorage['at_data']
+                var active_task_prior_data = {};
                 for (var key in active_tasks_survey) {
                     //console.log(key);
+                    active_task_prior_data[key] = active_tasks_survey[key];
                     scope.total_active_tasks_surveys += active_tasks_survey[key];
                 }
                 //console.log(JSON.stringify(active_tasks_survey));
                 score_data['active_tasks_survey'] = active_tasks_survey;
+                window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
 
                 //
                 scope.total_points = scope.total_daily_surveys * 30 + scope.total_weekly_surveys * 50 + scope.total_active_tasks_surveys * 15;
@@ -234,54 +234,6 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 return score_data;
             }
 
-            //game.state.states["Level"].assignscope(scope);
-
-            /*
-            //I want change a directive
-            scaleRatio = window.devicePixelRatio / 3;
-
-            //Create a new game instance and assign it to the 'gameArea' div
-
-            //game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, (window.innerHeight * window.devicePixelRatio) - 45 * window.devicePixelRatio, Phaser.AUTO, 'gameArea');
-       
-            var game = new Phaser.Game(window.innerWidth-20, 300, Phaser.AUTO, 'gameArea', { preload: preload, create: create });
-       
-            function preload () {
-                  game.load.image('logo', 'img/ionic.png');
-            }
-
-            function create () {
-
-                //
-                var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-                logo.anchor.setTo(0.5, 0.5);
-
-                Phaser.Canvas.setTouchAction(game.canvas, "auto");
-                game.input.touch.preventDefault = false;
-
-                //
-                scope.$emit('game:something', 'holla');  
-            }
-            */
-
-            //create the game here
-
-
-            /* --- If this goes from the game to ionic
-            // See how to handle -- http://stackoverflow.com/questions/14502006/working-with-scope-emit-and-on
-            var addNewPlayer = function(player) {
-              players.push(player); // some player array holding all the players
-              scope.$emit('game:newPlayer', player);
-            }
-            */
-
-            /*
-                // Set up the game
-                // from "ionic" to "game" with "$injector".
-                scope.$on('game:toggleMusic', function() {
-                  Game.toggleMusic(); // some function that toggles the music
-                });
-            */
 
             //clown fish animation
             //-- http://www.sevenoaksart.co.uk/clownfish.htm
@@ -333,28 +285,35 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
             //$scope.$broadcast('game:addscore', {state: points});
             scope.$on('game:addscore', function(event, args) {
-                scope.total_points += args.state;
-                $rootScope.total_score = scope.total_points;
+                
 
-                console.log("Current points: " + scope.total_points + ", added: " + args.state);
+                //console.log("Current points: " + scope.total_points + ", added: " + args.state);
 
-                //check level change
-                checkLevelChange(args.state);
+                //check level change-- 
+                //there is no need to do that because after coming back from "reward" it will be called automatically.
+                // Also, "scope.total_points" will update after getting reward.
+                if(args.state == 300){
+                    scope.total_points += args.state;
+                    $rootScope.total_score = scope.total_points;
+
+                    checkLevelChange(args.state);
+                    if (scope.current_level === "GameSmall")
+                        game.state.states["GameSmall"].updatescore(args.state);
+
+                    if (scope.current_level === "Game")
+                        game.state.states["Game"].updatescore(args.state);
 
 
-                if (scope.current_level === "GameSmall")
-                    game.state.states["GameSmall"].updatescore(args.state);
-
-                if (scope.current_level === "Game")
-                    game.state.states["Game"].updatescore(args.state);
+                    if (scope.current_level === "Level1Small")
+                        game.state.states["Level1Small"].updatescore(args.state);
 
 
-                if (scope.current_level === "Level1Small")
-                    game.state.states["Level1Small"].updatescore(args.state);
+                    if (scope.current_level === "Level1")
+                        game.state.states["Level1"].updatescore(args.state);
+                }
 
 
-                if (scope.current_level === "Level1")
-                    game.state.states["Level1"].updatescore(args.state);
+
 
 
 
@@ -529,7 +488,7 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
     });
 
 
-    var promise = $interval(readActiveTaskData, 3000);
+    var promise = $interval(readActiveTaskData, 2000);
     function readActiveTaskData() {
         //read active task data here.
         //problem is we need to load it every 5 seconds.
@@ -538,11 +497,19 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
             else {
                 var sdcard_data = JSON.parse(returnValue);
                 //console.log("json content: " + JSON.stringify(sdcard_data));
+                window.localStorage['imei'] = sdcard_data['imei'] || "null";
 
                 //
                 var active_task_prior_data = JSON.parse(window.localStorage['at_data'] || "{}");
                 //active_task_data = active_task_data['active_tasks_survey_data']
 
+                //Why this works? This is just a local copy restore.
+                // -- this one is local cache. If there is something new then we don't care about the histroy. We just care of the delta.
+                // -- The delta since last one is what happened in this device. 
+                // -- We can't do anything what happened on other devices if there is a device change.
+                // -- But, on an update, it will delete the local cache.
+                // -- So, prior data needs to come from synced data. And we see if there is anything new.
+                // -- 
 
                 //if for today there is something new then add that to the main one, and add to the points
                 var isActiveTaskAdded =  false;
@@ -556,18 +523,26 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                             if (active_task_prior_data[key] < active_tasks_survey_data[key]){
                                 isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key] - active_task_prior_data[key];
                                 active_task_prior_data[key] = active_tasks_survey_data[key];
-                                isActiveTaskAdded = true;
+                                if(key===moment().format('YYYYMMDD'))
+                                    isActiveTaskAdded = true;
                             }
                         } else {
                             //means we have new data, since the date don't exist
                             active_task_prior_data[key] = active_tasks_survey_data[key];
-                            isActiveTaskAdded = true;
+                            if(key===moment().format('YYYYMMDD'))
+                                isActiveTaskAdded = true;
                             isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key];
                         }
                     }
                 }
                 console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
                 if(isActiveTaskAdded){
+                    //
+                    var rl_data = JSON.parse(window.localStorage['cognito_data']);
+                    rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
+                    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                    window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
                     $scope.$broadcast('game:addscore', {
                         state: 15 * isActiveTaskAddedHowMany
                     });
@@ -583,47 +558,6 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
         });
     }
 
-
-
-    //getActiveTaskData();
-    $rootScope.isConnectedWithApp = false;
-    $rootScope.rewardIsActiveTask = false;
-
-    function isLoggedIn() {
-        //console.log("Is connected: " +  $rootScope.isConnectedWithApp);
-
-        if ($rootScope.isConnectedWithApp == false) {
-            $scope.$broadcast('game:updateIsConnected', {
-                state: true
-            });
-        } else {
-            $scope.$broadcast('game:updateIsConnected', {
-                state: true
-            });
-            //$interval.cancel();
-        }
-
-        //getActiveTaskData();
-        //sendSurveyCompletedData();
-        // call your service method here
-        if (($rootScope.activeTaskAdded != undefined) && $rootScope.activeTaskAdded) {
-            $scope.$broadcast('game:addscore', {
-                state: 15 * $rootScope.activeTaskAddedHowMany
-            });
-            $rootScope.activeTaskAdded = false;
-
-            //set this is an active task update
-            $rootScope.rewardIsActiveTask = true;
-        }
-
-
-        //
-        // send a new one for whether the daily and weekly survey is completed.
-        //
-
-
-    }
-
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
         console.log("Interval canceled");
@@ -636,11 +570,6 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
         //console.log("came here");
 
         $scope.$broadcast('game:test'); //SUCCESS
-
-        //$location.path("/red");
-        // $state.go('game');
-
-        //use the scope to do things?
     };
 
 
@@ -934,231 +863,7 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
     };
 
 
-    //update points
-    function updatePoints(x) {
-
-        var daily_survey = JSON.parse(window.localStorage['daily_survey_data'] || "{}");
-        console.log(JSON.stringify("Daily survey: " + daily_survey));
-        $scope.total_daily_surveys = 0;
-        for (var key in daily_survey) {
-            //console.log(key);
-            $scope.total_daily_surveys += 1;
-        }
-
-
-        //weekly survey
-        var weekly_survey = JSON.parse(window.localStorage['weekly_survey_data'] || "{}");
-        console.log(JSON.stringify("Weekly survey: " + weekly_survey));
-        $scope.total_weekly_surveys = 0;
-        for (var key in weekly_survey) {
-            //console.log(key);
-            $scope.total_weekly_surveys += 1;
-        }
-
-
-        //active tasks
-        var active_tasks_survey = JSON.parse(window.localStorage['active_tasks_survey_data'] || "{}");
-        $scope.total_active_tasks_surveys = 0;
-        if (active_tasks_survey.hasOwnProperty(moment().format('YYYYMMDD')))
-            $scope.total_active_tasks_surveys = active_tasks_survey[moment().format('YYYYMMDD')];
-        console.log(JSON.stringify("Active tasks: " + JSON.stringify(active_tasks_survey)));
-        console.log(JSON.stringify("Active tasks: " + $scope.total_active_tasks_surveys));
-
-        $scope.total_active_tasks_surveys = x;
-        console.log(JSON.stringify("Active tasks: " + $scope.total_active_tasks_surveys));
-
-        //
-        $scope.total_points = $scope.total_daily_surveys * 30 + $scope.total_weekly_surveys * 50 + $scope.total_active_tasks_surveys * 15;
-        console.log("Total points: " + $scope.total_points);
-
-        //
-        //-- $scope.$broadcast('game:addscore', {state: points});        
-
-        //update points
-        //$scope.$broadcast('game:updatescore',$scope.total_points);
-        //$scope.$broadcast('game:updatescore', {state: $scope.total_points});
-    }
-
-
-    function sendSurveyCompletedData(type, time) {
-        //this is the websocket.
-        if ("WebSocket" in window) {
-            //alert("WebSocket is supported by your Browser!");
-
-            // Let us open a web socket
-            //127.0.0.1", 9090
-
-            //see here ---- http://stackoverflow.com/questions/12702305/using-html5-client-with-a-server-in-java
-            //var ws = new WebSocket("ws://35.2.5.151:9090/");
-            var ws = new WebSocket("ws://127.0.0.1:9090/");
-            //35.2.23.154
-            //var ws = new WebSocket("ws://35.2.23.154:9090/");
-            //var ws = new WebSocket("ws://192.168.2.127:9090/");
-
-            ws.onopen = function() {
-
-                //// Web Socket is connected, send data using send()
-                //ws.send("Message to send");
-
-                //-- var isDailySurveyCompleted = window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] || 0;
-                //-- var isWeeklySurveyCompleted = window.localStorage['weekly_survey_' + moment().format('YYYYMMDD')] || 0;
-
-                var isDailySurveyCompleted = window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] || 0;
-                if (isDailySurveyCompleted > 0) {
-                    var type = "d";
-                    //var time = moment().format("X");
-                    ws.send("Done," + type + "," + 1);
-                }
-
-                //
-                var isWeeklySurveyCompleted = window.localStorage['weekly_survey_' + moment().format('YYYYMMDD')] || 0;
-                if (isWeeklySurveyCompleted > 0) {
-                    var type = "w";
-                    //var time = moment().format("X");
-                    ws.send("Done," + type + "," + 1);
-                }
-            };
-
-            ws.onerror = function(error) {
-                ws.close();
-            };
-
-            ws.onmessage = function(evt) {
-                var received_msg = evt.data;
-                //console.log("" + received_msg);
-                if (received_msg === "Got it dude, w") {
-                    //console.log("closing");
-                    ws.close();
-                }
-
-                if (received_msg === "Got it dude, d") {
-                    //console.log("closing");
-                    ws.close();
-                }
-
-                //ws.close();
-            };
-
-            ws.onclose = function() {};
-        } else {
-            // The browser doesn't support WebSocket
-            alert("WebSocket NOT supported by your Browser!");
-        }
-    };
-
-
-
-    function getActiveTaskData() {
-        //this is the websocket.
-        //
-        //console.log("AT called");
-        if ("WebSocket" in window) {
-            //alert("WebSocket is supported by your Browser!");
-
-            // Let us open a web socket
-            //127.0.0.1", 9090
-
-            //see here ---- http://stackoverflow.com/questions/12702305/using-html5-client-with-a-server-in-java
-            var ws = new WebSocket("ws://127.0.0.1:9090/");
-            //35.2.23.154//35.2.5.151
-            //var ws = new WebSocket("ws://35.2.5.151:9090/");
-            //var ws = new WebSocket("ws://192.168.2.127:9090/");
-
-            ws.onopen = function() {
-                //// Web Socket is connected, send data using send()
-
-                //console.log("AT connected");
-
-                //ws.send("Message to send");
-                ws.send("Get:ActiveTask");
-                //alert("Connection open...");
-            };
-
-            ws.onerror = function(error) {
-                //\\console.log('WebSocket Error ');
-                //alert(error);
-                //var str = JSON.stringify(error);
-                //var str = JSON.stringify(error, null, 4); // (Optional) beautiful indented output.
-                //console.log(str);
-
-                //
-                //$scope.total_points = 90;
-                //$scope.$broadcast('game:updatescore', {state: 110});
-                //console.log("AT error");
-                $rootScope.isConnectedWithApp = false;
-
-            };
-
-            ws.onmessage = function(evt) {
-                //console.log("AT msg");
-                var received_msg = evt.data;
-                //alert("Message is received..., " + evt.data);
-                var active_task_survey_data = JSON.parse(window.localStorage['active_tasks_survey_data'] || "{}");
-
-                //
-                var current_at = parseInt(received_msg) || -1;
-
-                if (current_at > -1) { //means this is data about active tasks.
-
-                    //load the earlier one, if it does not exist.
-                    var prior_at = active_task_survey_data[moment().format('YYYYMMDD')] || -1;
-
-                    //means no record for today so far
-                    if (prior_at == -1) {
-                        prior_at = 0;
-                        for (var key in active_task_survey_data) {
-                            if (active_task_survey_data.hasOwnProperty(key)) {
-                                prior_at += active_task_survey_data[key];
-                            }
-                        }
-                    }
-
-                    // save the results
-                    active_task_survey_data[moment().format('YYYYMMDD')] = parseInt(received_msg) || -1;
-
-                    //
-                    console.log(JSON.stringify("Works: " + JSON.stringify(active_task_survey_data)) + " , prior: " + prior_at);
-                    window.localStorage['active_tasks_survey_data'] = JSON.stringify(active_task_survey_data);
-
-                    //
-                    $rootScope.activeTaskAdded = false;
-                    if (current_at > prior_at) {
-                        //updatePoints(current_at);
-                        $rootScope.activeTaskAdded = true;
-                        $rootScope.activeTaskAddedHowMany = current_at - prior_at;
-                    }
-                    ws.close();
-                    //}
-
-                    $rootScope.isConnectedWithApp = true;
-                }
-
-            };
-
-            ws.onclose = function() {
-                // websocket is closed.
-                //alert("Connection is closed..."); 
-                //console.log("AT close");
-            };
-
-
-            //
-        } else {
-            // The browser doesn't support WebSocket
-            alert("WebSocket NOT supported by your Browser!");
-        }
-    };
-
-    //update immediately
-    if (($rootScope.activeTaskAdded != undefined) && $rootScope.activeTaskAdded) {
-
-        //beofore tomorrow vs today.
-
-        $scope.$broadcast('game:addscore', {
-            state: 15 * $rootScope.activeTaskAddedHowMany
-        });
-        $rootScope.activeTaskAdded = false;
-    }
+ 
 
 });
 

@@ -20,20 +20,23 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
         }
     }
 
-
+    /*
     saraDatafactory.pullBadgeData(function(returnValue) {
         // use the return value here instead of like a regular (non-evented) return value
         console.log("Badge value: " + returnValue);
         //window.localStorage['score_data'] = returnValue;
     });
+    */
 
 
     //
     //all badges-- There is a record for the badges.
     var badges;
     if($rootScope.badges == undefined){
-      badges = JSON.parse(window.localStorage['badges'] || "{}");
-      if('weekly' in badges){ //means things are empty.
+      //badges = JSON.parse(window.localStorage['badges'] || "{}");
+      var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+      badges = cognito_data['badges'];
+      if('money' in badges){ //means things are empty.
       }else{
           badges['daily_survey'] = [0,0,0,0,0,0];
           badges['weekly_survey'] = [0,0,0,0];

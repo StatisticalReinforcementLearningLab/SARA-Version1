@@ -80,7 +80,7 @@ FishGame.GameSmall.prototype = {
         this.active_task_connected.scale.setTo(0.15, 0.15);
         this.active_task_connected.inputEnabled = true;
         this.active_task_connected.events.onInputDown.add(this.logdata, this);
-        this.active_task_connected.visible = true;
+        this.active_task_connected.visible = false;
 
 
         //

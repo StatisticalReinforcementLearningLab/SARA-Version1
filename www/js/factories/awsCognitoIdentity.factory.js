@@ -86,6 +86,21 @@ mod.factory('awsCognitoIdentityFactory', function() {
         }
         console.log('session validity: ' + session.isValid());
         initConfigCredentials(session.getIdToken().getJwtToken());
+        window.localStorage['username'] = cognitoUser.username;
+        //console.log('session validity: ' + cognitoUser.username); 
+        /*
+        cognitoUser.getUserAttributes(function(err, result) {
+        if (err) {
+            alert(err);
+            return;
+        }
+        for (i = 0; i < result.length; i++) {
+                console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
+            }
+        });
+        */
+
+
         return callback(null, session.isValid());
       });
     }else{

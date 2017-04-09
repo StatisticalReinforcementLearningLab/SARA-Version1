@@ -257,11 +257,25 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         //
         var score_data = JSON.parse(window.localStorage['score_data'] || "{}");
         console.log("DS: " + JSON.stringify(score_data));
+        if(score_data.hasOwnProperty("daily_survey")){
+        }else
+            score_data['daily_survey'] = {};
+
         score_data['daily_survey'][moment().format('YYYYMMDD')] = 1;
         window.localStorage['score_data'] = JSON.stringify(score_data);
-        saraDatafactory.storedata('game_score2', score_data, moment().format('YYYYMMDD'));
+        //saraDatafactory.storedata('game_score2', score_data, moment().format('YYYYMMDD'));
+
+        //
+        var rl_data = JSON.parse(window.localStorage['cognito_data']);
+        rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
+        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
         saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
 
+
+        //
+        saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
 
         //----- save the "data" from sdcard.
         

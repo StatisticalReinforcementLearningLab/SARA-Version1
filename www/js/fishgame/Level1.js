@@ -7,6 +7,8 @@ FishGame.Level1 = function(game) {
     this.music;
     this.game = game;
     this.ionic_scope;
+    this.progress_sprite;
+    this.prgress_bar_width;
 };
 
 FishGame.Level1.prototype = {
@@ -38,6 +40,15 @@ FishGame.Level1.prototype = {
         undersea.height = this.game.height;
         undersea.width = this.game.width*5;
 
+        //
+        this.add.sprite(40, 40, 'timer', 1);
+
+
+        //
+        var fish_progress = this.add.image(20, 50, 'fish_progress');
+        fish_progress.scale.setTo(-0.15, 0.15);
+        fish_progress.anchor.setTo(.5,.5);
+
         
 
         var treasure = this.add.image(35, this.height-80, 'treasuresea');
@@ -52,7 +63,7 @@ FishGame.Level1.prototype = {
         this.active_task_connected.scale.setTo(0.15, 0.15);
         this.active_task_connected.inputEnabled = true;
         this.active_task_connected.events.onInputDown.add(this.logdata, this);
-        this.active_task_connected.visible = true;
+        this.active_task_connected.visible = false;
 
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
 
@@ -144,6 +155,27 @@ FishGame.Level1.prototype = {
         }
 
         this.addCoral();
+
+        //set the progres bar
+          var previoous_fish_point = 0;
+          var next_fish_point = 0;
+          for(var i = 0; i < data.length; i++) {
+              if(current_points < data[i].points){
+                next_fish_point = data[i].points;
+                break;
+              }else{
+                previoous_fish_point = data[i].points;
+              }
+          }
+          //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
+          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
+          var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
+          console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
+          rect.width = Math.max(0, percent * this.progress_sprite.width);
+
+          console.log("Width, " + rect.width  + "," + this.progress_sprite.width);
+          this.progress_sprite.crop(rect);
     },
 
     addAFish: function(added_point){
@@ -207,6 +239,25 @@ FishGame.Level1.prototype = {
 
               }
           }
+
+           //set the progres bar
+          var previoous_fish_point = 0;
+          var next_fish_point = 0;
+          for(var i = 0; i < data.length; i++) {
+              if(current_points < data[i].points){
+                next_fish_point = data[i].points;
+                break;
+              }else{
+                previoous_fish_point = data[i].points;
+              }
+          }
+          //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
+          var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
+          var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
+          console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
+          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          rect.width = 1 * percent * this.progress_sprite.width;
+          this.progress_sprite.crop(rect);
 
     },
 
