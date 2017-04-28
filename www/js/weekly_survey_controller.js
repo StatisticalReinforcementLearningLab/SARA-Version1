@@ -58,7 +58,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
     if (current_hour >=0 &&  current_hour <=5)
       day_time = "Good Evening";
 
-    day_time = "Weekly survey";
+    day_time = "Sunday's Survey";
     $scope.greetings = day_time;
 
     //load email
@@ -187,7 +187,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           $scope.survey.ts = moment().format('MMMM Do YYYY, h:mm:ss a');
 
           // Get a key for a new Post.
-          var newPostKey = firebase.database().ref().child('SARA').child('Weekly').push().key;
+          //var newPostKey = firebase.database().ref().child('SARA').child('Weekly').push().key;
 
           // Write the new post's data simultaneously in the posts list and the user's post list.
           //var updates = {};
@@ -200,7 +200,29 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
           $scope.progressbar.reset();
 
-          window.localStorage['weekly_survey_' + moment().format('YYYYMMDD')] = 1;
+          
+          var rl_data = JSON.parse(window.localStorage['cognito_data']);
+          rl_data['survey_data']['weekly_survey'][moment().format('YYYYMMDD')] = 1;
+          rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
+
+          //save to cognito
+          saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+          window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+
+          //save to sd card
+          saraDatafactory.copyJSONToFile($scope.survey, 'weekly_survey');
+          saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
+
+
+          //save to "data_ds_ws.txt"
+          saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+
+
+          
+          //var weekly_survey_data = score_data['weekly_survey'];
+          //window.localStorage['weekly_survey_data'] = JSON.stringify(weekly_survey_data);
+          //window.localStorage['weekly_survey_' + moment().format('YYYYMMDD')] = 1;
 
 
           //var weekly_survey_data = JSON.parse(window.localStorage['weekly_survey_data'] || "{}");
@@ -211,7 +233,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           //
           //saraDatafactory.storedata('weekly_survey',$scope.survey,moment().format('YYYYMMDD'));
 
-
+          /*
           var score_data = JSON.parse(window.localStorage['score_data'] || "{}");
           console.log("DS: " +  JSON.stringify(score_data));
           if(score_data.hasOwnProperty("weekly_survey")){
@@ -221,23 +243,26 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           score_data['weekly_survey'][moment().format('YYYYMMDD')] = 1;
           window.localStorage['score_data'] = JSON.stringify(score_data);
           //saraDatafactory.storedata('game_score',score_data,moment().format('YYYYMMDD'));
-
-          var rl_data = JSON.parse(window.localStorage['cognito_data']);
-          rl_data['survey_data']['weekly_survey'][moment().format('YYYYMMDD')] = 1;
-          saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-          window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+          */
+          
 
           //
-          var weekly_survey_data = score_data['weekly_survey'];//JSON.parse(window.localStorage['daily_survey_data'] || "{}");
-          //daily_survey[moment().format('YYYYMMDD')] = 1;
-          //console.log(JSON.stringify("Works: " +  JSON.stringify(daily_survey)));
-          window.localStorage['weekly_survey_data'] = JSON.stringify(weekly_survey_data);
+          
 
-          //
-          saraDatafactory.copyJSONToFile($scope.survey, 'weekly_survey');
 
-          //
-          saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+          //------ Daily survey portion
+          /*
+          if(score_data.hasOwnProperty("daily_survey")){
+          }else
+              score_data['daily_survey'] = {};
+
+          score_data['daily_survey'][moment().format('YYYYMMDD')] = 1;
+          window.localStorage['score_data'] = JSON.stringify(score_data);
+          */
+          //save the daily survey part also for this one
+          
+
+          
 
           /*
           //save the new notificaiton data
@@ -277,7 +302,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           */
 
           //move to the diffrent path
-          $location.path( "/reward/50/true");
+          $location.path( "/reward/80/true");
           
     };
 
@@ -431,7 +456,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
 
       //
-      var all_quesitons = ['Q1','Q2','Q3','Q4','Q6','Q7','Q9','Q10','Q11','Q12','Q13','Q14','Q15'];
+      var all_quesitons = ['Q1','Q2','Q3','Q4','Q6','Q7','Q9','Q10','Q11','Q12','Q13','Q14','Q15','QRand'];
 
       var clicked_index = contains(all_quesitons,questions);
       if(clicked_index != -1){
@@ -447,7 +472,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
       //make a percentage
       //console.log("" + 100*$scope.total_clicked/13 + ", " + $scope.total_clicked + ", " + clicked_index);
-      $scope.progressbar.set(100*$scope.total_clicked/13);
+      $scope.progressbar.set(100*$scope.total_clicked/12);
 
     }
 
@@ -481,12 +506,28 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
           });
 
         }else{
+
+            //
+            var style = "quetiontextstyle";
+            var rbclass = "check";
+            if("style" in obj){
+                //console.log("Style: " + obj.style);
+                if(obj.type == "sectionheader"){
+                  //
+                  style="sectionheader";
+                }else{
+                  style = "quetiontextstylefun";
+                  rbclass = "checkfun";
+                }
+            }else{
+            }
+
             //
             if(obj.type == "captcha"){
 
 
               survey_string = [survey_string,
-              '<div class="card"><div class="quetiontextstyle">', 
+              '<div class="card"><div class="' + style + '">', 
               obj.text + "<br><b>" + '<img src="js/captcha_images/{{survey.q7answer}}" alt="Smiley face" height="60" width="auto">' + "</b>", 
               '</div>'].join(" ");  
 
@@ -500,7 +541,14 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
               obj.type = "textbox";  
 
-            }else{
+            }else if(obj.type == "sectionheader"){
+                survey_string = [survey_string, 
+                                    '<div class="card" style="border-left: 3px solid #FF6F00;border-top: 1px solid #FF6F00;">', 
+                                    '<img src="' + obj.img +'" style="float: left;width:110px;padding:10px;padding-right:20px" />',
+                                    '<p style="padding:20px;font-size:17px;color:#b34d00">' + obj.text + '</p>',
+                                    '</div>'].join(" ");  
+            }
+            else{
               if(("extra" in obj) && ("dependency" in obj.extra)){
                   $scope.survey.test = obj.extra.dependency.question == obj.extra.dependency.show;
                   //'<div class="card" ng-show=' + '{{survey.' + obj.extra.dependency.question + '=="' + obj.extra.dependency.show + '"}}' +'>', 
@@ -510,19 +558,19 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                       survey_string = [survey_string, 
                                         '<div class="card" ng-show=(' + 'survey.' + obj.extra.dependency.question + '=="' + obj.extra.dependency.show + '"' + ')>', 
                                         //'<div class="card" ng-show=' + '"' + 'true"}}' + '>', 
-                                        '<div class="quetiontextstyle">', 
+                                        '<div class="' + style + '">', 
                                         obj.text, 
                                         '</div>'].join(" ");  
                   else
                       survey_string = [survey_string, 
                                         '<div class="card" ng-show=(' + 'survey.' + obj.extra.dependency.question + '==' + obj.extra.dependency.show + ')>', 
                                         //'<div class="card" ng-show=' + '"' + 'true"}}' + '>', 
-                                        '<div class="quetiontextstyle">', 
+                                        '<div class="' + style + '">', 
                                         obj.text, 
                                         '</div>'].join(" ");  
               }else{
                   survey_string = [survey_string, 
-                                    '<div class="card"><div class="quetiontextstyle">', 
+                                    '<div class="card"><div class="' + style + '">', 
                                     obj.text, 
                                     '</div>'].join(" ");  
               }
@@ -565,7 +613,52 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
               */
             }
 
+            //------------------------------------------------------
+            //  mood-grid
+            //------------------------------------------------------
+            if (obj.type == 'moodgrid') {
 
+                $scope.affect = ['Afraid', 'Tense', 'Excited', 'Delighted', 'Frustrated', 'Angry', 'Happy', 'Glad', 'Miserable', 'Sad', 'Calm', 'Satisfied', 'Gloomy', 'Tired', 'Sleepy', 'Serene'];
+
+                var affect = $scope.affect;
+                var colors = ['#ff99a3', '#ff99a3', '#ffc266', '#ffc266', '#ffb3ba', '#ffb3ba', '#FFE0B2', '#FFE0B2', '#BBDEFB', '#BBDEFB', '#C8E6C9', '#C8E6C9', '#e7f3fe', '#e7f3fe', '#eef7ee', '#eef7ee'];
+                /*
+                survey_string = [ survey_string, 
+                '<div class="radioimages">',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="high-sad" ng-change="inputchanged(\'' + i + '\')"/><img style="width:18%;" src=img/5.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="low-sad" ng-change="inputchanged(\'' + i + '\')"/><img style="width:18%;" src=img/4.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="neutral" ng-change="inputchanged(\'' + i + '\')"/><img style="width:18%;" src=img/3.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="low-happy"  ng-change="inputchanged(\'' + i + '\')"/><img style="width:18%;" src=img/2.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="high-happy"  ng-change="inputchanged(\'' + i + '\')"/><img style="width:18%;" src=img/1.png></label>',
+                '</label></div>'].join(" ");
+                */
+
+                var html_string = [];
+                for (var j = 0; j < 4; j++) {
+
+                    html_string.push('<div class = "row">');
+
+                    for (var ii = 0; ii < 4; ii++) {
+                        var index = j * 4 + ii;
+                        html_string.push('<div ng-click="affectclick(' + (index + 1) + ',\'' + i + '\'' + ',\'' + affect[index] + '\')" class = "col col-25"><div style="width:100%;padding-bottom:15%;padding-top:25%;background-color:' + colors[index] + '" align="center">' +
+                            '<p ng-bind-html="affect[' + index + ']"></p></div></div>');
+                    }
+                    html_string.push('</div>');
+                }
+                html_string = html_string.join(" ");
+                survey_string = [survey_string, html_string].join(" ");
+
+                /*
+                survey_string = [ survey_string, 
+                '<div class="radioimages">',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="high-sad"/><img style="width:18%;" src=img/5.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="low-sad"/><img style="width:18%;" src=img/4.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="neutral"/><img style="width:18%;" src=img/3.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="low-happy"/><img style="width:18%;" src=img/2.png></label>',
+                '<label><input type="radio" ng-model="survey.' + i + '" value="high-happy"/><img style="width:18%;" src=img/1.png></label>',
+                '</label></div>'].join(" ");
+                */
+            }
 
 
 
@@ -644,7 +737,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                     survey_string = [survey_string, 
                     '<li><input type="radio" id="option' + i + "I" + j + '" name="' + i + '" ng-model="survey.' + i + '" value="' + obj.extra.choices[j] + '"  ng-change="inputchanged(\'' + i + '\')">',
                     '<label for="option' + i + "I" + j + '">' + obj.extra.choices[j] + '</label>',
-                    '<div class="check"></div></li>'].join(" ");  
+                    '<div class="'+ rbclass + '"></div></li>'].join(" ");  
 
                   }
 
@@ -761,12 +854,47 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                survey_string = survey_string + '</div>';
             }
 
-            survey_string = survey_string + '</div>';
+            if("style" in obj && obj.type != "sectionheader")
+              survey_string = survey_string + '</div><br>';
+            else
+              survey_string = survey_string + '</div>';
           }    
           return survey_string;  
 
         }
 
+
+    //function affectclick(index,mood){
+    //$scope.affect = [];
+    //$scope.affect[0] = 'Afraid';  
+    $scope.affectclick = function(index, q, mood) {
+        console.log("" + index + ", " + mood);
+
+        //
+        //if(index == 1){
+        if ($scope.affect[index - 1].includes("<u>"))
+            $scope.affect[index - 1] = $scope.affect[index - 1].replace('<u><b>', '').replace('</b></u>', '');
+        else
+            $scope.affect[index - 1] = '<u><b>' + $scope.affect[index - 1] + '</b></u>';
+        //}
+
+        for (var i = 0; i < $scope.affect.length; i++) {
+            if ((i + 1) == index)
+                continue;
+            else {
+                $scope.affect[i] = $scope.affect[i].replace('<u><b>', '');
+                $scope.affect[i] = $scope.affect[i].replace('</b></u>', '');
+                //console.log($scope.affect);
+            }
+        }
+
+        $scope.reponse_ts[q] = {};
+        $scope.reponse_ts[q].ts = Date.now();
+        $scope.reponse_ts[q].readable_ts = moment().format("MMMM Do YYYY, h:mm:ss a");
+
+        $scope.survey[q] = mood;
+        console.log(JSON.stringify($scope.survey));
+    }
 
 });
 

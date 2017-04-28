@@ -9,6 +9,9 @@ FishGame.Level1Small = function(game) {
     this.ionic_scope;
     this.progress_sprite;
     this.prgress_bar_width;
+    this.filter;
+    this.sprite;
+    this.isPaused;
 };
 
 FishGame.Level1Small.prototype = {
@@ -42,7 +45,8 @@ FishGame.Level1Small.prototype = {
         undersea.height = this.game.height;
         undersea.width = this.game.width*5;
 
-
+        //add water
+        //this.addWater();
         
         //
         this.add.sprite(40, 40, 'timer', 1);
@@ -52,6 +56,7 @@ FishGame.Level1Small.prototype = {
         var fish_progress = this.add.image(20, 50, 'fish_progress');
         fish_progress.scale.setTo(-0.15, 0.15);
         fish_progress.anchor.setTo(.5,.5);
+
 
 
         //
@@ -78,11 +83,106 @@ FishGame.Level1Small.prototype = {
         this.buildAquarium();
 
         //
+        var meme = this.add.image(window.innerWidth - 140, 1, 'meme');
+        meme.scale.setTo(0.3, 0.3);
+        meme.inputEnabled = true;
+        meme.events.onInputDown.add(this.showBubbles, this);
+
+
+        //
         var journal = this.add.image(window.innerWidth - 70, 1, 'fish_journal');
         journal.scale.setTo(0.5, 0.5);
         journal.inputEnabled = true;
         journal.events.onInputDown.add(this.logdata, this);
 
+        //add bubbles
+        //this.showBubbles();
+
+        this.game.onPause.add(this.yourGamePausedFunc, this);
+        this.game.onResume.add(this.yourGameResumedFunc, this);
+        //this.game.onResume.add(yourGameResumedFunc, this);
+
+        this.isPaused = false;
+    },
+
+
+    yourGamePausedFunc: function(){
+        //console.log("Game paused");
+        this.isPaused = true;
+        //this.filter.destroy();
+        //this.sprite.destroy();
+    },
+
+    yourGameResumedFunc: function(){
+        //console.log("Game resumed");
+        //this.addWater();
+        this.isPaused = false;
+    },
+
+    addWater: function(){
+        //  From http://glslsandbox.com/e#16153.0
+        var fragmentSrc = [
+
+            "precision mediump float;",
+
+            "uniform float     time;",
+            "uniform vec2      resolution;",
+            "uniform vec2      mouse;",
+
+            "#define MAX_ITER 2",
+
+            "void main( void )",
+            "{",
+                "vec2 v_texCoord = gl_FragCoord.xy / resolution;",
+
+                "vec2 p =  v_texCoord * 8.0 - vec2(1.0);",
+                "vec2 i = p;",
+                "float c = 1.0;",
+                "float inten = .2;",
+
+                "for (int n = 0; n < MAX_ITER; n++)",
+                "{",
+                    "float t = time * (1.0 - (3.0 / float(n+1)));",
+
+                    "i = p + vec2(cos(t - i.x) + sin(t + i.y),",
+                    "sin(t - i.y) + cos(t + i.x));",
+
+                    "c += 1.0/length(vec2(p.x / (sin(i.x+t)/inten),",
+                    "p.y / (cos(i.y+t)/inten)));",
+                "}",
+
+                "c /= float(MAX_ITER);",
+                "c = 1.5 - sqrt(c);",
+
+                "vec4 texColor = vec4(0.0, 0.005, 0.02, 0.1);",
+
+                "texColor.rgb *= (1.0 / (1.0 - (c + 0.05)));",
+
+                "gl_FragColor = texColor;",
+            "}"
+        ];
+
+        this.filter = new Phaser.Filter(this.game, null, fragmentSrc);
+        this.filter.setResolution(this.game.height, this.game.width);
+
+        this.sprite = this.add.sprite();
+        this.sprite.width = this.game.width;
+        this.sprite.height = this.game.height;
+
+        this.sprite.filters = [ this.filter ];
+    },
+
+    update: function() {
+        //console.log("coming here");
+        //if(this.isPaused == false)
+        //    this.filter.update(this.game.input.activePointer);
+    },
+
+    showmemes: function() {
+        //this.totalClicks = this.totalClicks + 1;
+        //this.countdown.setText('Fishes Fed: ' + this.totalClicks);
+        this.ionic_scope.$emit('reward:meme', this.ionic_scope);
+        //console.log("Came here");
     },
 
     logdata: function() {
@@ -101,6 +201,107 @@ FishGame.Level1Small.prototype = {
     assignscope: function(scope) {
         this.ionic_scope = scope;
     },
+
+    showBubbles: function(){
+        //add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+
+        var blackdiver = this.add.sprite(window.innerWidth+100, 303, 'submarine');
+        blackdiver.anchor.setTo(.5,.5);
+        blackdiver.animations.add('swim');
+        blackdiver.animations.play('swim', 30, true);
+        blackdiver.scale.setTo(-1.3, 1.3);
+        var t = this.add.tween(blackdiver).to({ x: this.world.centerX+20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+        t.onComplete.add(this.addBubbles, this);
+    },
+
+    addBubbles: function(){    
+        var delay = 0;
+        for (var i = 0; i < 100; i++)
+        {
+            var sprite = this.add.sprite(-100 + (this.world.randomX), this.height+100, 'ball');
+            sprite.scale.set(this.rnd.realInRange(0.3, 0.6));
+            var speed = this.rnd.between(1000, 2000);
+            var tween = this.add.tween(sprite);
+            tween.to({y: -256}, speed, Phaser.Easing.Sinusoidal.In, true, delay, 0, false);
+            delay += 100;
+
+            if(i==0)
+                tween.onComplete.add(this.checkLastBubble, this);
+
+            if(i>2)
+                delay += 100;
+                //this.checkLastBubble(sprite);
+        }
+    },
+
+    checkLastBubble: function(b) {
+        /*
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            t= this.add.tween(b).to({ x: -100 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+        */
+
+        //
+        var graphics = this.add.graphics(0,50);
+        graphics.lineStyle(0);
+        graphics.beginFill(0x0288D1, 0.8);
+        graphics.drawRect(0, 0, this.game.width, this.game.height-100);
+        graphics.endFill();
+
+        //  Apply the shadow to the Stroke only
+        //text2.setShadow(2, 2, "#E65100", 2, true, false);
+
+        //you earned a reward
+        var pirate = this.add.image(this.game.width-145, 90, 'pirate');
+        //pirate.anchor.setTo(-0.3, 1.4);
+        pirate.scale.setTo(0.7, 0.7);
+
+        //
+        var text3 = this.add.text(10, 60, "You filled today's surveys", { font: "24px Arial Black", fill: "#b33e00" });
+        text3.stroke = "#FFE0B2";
+        text3.strokeThickness = 3;
+
+        //
+        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        text1.stroke = "#FFE0B2";
+        text1.strokeThickness = 4;
+        //  Apply the shadow to the Stroke only
+        text1.setShadow(2, 2, "#E65100", 2, true, false);
+
+
+        //
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        text2.stroke = "#FFE0B2";
+        text2.strokeThickness = 0;
+        //  Apply the shadow to the Stroke only
+        //text2.setShadow(2, 2, "#E65100", 2, true, false);
+
+        
+        
+
+        //
+        var sprite = this.add.sprite(this.world.centerX, this.world.centerY, 'gift');
+        sprite.anchor.setTo(0.9, 0.2);
+        sprite.scale.setTo(0.35,0.35);
+        sprite.alpha = 0;
+        this.add.tween(sprite).to( { alpha: 1 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(this.showReward, this);
+        
+
+        //
+        console.log("don't know " + b.y);
+    },
+
+    //show the reward
+    showReward: function(){
+        this.ionic_scope.$emit('show:reinforcement',this.ionic_scope);
+    },
+
 
     buildAquarium: function() {
 
@@ -444,6 +645,7 @@ FishGame.Level1Small.prototype = {
         //this.game.destroy();
         this.ionic_scope.$emit('show:red',this.ionic_scope);
 
+        /*
         var cache = [];
             JSON.stringify(this.ionic_scope, function(key, value) {
                 if (typeof value === 'object' && value !== null) {
@@ -458,7 +660,7 @@ FishGame.Level1Small.prototype = {
             });
             console.log(cache);
             cache = null; 
-
+        */
         //this.ionic_scope.reoutetored(this.ionic_scope);
 
     },

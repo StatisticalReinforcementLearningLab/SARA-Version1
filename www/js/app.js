@@ -8,7 +8,7 @@
 //--- http://www.ng-newsletter.com/posts/building-games-with-angular.html
 //
 
-var app = angular.module('starter', ['ionic', 'ngRoute', 'ngProgress', 'ngCordova', 'gajus.swing', 'aws.cognito.identity', 'aws.cognito.sync', 'sara.data.factory', 'ngMessages'])
+var app = angular.module('starter', ['ionic', 'ngRoute', 'ngProgress', 'ngCordova', 'gajus.swing', 'aws.cognito.identity', 'aws.cognito.sync', 'sara.data.factory', 'ngMessages','nvd3','ngMap'])
 
 app.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -67,6 +67,14 @@ app.config(function($routeProvider) {
             //templateUrl : "templates/rewards.html",
             templateUrl: "templates/reward.html",
             controller: "RewardsCtrl"
+        })
+        .when("/reinforcement", {
+            templateUrl: "templates/reinforcement.html",
+            controller: "ReinforcementCtrl"
+        })
+        .when("/lifeinsights", {
+            templateUrl: "templates/lifeinsights.html",
+            controller: "LifeInsightsCtrl"
         })
         .when("/red", {
             templateUrl: "templates/red.html",
@@ -134,10 +142,17 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
                 //console.log(returnValue);
-                if (returnValue == null)//return value will be a null if no internet connection, or profile don't exist
+                if (returnValue == null) //return value will be a null if no internet connection, or profile don't exist
                     returnValue = window.localStorage['cognito_data'] || "{}";
                 else
                     window.localStorage['cognito_data'] = returnValue;
+
+
+                //Make sure the call for "sdcard" permission happens.
+                //save to "data_ds_ws.txt"
+                var rl_data = JSON.parse(returnValue);
+                saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+
 
                 //console.log(returnValue);
                 updateTheScore(returnValue);
@@ -150,6 +165,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 game.state.start('Boot');
 
+                
+
                 //console.log("json content: " + "came here");
                 //
                 //saraDatafactory.copyJSONToFile({"kola":"kola"},"");
@@ -160,9 +177,87 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //TODO: if user name is empty add to the rl_data.
 
                 //TODO: if IMEI name is empty add to the rl_data.
+                //}
+                setTimeout(function () {
+                    checkReinforcement();   
+                }, 500);
 
             });
+
+            function checkReinforcement(){
+                //-------------------------------------------------------------------
+                //Reinforcement notification.
+                //-------------------------------------------------------------------
+
+                //
+                //--- I want to randomize and give a reward here.
+                // "main" will start when all the rewards are given, because we 
+                // will come back from "/reward" here.
+                // 
+
+                //So, I need to keep track of if rewards are given from daily and active tasks already.
+                var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                //if we alrady have the data
+                if(moment().format('YYYYMMDD') in reinfrocement_data){
+                    if(('at' in reinfrocement_data[moment().format('YYYYMMDD')]) && ('ds' in reinfrocement_data[moment().format('YYYYMMDD')])){
+                        //
+                        console.log("All survey completed. give reward");
+
+                        if('reward' in reinfrocement_data[moment().format('YYYYMMDD')]){
+                        }else{
+                            reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 1;
+
+
+                            if (scope.current_level === "GameSmall")
+                                game.state.states["GameSmall"].showBubbles();
+                                //game.state.states["GameSmall"].updatescore(args.state);
+
+                            if (scope.current_level === "Game")
+                                game.state.states["Game"].showBubbles();
+
+
+                            if (scope.current_level === "Level1Small")
+                                game.state.states["Level1Small"].showBubbles();
+
+
+                            if (scope.current_level === "Level1")
+                                game.state.states["Level1"].showBubbles();
+
+                            //
+                            window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+
+                            //write it down to 'rl_data'
+                            //
+                            rl_data['reinfrocement_data'] = reinfrocement_data;
+                            window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                        }
+                        
+                    }else
+                        console.log("All surveys completed. don't give reward");
+                }else{
+                    console.log("Not all survey completed. don't give reward");
+                }
+            }
             //saraDatafactory.storedata('game_score',json_data, moment().format('YYYYMMDD'));
+
+            scope.$on('show:reinforcementdemo', function() {
+                 if (scope.current_level === "GameSmall")
+                    game.state.states["GameSmall"].showBubbles();
+                                //game.state.states["GameSmall"].updatescore(args.state);
+
+                if (scope.current_level === "Game")
+                    game.state.states["Game"].showBubbles();
+
+
+                if (scope.current_level === "Level1Small")
+                    game.state.states["Level1Small"].showBubbles();
+
+
+                if (scope.current_level === "Level1")
+                    game.state.states["Level1"].showBubbles();
+
+            });
 
             function updateTheScore(scoreValue) {
 
@@ -203,15 +298,15 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 console.log(JSON.stringify(active_tasks_survey));
                 scope.total_active_tasks_surveys = 0;
                 //---- window.localStorage['at_data']
-                var active_task_prior_data = {};
+                //var active_task_prior_data = {};
                 for (var key in active_tasks_survey) {
                     //console.log(key);
-                    active_task_prior_data[key] = active_tasks_survey[key];
+                    //active_task_prior_data[key] = active_tasks_survey[key];
                     scope.total_active_tasks_surveys += active_tasks_survey[key];
                 }
                 //console.log(JSON.stringify(active_tasks_survey));
-                score_data['active_tasks_survey'] = active_tasks_survey;
-                window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
+                //score_data['active_tasks_survey'] = active_tasks_survey;
+                //window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
 
                 //
                 scope.total_points = scope.total_daily_surveys * 30 + scope.total_weekly_surveys * 50 + scope.total_active_tasks_surveys * 15;
@@ -264,11 +359,10 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     scope.current_level = 'Level1Small';
                 }
 
-                if (scope.total_points >= 1830 && (scope.total_points - added_points) < 1830) {
+                if (scope.total_points >= 1710 && (scope.total_points - added_points) < 1710) {
                     game.state.start('Level1', true, false);
                     scope.current_level = 'Level1';
                 }
-
             }
 
             scope.$on('game:test', function() {
@@ -313,15 +407,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }
 
 
-
-
-
-
                 if (args.state != 300) {
                     console.log("Game object: " + game);
                     //game.destroy();
                     scope.$emit('show:reward', args);
                 }
+
             });
 
 
@@ -443,16 +534,38 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, $ionicPopup, $timeout, $location, $cordovaStatusbar, $cordovaInAppBrowser, $interval, $rootScope, saraDatafactory) {
 
+    $scope.getUserFromLocalStorage = function() {
+        
+        awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
+            if (err) {
+                $scope.error.message = err.message;
+                if (isValid == false)
+                    return false;
+                }
+                //if(isValid) $state.go('todo', {}, {reoload: true})
+                if (isValid) {
+                    $location.path("/main");
+                    $scope.$apply();
+                }
+                //$state.go('todo', {}, {reoload: true})
+
+            });
+        
+    }
+
+
+
     window.localStorage['email'] = "sara-test";
 
     //for testing
     window.localStorage['current_level'] = 'Game';
 
-
-
     //status bar color
     document.addEventListener("deviceready", onDeviceReady, false);
 
+    //var promise = $interval(readActiveTaskData, 2000);
+
+    var isPaused = false;
     function onDeviceReady() {
         console.log(StatusBar);
         if (ionic.Platform.isAndroid()) {
@@ -479,28 +592,69 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
             }
         });
         */
-        readActiveTaskData();
 
+        document.addEventListener("resume", function() {
+            //readActiveTaskData();
+            //promise = $interval(readActiveTaskData, 2000);
+            console.log('resumed');
+            isPaused = false;
+        }, false);
+
+        document.addEventListener("pause", function() {
+            //$interval.cancel(promise);
+            console.log('paused');
+            isPaused = true;
+        }, false);
+
+
+        //readActiveTaskData();
+        testResumePause();
     }
+    
+    var promise = $interval(testResumePause, 2000);
+    function testResumePause() {
+        console.log("App paused: " + isPaused);
+        if(isPaused==false)
+            readActiveTaskData();
+    }
+
 
     $ionicPlatform.on('resume', function() {
         console.log("App resumed");
     });
-
-
-    var promise = $interval(readActiveTaskData, 2000);
+    
+    //var insideReading = false;
     function readActiveTaskData() {
         //read active task data here.
         //problem is we need to load it every 5 seconds.
+
+        //ToDo: stop it if 2 are already done.
+
+        //
+        var rl_data1 = JSON.parse(window.localStorage['cognito_data'] || "{}");             
+        //we are keeping this, because we may have a timer event before the cognito data is assigned,
+        if(rl_data1.hasOwnProperty("survey_data")){
+            //console.log("Cognito date: " + JSON.stringify(rl_data1));
+        }else
+            return;
+
+        //Don't call multiple reading.
+        //if(insideReading == true)
+        //    return;
+        //insideReading = true;
+
+        //console.log("Reading active tasks");
         saraDatafactory.loadDataCollectionState(function(returnValue) {
-            if (returnValue == null) {} 
-            else {
+            if (returnValue == null) {
+                //insideReading = false;
+            }else {
                 var sdcard_data = JSON.parse(returnValue);
                 //console.log("json content: " + JSON.stringify(sdcard_data));
                 window.localStorage['imei'] = sdcard_data['imei'] || "null";
 
                 //
-                var active_task_prior_data = JSON.parse(window.localStorage['at_data'] || "{}");
+                var rl_data = JSON.parse(window.localStorage['cognito_data']);
+                var active_task_prior_data = rl_data['survey_data']['active_tasks_survey']; //JSON.parse(window.localStorage['at_data'] || "{}");
                 //active_task_data = active_task_data['active_tasks_survey_data']
 
                 //Why this works? This is just a local copy restore.
@@ -512,9 +666,10 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                 // -- 
 
                 //if for today there is something new then add that to the main one, and add to the points
+                //---- All sdcard data will come to "active_task_prior_data"
                 var isActiveTaskAdded =  false;
                 var isActiveTaskAddedHowMany =  0;
-                var active_tasks_survey_data = sdcard_data['active_tasks_survey'];
+                var active_tasks_survey_data = sdcard_data['active_tasks_survey'];//this is the latest data.
                 for (var key in active_tasks_survey_data) {
                     if (active_tasks_survey_data.hasOwnProperty(key)) {
                         //console.log(key + " -> " + p[key]);
@@ -536,18 +691,35 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                     }
                 }
                 console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
-                if(isActiveTaskAdded){
-                    //
-                    var rl_data = JSON.parse(window.localStorage['cognito_data']);
-                    rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
-                    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-                    window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
+                console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
+                //if(isActiveTaskAdded){
+                
+                //means 2 active task has been done.
+                if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
 
-                    $scope.$broadcast('game:addscore', {
-                        state: 15 * isActiveTaskAddedHowMany
-                    });
+                    //see if we have given a reward already.
+                    var active_tasks_reward_records = JSON.parse(window.localStorage['active_tasks_reward_records']||'{}'); 
+                    if(active_tasks_reward_records.hasOwnProperty(moment().format('YYYYMMDD'))){
+                        //we have given rewards already so move on
+                    }else{
+                        //
+                        active_tasks_reward_records[moment().format('YYYYMMDD')] = 1;
+                        window.localStorage['active_tasks_reward_records'] = JSON.stringify(active_tasks_reward_records);
+
+                        //
+                        rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
+                        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
+                        //this will be always 2 from now on.
+                        $scope.$broadcast('game:addscore', {
+                            state: 29,
+                            isReal: true
+                        });
+                    }
                 }
-                window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
+                //window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
 
 
                 //console.log("AT data: " + JSON.stringify(active_task_prior_data));
@@ -555,8 +727,12 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                 //save to the cloud.
                 //saraDatafactory.storedata('game_score',active_task_prior_data, moment().format('YYYYMMDD'));
             }
+            //insideReading = false;//means we can read again.
         });
     }
+
+
+
 
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
@@ -576,8 +752,14 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
 
     $scope.addpoint = function(points) {
         $scope.$broadcast('game:addscore', {
-            state: points
+            state: points,
+            isReal: false
         });
+    };
+
+    $scope.showRewarDemo = function(points) {
+        //console.log('came here');
+        $scope.$broadcast('show:reinforcementdemo');
     };
 
 
@@ -592,6 +774,17 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
     };
 
 
+    $scope.$on('reward:meme', function(event, data) {
+        //console.log("Got something: " + data); 
+        //console.log("Got something " + data); 
+        $location.path("/red");
+    });
+
+
+    $scope.showLifeInishgts = function(){
+        $location.path("/lifeinsights");
+    };
+
     $scope.$on('survey:logdata', function(event, data) {
         //console.log("Got something: " + data); 
         //console.log("Got something " + data); 
@@ -600,7 +793,7 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
 
 
     $scope.$on('show:red', function(event, scope) {
-        //console.log("Got something: " + data); 
+        //console.log("Got something: " + data);
         //console.log("Got something: red, " + scope + " " + $location); 
         //console.log($location.path());
 
@@ -610,15 +803,29 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
         $scope.$apply();
     });
 
+    $scope.$on('show:reinforcement', function(event, scope) {
+        console.log("Got something: " + 'show:reinforcement');
+        //console.log("Got something: red, " + scope + " " + $location); 
+        //console.log($location.path());
+
+        //$location.path("/red");
+
+        
+        $location.path("/reinforcement");
+        $scope.$apply();
+    });
+
     //
     $scope.$on('show:reward', function(event, args) {
         //console.log("Got something: " + data); 
         //console.log("Got something: red, " + scope + " " + $location); 
         //console.log($location.path());
         //$location.path("/red");
-
-        $location.path("/reward/" + args.state + "/false");
-        $scope.$apply();
+        if(args.isReal==false)
+            $location.path("/reward/" + args.state + "/false");
+        else
+            $location.path("/reward/" + args.state + "/true");
+        //$scope.$apply();
     });
 
 
@@ -642,7 +849,10 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
             if (isDailySurveyCompleted <= 1) { //==0
                 console.log("Daily survey ");
                 //$scope.$broadcast('$destroy');
-                $location.path("/daily");
+                if(moment().format('dddd') == 'Sunday')
+                    $location.path("/weekly");
+                else
+                    $location.path("/daily");
             } else {
                 $scope.showAlertCompletedDaily();
             }
@@ -752,6 +962,8 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
         //-- 
 
         $scope.myPopup.close();
+
+
         if (device.platform === 'Android') {
             var sApp = startApp.set({ /* params */
                 "package": "edu.stat.srl.passivedatakit",
@@ -819,6 +1031,7 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
 
             //'<button class="button button-full button-positive" ng-click="startDailySurvey()">Daily Survey</button><button class="button button-full button-positive" ng-click="startWeeklySurvey()">Weekly Survey</button><button class="button button-full button-positive" ng-click="startActiveTask()">Active Tasks</button>'; 
             //<button class="button button-full button-positive" ng-click="startDailySurvey()" style="padding-top:3px;padding-bottom:1px;" ><p style="line-height:1.2;">Daily Survey <br><spa style="font-size: 12px;">Today after 6PM</span></p></button>
+            /*
             template: '<button class="button button-full button-royal" ng-click="startDailySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Daily Survey<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
                 '</button>' +
@@ -830,6 +1043,18 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                 '</button>' +
                 '<button class="button button-full button-dark" ng-click="startWeeklySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Weekly Survey<br><spa style="font-size: 12px;">Sunday after 6PM</span></p>' +
+                '</button>',
+            */    
+
+
+            template: '<button class="button button-full button-royal" ng-click="startDailySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
+                '<p style="line-height:1.2;">Survey<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
+                '</button>' +
+                '<button class="button button-full button-positive" ng-click="startSpatialActiveTask()" style="padding-top:2px;padding-bottom:-3px;">' +
+                '<p style="line-height:1.2;">Active tasks<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
+                '</button>' +
+                '<button class="button button-full button-dark" ng-click="startWeeklySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
+                '<p style="line-height:1.2;">Sunday Survey<br><spa style="font-size: 12px;">For demo only</span></p>' +
                 '</button>',
             title: 'Complete the following surveys',
             //subTitle: 'Current id: <b>' + $scope.email + '<b>',
@@ -915,6 +1140,10 @@ app.controller('RegisterCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state',
 
 app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$ionicLoading', '$location',
     function($scope, awsCognitoIdentityFactory, $state, $ionicLoading, $location) {
+        
+        var query_string = window.location.search;
+        console.log("query_string: " + query_string);
+
         $scope.user = {
             email: null,
             password: null
@@ -925,6 +1154,7 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
 
 
         $scope.getUserFromLocalStorage = function() {
+            /*
             awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
                 if (err) {
                     $scope.error.message = err.message;
@@ -939,6 +1169,7 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
                 //$state.go('todo', {}, {reoload: true})
 
             });
+            */
         }
 
         $scope.signIn = function(login) {
@@ -983,14 +1214,29 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
     }
 ]);
 
+app.controller("RedCtrl", function($scope, $http, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+});
 
 
-app.controller("RedCtrl", function($scope, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+app.controller("ReinforcementCtrl", function($scope, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+    
+    if(Math.random() > 0.5)
+        $scope.rein_image = 'img/reinforcements/ken_hair.gif';
+    else
+        $scope.rein_image = 'img/reinforcements/devil_kid.jpg';
+
+    //
+    $scope.goHome = function() {
+        $location.path("/");
+    };
+
+
     //console.log($location.path());
 
     //status bar color
-    document.addEventListener("deviceready", onDeviceReady, false);
+    //document.addEventListener("deviceready", onDeviceReady, false);
 
+    /*
     function onDeviceReady() {
         console.log(StatusBar);
         if (ionic.Platform.isAndroid()) {
@@ -1006,12 +1252,8 @@ app.controller("RedCtrl", function($scope, $location, $cordovaStatusbar, $timeou
     }
 
     saraDatafactory.testtstr();
+    */
 
-
-
-    $scope.goHome = function() {
-        $location.path("/");
-    };
 
     /*
     $scope.cards = [

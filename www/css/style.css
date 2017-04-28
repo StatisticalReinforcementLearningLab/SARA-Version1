@@ -126,7 +126,7 @@ ul li label{
 }
 
 ul li:hover label{
-  color: #004D40;
+  color: #303F9F;
 }
 
 ul li .check{
@@ -177,6 +177,53 @@ input[type=radio]:checked ~ label{
   color: #303F9F;
 }
 
+
+
+ul li .checkfun{
+  display: block;
+  position: absolute;
+  border: 2px solid #880E4F;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  top: 2px;
+  left: 10px;
+  z-index: 5;
+  transition: border .25s linear;
+  -webkit-transition: border .25s linear;
+}
+
+.radiohorizontal ul li .checkfun{
+  top: 6px;
+}
+
+ul li:hover .checkfun {
+  border: 2px solid #880E4F;
+}
+
+ul li .checkfun::before {
+  display: block;
+  position: relative;
+  content: '';
+  border-radius: 100%;
+  height: 15px;
+  width: 15px;
+  top: 1.5px;
+  left: 0px;
+  margin: auto;
+  transition: background 0.25s linear;
+  -webkit-transition: background 0.25s linear;
+}
+
+input[type=radio]:checked ~ .checkfun {
+  border: 3px solid #880E4F;
+}
+
+input[type=radio]:checked ~ .checkfun::before{
+  background: #880E4F;
+}
+
+
 .quetiontextstyle {
 	  padding: 8px;
     background-color: #E8EAF6;
@@ -206,21 +253,24 @@ input[type=radio]:checked ~ label{
     width: auto;
 }
 
-.ng-map {
-  width: 100%;
-  height: 300px;
-}
 
-.sound .nvd3-svg{
-  background-color:#E0F2F1;
-}
-
-.activity .nvd3-svg{
-  background-color:#FCE4EC;
+.quetiontextstylefun {
+    padding: 8px;
+    background-color: #FCE4EC;
+    color: #880E4F;
+    font-size: 17px;
+    border-left: 2px solid #880E4F;
+    width: auto;
 }
 
 
-
+.sectionheader {
+    padding: 12px;
+    background-color: #1A237E;
+    color: white;
+    font-size: 17px;
+    width: auto;
+}
 
 /* ================================================================================================================== */
 /*                                                                                                                    */
@@ -261,6 +311,7 @@ input[type=radio]:checked ~ label{
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 25px;
+    position: relative;
 }
 
 
@@ -397,6 +448,22 @@ input[type=radio]:checked ~ label{
     width:45px;
     margin:5px;
     max-width:200px;
+}
+
+.nvd3.nv-lineChart rect{ 
+  opacity: 1!important; fill:#f5f7f7; 
+  border: 0px solid black;
+}
+
+
+.tick line {
+  display: none
+}
+
+.nv-point {
+  stroke-opacity: 1 !important;
+  stroke-width: 5px;
+  fill-opacity: 1 !important;
 }
 
 

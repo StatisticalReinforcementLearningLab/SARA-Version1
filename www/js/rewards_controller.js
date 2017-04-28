@@ -95,6 +95,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //  --- The following is for fish display
     //
     //---------------------------------------------------------------------
+    //this may come last since this is a callback.
     $http.get('js/fishpoints.json').success(function(data) {
       //console.log("Fishes: " + data);
 
@@ -103,12 +104,17 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
       var survey_string = "";
       $scope.images = [];
       $scope.fish_names = "";
-      added_points = parseInt(added_points);
+      var added_points2 = parseInt(added_points);
+      if(added_points2==29)//active task correction, add one becaues it will be 30
+          added_points2 = added_points2 + 1;
       $rootScope.total_score = parseInt($rootScope.total_score);
-      $rootScope.total_score += added_points;
+      $rootScope.total_score += added_points2;
+
+
+
 
       for(var i = 0; i < data.length; i++) {
-          if((data[i].points > ($rootScope.total_score - added_points)) && (data[i].points <= $rootScope.total_score)){
+          if((data[i].points > ($rootScope.total_score - added_points2)) && (data[i].points <= $rootScope.total_score)){
 
                 //console.log("" + data[i].points + "," + $rootScope.total_score + "," + added_points + "," + (data[i].points > $rootScope.total_score) + "," + ($rootScope.total_score + added_points));
                 data[i].img = data[i].img.substring(0, data[i].img.length-4) + '_tn.jpg';
@@ -124,8 +130,9 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                 $scope.cards.push({name: $scope.trivia_text, show: true, up:0, class: 'blue', img: data[i].img, show_image: true});
           }
       }
-      console.log($scope.images);
+      //console.log($scope.images);
 
+      //back ground fish
       $scope.next_fish = [];
       $scope.next_fish_names = "";
       for(var i = 0; i < data.length; i++) {
@@ -170,7 +177,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //
     //---------------------------------------------------------------------
     var isreal = $routeParams.real=='true';
-    if(added_points=='30' && !$rootScope.rewardIsActiveTask){
+    if((added_points=='30' || added_points=='80') && !$rootScope.rewardIsActiveTask){
         var daily_survey_day_by_day = [];
         var reward_awarded_daily = {};
 
@@ -196,7 +203,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
         //
         //console.log(moment(key, "YYYYMMDD").add(1, 'day').format('YYYYMMDD'));
-        $scope.cards.push({name: "You earned 30 points for completing the daily survey", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: false});
+        $scope.cards.push({name: "You earned "+ "30" +" points for completing the daily survey", show: false, up:0, class: 'blue', img: "img/30points.png", show_image: true});
 
         if(isreal == true || $rootScope.daily_survey_day_by_day == undefined){
             //var daily_survey = JSON.parse(window.localStorage['daily_survey_data'] || "{}");
@@ -248,8 +255,20 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             $rootScope.daily_survey_day_by_day = daily_survey_day_by_day;
             $rootScope.reward_awarded_daily = reward_awarded_daily;
 
+            //-- Save the reward
+            if(isreal == true){
+                var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                //if we alrady have the data
+                if(moment().format('YYYYMMDD') in reinfrocement_data){
+                }else
+                    reinfrocement_data[moment().format('YYYYMMDD')] = {};
+
+                reinfrocement_data[moment().format('YYYYMMDD')]['ds'] = 1;
+                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+            }
+
         }else{
-            if(isreal == false && added_points=='30'){ //means we have daily survey
+            if(isreal == false && (added_points=='30' || added_points=='80')){ //means we have daily survey
                 $rootScope.daily_survey_day_by_day.push(1);
             }
         }
@@ -341,26 +360,26 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //console.log(adherence_array);
 
         if(total_days == N && isPaidInLastNDays == 0){
-          reward_awarded_daily[""+N][daily_survey_day_by_day.length-1] = 1;
+            reward_awarded_daily[""+N][daily_survey_day_by_day.length-1] = 1;
 
-          //
-          if(N%3 == 0)
-            reward_awarded_daily["3"][daily_survey_day_by_day.length-1] = 1;
-          if(N%6 == 0)
-            reward_awarded_daily["6"][daily_survey_day_by_day.length-1] = 1;
-          if(N%12 == 0)
-            reward_awarded_daily["12"][daily_survey_day_by_day.length-1] = 1;
-          if(N%18 == 0)
-            reward_awarded_daily["18"][daily_survey_day_by_day.length-1] = 1;
-          if(N%30 == 0)
-            reward_awarded_daily["30"][daily_survey_day_by_day.length-1] = 1;
+            //
+            if(N%3 == 0)
+              reward_awarded_daily["3"][daily_survey_day_by_day.length-1] = 1;
+            if(N%6 == 0)
+              reward_awarded_daily["6"][daily_survey_day_by_day.length-1] = 1;
+            if(N%12 == 0)
+              reward_awarded_daily["12"][daily_survey_day_by_day.length-1] = 1;
+            if(N%18 == 0)
+              reward_awarded_daily["18"][daily_survey_day_by_day.length-1] = 1;
+            if(N%30 == 0)
+              reward_awarded_daily["30"][daily_survey_day_by_day.length-1] = 1;
 
-          if(isreal==true)//save if it is the real one.
-            window.localStorage['reward_awarded_daily'] = JSON.stringify(reward_awarded_daily);
-          return true;
+            if(isreal==true)//save if it is the real one.
+              window.localStorage['reward_awarded_daily'] = JSON.stringify(reward_awarded_daily);
+            return true;
         }
         else
-          return false;
+            return false;
     }
 
 
@@ -369,9 +388,10 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //////////////////////////////////////////////////////////////////////
 
     //$rootScope.weekly_survey_day_by_day = [];
-    if(added_points=='15'  || $rootScope.rewardIsActiveTask){
+    //15 will only happen for simulation
+    if(added_points=='29' || $rootScope.rewardIsActiveTask){
         $rootScope.rewardIsActiveTask = false;
-        $scope.cards.push({name: "You earned " + added_points + " points for completing the active task(s).", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: false});
+        $scope.cards.push({name: "You earned " + "30" + " points for completing the active tasks.", show: false, up:0, class: 'blue', img: "img/30points.png", show_image: true});
 
         //
         var reward_awarded_at = {};
@@ -432,19 +452,35 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
               current_date = moment(current_date, "YYYYMMDD").add(1, 'day').format('YYYYMMDD');
             }
+
+            //
             console.log("at_day_by_day: " + at_day_by_day);
+            console.log("at_day_by_day2: " + JSON.stringify(active_tasks_survey));
 
 
             //console.log("x: " + ($rootScope.daily_survey_day_by_day == undefined) + ", " + (isreal==false) + ", " + (($rootScope.daily_survey_day_by_day == undefined) && (isreal == false)));
             if(($rootScope.at_day_by_day == undefined) && (isreal == false)){
+                //if(moment().format('YYYYMMDD') in active_tasks_survey){}
+                //else
                 at_day_by_day.push(1);
                 //console.log("daily_survey_day_by_day 2: " + daily_survey_day_by_day);
             }
             $rootScope.at_day_by_day = at_day_by_day;
             $rootScope.reward_awarded_at = reward_awarded_at;
 
+            if(isreal == true){
+                var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                //if we alrady have the data
+                if(moment().format('YYYYMMDD') in reinfrocement_data){
+                }else
+                    reinfrocement_data[moment().format('YYYYMMDD')] = {};
+
+                reinfrocement_data[moment().format('YYYYMMDD')]['at'] = 1;
+                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+            }
+
         }else{
-            if(isreal == false && added_points=='15'){ //means we have daily survey
+            if(isreal == false && added_points=='29'){ //means we have daily survey
                 $rootScope.at_day_by_day.push(1);
                 console.log("$rootScope.at_day_by_day: " + $rootScope.at_day_by_day);
             }
@@ -511,7 +547,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
     }
 
-    function isNAtStreak(at_day_by_day,reward_awarded_daily,N,isreal){
+    function isNAtStreak(at_day_by_day,reward_awarded_at,N,isreal){
       var total_days = 0;
       var isPaidInLastNDays = 0;
         if(at_day_by_day.length >= N){
@@ -524,7 +560,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
             //
             for(var i = at_day_by_day.length-1; i>=at_day_by_day.length-N ; i--){
-              isPaidInLastNDays += reward_awarded_daily[""+N][i];
+              isPaidInLastNDays += reward_awarded_at[""+N][i];
             }
         }
 
@@ -535,11 +571,11 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //console.log(adherence_array);
 
         if(total_days == N && isPaidInLastNDays == 0){
-          reward_awarded_daily[""+N][at_day_by_day.length-1] = 1;
+            reward_awarded_at[""+N][at_day_by_day.length-1] = 1;
 
           //
           if(N%3 == 0)
-            reward_awarded_daily["3"][at_day_by_day.length-1] = 1;
+            reward_awarded_at["3"][at_day_by_day.length-1] = 1;
           if(N%6 == 0)
             reward_awarded_daily["6"][at_day_by_day.length-1] = 1;
           if(N%12 == 0)
@@ -550,7 +586,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             reward_awarded_daily["30"][at_day_by_day.length-1] = 1;
 
           if(isreal==true)//save if it is the real one.
-            window.localStorage['at_streak'] = JSON.stringify(reward_awarded_daily);
+            window.localStorage['at_streak'] = JSON.stringify(reward_awarded_at);
           return true;
         }
         else
@@ -566,9 +602,9 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
     //$rootScope.weekly_survey_day_by_day = [];
     console.log("Badges: " + JSON.stringify($rootScope.badges['weekly']));
-    if(added_points=='50'  && !$rootScope.rewardIsActiveTask){
+    if((added_points=='50' || added_points=='80')  && !$rootScope.rewardIsActiveTask){
 
-        $scope.cards.push({name: "You earned 50 points for completing the weekly survey", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: false});
+        $scope.cards.push({name: "You earned 50 extra points for completing last weeks details", show: false, up:0, class: 'blue', img: "img/50points.png", show_image: true});
 
         console.log("weekly_survey_day_by_day 'isreal': " + isreal);
         if(isreal == true || $rootScope.weekly_survey_day_by_day == undefined){
@@ -583,11 +619,11 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             last_date = '';
             first_date = '';
             for (var key in weekly_survey) {
-                    last_date = key;
+                last_date = key;
             }
             for (var key in weekly_survey) {
-                    first_date = key;
-                    break;
+                first_date = key;
+                break;
             }
             //moment().startOf('week');
             //console.log("last date: " + moment().startOf('week').format('YYYYMMDD'));
@@ -698,13 +734,11 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //show the reward for money
     //////////////////////////////////////////////////////////////////////
 
-    
-
     adjust_css();
 
     function adjust_css(){
 
-      var colors = ['blue','red','green','yellow','blue','red','green','yellow'];
+      var colors = ['blue','red','green','yellow','blue','red','green','yellow','blue','red','green'];
       var increment = 20;
       if($scope.cards.length > 0){
         $scope.cards[0].up = 10;

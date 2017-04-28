@@ -71,7 +71,11 @@ FishGame.GameSmall.prototype = {
         journal.inputEnabled = true;
         journal.events.onInputDown.add(this.logdata, this);
 
-        
+        //
+        var meme = this.add.image(window.innerWidth - 140, 1, 'meme');
+        meme.scale.setTo(0.3, 0.3);
+        meme.inputEnabled = true;
+        meme.events.onInputDown.add(this.showBubbles, this);
 
 
 
@@ -94,6 +98,116 @@ FishGame.GameSmall.prototype = {
 
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
+
+        //
+        //this.showBubbles();
+
+        
+        //this.clownFish.name = "clownFish";
+        //this.gobothways(this.clownFish);
+    },
+
+    showBubbles: function(){
+        //the divers
+        var purplediver = this.add.sprite(-10, 183, 'purplediver');
+        purplediver.anchor.setTo(.5,.5);
+        purplediver.animations.add('swim');
+        purplediver.animations.play('swim', 30, true);
+        purplediver.scale.setTo(0.8, 0.8);
+        this.add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+
+        var blackdiver = this.add.sprite(window.innerWidth+100, 303, 'blackdiver');
+        blackdiver.anchor.setTo(.5,.5);
+        blackdiver.animations.add('swim');
+        blackdiver.animations.play('swim', 30, true);
+        blackdiver.scale.setTo(-0.8, 0.8);
+        var t = this.add.tween(blackdiver).to({ x: this.world.centerX+20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+        t.onComplete.add(this.addBubbles, this);
+
+    },
+
+    addBubbles: function(){    
+        var delay = 0;
+        for (var i = 0; i < 100; i++)
+        {
+            var sprite = this.add.sprite(-100 + (this.world.randomX), this.height+100, 'ball');
+            sprite.scale.set(this.rnd.realInRange(0.3, 0.6));
+            var speed = this.rnd.between(1000, 2000);
+            var tween = this.add.tween(sprite);
+            tween.to({y: -256}, speed, Phaser.Easing.Sinusoidal.In, true, delay, 0, false);
+            delay += 100;
+
+            if(i==0)
+                tween.onComplete.add(this.checkLastBubble, this);
+
+            if(i>2)
+                delay += 100;
+                //this.checkLastBubble(sprite);
+        }
+    },
+
+    checkLastBubble: function(b) {
+        /*
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            t= this.add.tween(b).to({ x: -100 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+        */
+
+        //
+        var graphics = this.add.graphics(0,50);
+        graphics.lineStyle(0);
+        graphics.beginFill(0x0288D1, 0.8);
+        graphics.drawRect(0, 0, this.game.width, this.game.height-100);
+        graphics.endFill();
+
+        //you earned a reward
+        var pirate = this.add.image(this.game.width-145, 90, 'diver');
+        //pirate.anchor.setTo(-0.3, 1.4);
+        pirate.scale.setTo(0.7, 0.7);
+
+        //
+        var text3 = this.add.text(10, 60, "You filled today's surveys", { font: "24px Arial Black", fill: "#b33e00" });
+        text3.stroke = "#FFE0B2";
+        text3.strokeThickness = 3;
+
+        //
+        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        text1.stroke = "#FFE0B2";
+        text1.strokeThickness = 4;
+        //  Apply the shadow to the Stroke only
+        text1.setShadow(2, 2, "#E65100", 2, true, false);
+
+
+        //
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        text2.stroke = "#FFE0B2";
+        text2.strokeThickness = 0;
+        //  Apply the shadow to the Stroke only
+        //text2.setShadow(2, 2, "#E65100", 2, true, false);
+
+        
+        
+
+        //
+        var sprite = this.add.sprite(this.world.centerX, this.world.centerY, 'gift');
+        sprite.anchor.setTo(0.9, 0.2);
+        sprite.scale.setTo(0.35,0.35);
+        sprite.alpha = 0;
+        this.add.tween(sprite).to( { alpha: 1 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(this.showReward, this);
+
+        //
+        console.log("don't know " + b.y);
+    },
+
+    //show the reward
+    showReward: function(){
+        this.ionic_scope.$emit('show:reinforcement',this.ionic_scope);
     },
 
     //update the connected and disconnected things

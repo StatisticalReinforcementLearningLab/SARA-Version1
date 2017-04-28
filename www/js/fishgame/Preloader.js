@@ -15,6 +15,7 @@ FishGame.Preloader.prototype = {
         this.load.image('undersea', 'img/underwaterbr.jpg');
         this.load.image('connected', 'img/connected.png');
         this.load.image('trivia', 'img/trivia.png');
+        this.load.image('meme', 'img/laughingfish.png');
         this.load.image('disconnected', 'img/disconnected.png');
     	this.load.image('coral', 'img/seabed.png');
         this.load.bitmapFont('eightbitwonder', 'fonts/eightbitwonder.png', 'fonts/eightbitwonder.fnt');
@@ -67,6 +68,34 @@ FishGame.Preloader.prototype = {
 		//progress bar
 		this.load.spritesheet('timer', 'sprite/timer.png', 150, 20);
 
+		//reward
+		this.load.image('ball', 'img/bubble256yay.png');
+		this.load.image('gift', 'img/gift.png');
+
+
+		//divers
+		this.load.atlasJSONArray('purplediver', 'sprite/purple-diver-sprite.png', 'sprite/purple-diver-sprite.json');
+		this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
+
+
+		//submarine
+		this.load.atlasJSONArray('submarine', 'sprite/submarine.png', 'sprite/submarine.json');
+		//this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
+
+		//
+		/**
+		 * Returns a random integer between min (inclusive) and max (inclusive)
+		 * Using Math.round() will give you a non-uniform distribution!
+		 */
+		var max = 8;
+		var min = 1;
+		var rand_num = Math.floor(Math.random() * (max - min + 1)) + min;
+		console.log('img/pirate-' + rand_num + '.png');
+		this.load.image('pirate', 'img/pirate-' + rand_num + '.png');
+
+		//
+		this.load.image('smiley', 'img/smiley.png');
+		this.load.image('diver', 'img/diver-0.png');
 	},
 
 	create: function () {
@@ -86,7 +115,7 @@ FishGame.Preloader.prototype = {
         if(this.ready == false) {
             this.ready = true;
 
-            //this.ionic_scope.total_points = 1180;  	
+            //this.ionic_scope.total_points = 1770;  	
 
             if(this.ionic_scope.total_points <770){
             	this.state.start('GameSmall');
@@ -100,12 +129,12 @@ FishGame.Preloader.prototype = {
             }
 
 
-            if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1830){
+            if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1710){
             	this.state.start('Level1Small');
             	this.ionic_scope.current_level = 'Level1Small';
             }
 
-            if(this.ionic_scope.total_points >=1830){
+            if(this.ionic_scope.total_points >=1710){
             	this.state.start('Level1');
             	this.ionic_scope.current_level = 'Level1';
             }

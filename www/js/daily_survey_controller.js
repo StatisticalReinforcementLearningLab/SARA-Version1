@@ -55,7 +55,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
     if (current_hour >= 0 && current_hour <= 5)
         day_time = "Good Evening";
 
-    day_time = "Daily survey";
+    day_time = "Survey";
     $scope.greetings = day_time;
 
     //load email
@@ -236,17 +236,42 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         $scope.survey.ts = moment().format('MMMM Do YYYY, h:mm:ss a');
 
         // Get a key for a new Post.
-        var newPostKey = firebase.database().ref().child('SARA').child('Daily').push().key;
+        //var newPostKey = firebase.database().ref().child('SARA').child('Daily').push().key;
 
         // Write the new post's data simultaneously in the posts list and the user's post list.
-        var updates = {};
+        //var updates = {};
         $scope.survey.reponse_ts = $scope.reponse_ts;
         $scope.survey.devicInfo = ionic.Platform.device();
         $scope.survey.id = $scope.email;
+
+        var rl_data = JSON.parse(window.localStorage['cognito_data']);
+        rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
+
+        //save to cognito
+        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+        //write to SD card file
+        saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
+
+
+        //save to "data_ds_ws.txt"
+        saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+
+        //------------------------------------------------------------------------------------------
+        //
+        // TODO: for life-insights I will need to encrypt the data somewhere.
+        //
+        //------------------------------------------------------------------------------------------
+
+
+
+
+
         //$scope.survey.randq = $scope.rand_index;
-        updates['/SARA/Daily/' + newPostKey] = $scope.survey;
+        //updates['/SARA/Daily/' + newPostKey] = $scope.survey;
         //updates['/user-posts/' + $scope.survey.id + '/' + newPostKey] = $scope.survey;
-        firebase.database().ref().update(updates);
+        //firebase.database().ref().update(updates);
 
         //
         //window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
@@ -255,6 +280,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         //saraDatafactory.storedata('daily_survey2', $scope.survey, moment().format('YYYYMMDD'));
 
         //
+        /*
         var score_data = JSON.parse(window.localStorage['score_data'] || "{}");
         console.log("DS: " + JSON.stringify(score_data));
         if(score_data.hasOwnProperty("daily_survey")){
@@ -263,29 +289,20 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
 
         score_data['daily_survey'][moment().format('YYYYMMDD')] = 1;
         window.localStorage['score_data'] = JSON.stringify(score_data);
+        */
         //saraDatafactory.storedata('game_score2', score_data, moment().format('YYYYMMDD'));
 
-        //
-        var rl_data = JSON.parse(window.localStorage['cognito_data']);
-        rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-
-        saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
-
-
-        //
-        saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+        
 
         //----- save the "data" from sdcard.
         
 
 
         //
-        var daily_survey = score_data['daily_survey']; //JSON.parse(window.localStorage['daily_survey_data'] || "{}");
+        //var daily_survey = score_data['daily_survey']; //JSON.parse(window.localStorage['daily_survey_data'] || "{}");
         //daily_survey[moment().format('YYYYMMDD')] = 1;
         //console.log(JSON.stringify("Works: " +  JSON.stringify(daily_survey)));
-        window.localStorage['daily_survey_data'] = JSON.stringify(daily_survey);
+        //window.localStorage['daily_survey_data'] = JSON.stringify(daily_survey);
 
 
         //console.log(JSON.stringify(window.localStorage['daily_survey']));
