@@ -95,7 +95,6 @@ FishGame.GameSmall.prototype = {
 
         //
 
-
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
 
@@ -107,7 +106,7 @@ FishGame.GameSmall.prototype = {
         //this.gobothways(this.clownFish);
     },
 
-    showBubbles: function(){
+    showBubbles: function(isReal){
         //the divers
         var purplediver = this.add.sprite(-10, 183, 'purplediver');
         purplediver.anchor.setTo(.5,.5);
@@ -289,7 +288,7 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "The crab")
                     this.animateCrab();
 
-                if(data[i].name.valueOf() === "Green fish")
+                if(data[i].name.valueOf() === "Carp fish")
                     this.animateGreenFish();
 
                 //if(data[i].name.valueOf() === "Tiger barb")

@@ -1,4 +1,4 @@
-<ion-view view-title="Login" name="login-view">
+<ion-view view-title="Login" name="login-view" ng-init="getUserFromLocalStorage()">
 
           <ion-header-bar class="bar-stable" style="background:#3F51B5;">
                 <h1 class="title" style="color:#fff;">SARA</h1>
@@ -29,6 +29,10 @@
                  <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(2)">Aq 2</button></div>
                  <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(3)">Sea 1</button></div>
                  <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
               </div>
 
               <!--

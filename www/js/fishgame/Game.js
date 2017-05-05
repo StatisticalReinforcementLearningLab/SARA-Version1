@@ -285,7 +285,7 @@ FishGame.Game.prototype = {
                 if(data[i].name.valueOf() === "The crab")
                     this.animateCrab();
 
-                if(data[i].name.valueOf() === "Green fish")
+                if(data[i].name.valueOf() === "Carp fish")
                     this.animateGreenFish();
 
                 if(data[i].name.valueOf() === "Electric fish")

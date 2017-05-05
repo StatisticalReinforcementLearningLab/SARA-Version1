@@ -24,6 +24,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             if (data_temp['imei'] === "")
                 data_temp['imei'] = window.localStorage['imei'] || "";
             data_temp['username'] = window.localStorage['username'] || "";
+            window.localStorage['cognito_data'] = JSON.stringify(data_temp);//save the imei now.
         }
 
         data = data_temp;

@@ -577,16 +577,16 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           if(N%3 == 0)
             reward_awarded_at["3"][at_day_by_day.length-1] = 1;
           if(N%6 == 0)
-            reward_awarded_daily["6"][at_day_by_day.length-1] = 1;
+            reward_awarded_at["6"][at_day_by_day.length-1] = 1;
           if(N%12 == 0)
-            reward_awarded_daily["12"][at_day_by_day.length-1] = 1;
+            reward_awarded_at["12"][at_day_by_day.length-1] = 1;
           if(N%18 == 0)
-            reward_awarded_daily["18"][at_day_by_day.length-1] = 1;
+            reward_awarded_at["18"][at_day_by_day.length-1] = 1;
           if(N%30 == 0)
-            reward_awarded_daily["30"][at_day_by_day.length-1] = 1;
+            reward_awarded_at["30"][at_day_by_day.length-1] = 1;
 
           if(isreal==true)//save if it is the real one.
-            window.localStorage['at_streak'] = JSON.stringify(reward_awarded_at);
+            window.localStorage['reward_awarded_at'] = JSON.stringify(reward_awarded_at);
           return true;
         }
         else
@@ -616,8 +616,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             var weekly_survey = cognito_data['survey_data']['weekly_survey'];
 
 
-            last_date = '';
-            first_date = '';
+            last_date = moment().format('YYYYMMDD');
+            first_date = moment().format('YYYYMMDD');
             for (var key in weekly_survey) {
                 last_date = key;
             }
@@ -633,6 +633,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             flag = true;
             var current_date = first_date;
             var weekly_survey_day_by_day = [];
+            console.log("Weekly Survey: " + JSON.stringify(weekly_survey));
             while(flag){
                 if(current_date in weekly_survey){
                      console.log("Exist: " + current_date);
@@ -643,10 +644,11 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                      weekly_survey_day_by_day.push(0);
                 }
                   
-                if(parseInt(current_date) > parseInt(last_date))
+                if(parseInt(current_date) >= parseInt(last_date))
                      flag = false;
 
                 current_date = moment(current_date, "YYYYMMDD").add(7, 'day').format('YYYYMMDD');
+                //console.log("Current date: " + current_date);
             }
             console.log("Weekly surveys: " +  JSON.stringify(weekly_survey_day_by_day));
 
@@ -722,7 +724,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         rl_data['badges'] = $rootScope.badges;
         //rl_data['badges']['money'] = monetary_reward;
         rl_data['daily_streak'] = JSON.parse(window.localStorage['reward_awarded_daily'] || "{}");
-        cognito_data['at_streak']= JSON.parse(window.localStorage['at_streak'] || "{}");
+        rl_data['at_streak']= JSON.parse(window.localStorage['reward_awarded_at'] || "{}");
         saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD')); //sync now
         window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 

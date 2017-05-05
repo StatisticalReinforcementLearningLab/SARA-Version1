@@ -237,7 +237,7 @@ FishGame.Level1.prototype = {
                 if(data[i].name.valueOf() === "Salmon")
                     this.addSalmon();
 
-                if(data[i].name.valueOf() === "Angry fish")
+                if(data[i].name.valueOf() === "Deep undersea fish")
                     this.addAngryFish();
 
                 if(data[i].name.valueOf() === "Sword fish")
@@ -252,7 +252,7 @@ FishGame.Level1.prototype = {
                 if(data[i].name.valueOf() === "whale")
                     this.addWhale();
 
-                if(data[i].name.valueOf() === "Kite fish")
+                if(data[i].name.valueOf() === "Stingray fish")
                     this.addKiteFish();
 
 

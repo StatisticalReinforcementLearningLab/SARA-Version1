@@ -4,7 +4,7 @@
         <div class="buttons">
             <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
         </div>
-        <h1 class="title" style="color:#fff;">Life insights</h1>
+        <h1 class="title" style="color:#fff;">{{title_text}}</h1>
   </ion-header-bar>
 
 
@@ -14,6 +14,9 @@
   <nvd3 options="options" data="data"></nvd3>
   -->
 
+  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">Congratulations!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">You unlocked a life insight.</center>
+	<center style="font-size: 16px;line-height: 25px;" ng-show="showAllLIButton">You will be able to access this life insight by clicking the pearl icon</center>
   <div ng-repeat="lifeinsight in lifeinsights">
     <div class="card">
       <div style="position: absolute;top:4px;left: 4px;z-index: 20;" >
@@ -68,7 +71,7 @@
     </div>
   </div>
 
-   <div class="card">
+   <div class="card" ng-show = "showMaps">
         <div class="item item-avatar" style="background: #E0F2F1;border-left: 2px solid #004D40; padding-left: 10px;">
 	        <h2 style="padding-bottom: 5px;">Two most frequent <b>locations</b> in your life</h2>
 
@@ -124,6 +127,12 @@
             <div id="map" data-tap-disabled="true"></div>
         -->
   </div> 
-  
+
   </ion-content>
+
+
+  <div class="bar bar-footer bar-positive" ng-show="showAllLIButton">
+	  <div class="title" ng-click="showLifeInishgts()">Show all life insights</div>
+	</div>
+
 </ion-view>

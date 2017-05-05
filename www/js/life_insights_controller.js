@@ -1,5 +1,8 @@
-app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap) {
+app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routeParams, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap) {
     
+    var type = $routeParams.type;
+    console.log("" + type);
+
     //Show a graph
     var data_overlays = [];
 
@@ -19,18 +22,96 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaSt
     //
     $scope.lifeinsights = [];
 
+
+    //
+
+
+    //
+    var visible_lifeinsights = {};
+
+    if(type === 'demo'){
+        $scope.showAllLIButton = false;
+        $scope.title_text = "All life insights";
+
+        visible_lifeinsights['Q1d'] = 1;
+        visible_lifeinsights['Q3d'] = 1;
+        visible_lifeinsights['Q4d'] = 1;
+        visible_lifeinsights['Q5d'] = 1;
+        visible_lifeinsights['Q6d'] = 1;
+        visible_lifeinsights['steps'] = 1;
+        visible_lifeinsights['maps'] = 1;
+        visible_lifeinsights['maps'] = 1;
+        visible_lifeinsights[type] = 1;
+
+        //maps are together.
+        //if(visible_lifeinsights['steps'] == 1)
+        //    
+    }
+    else if(type === 'all'){
+        $scope.showAllLIButton = false;
+        $scope.title_text = "Life insights";
+        //
+        visible_lifeinsights = JSON.parse(window.localStorage['visible_lifeinsights'] || '{}');
+        if(visible_lifeinsights.hasOwnProperty('Q1d')){
+            console.log(JSON.stringify(visible_lifeinsights));
+        }else{
+            //means we have nothing.
+            visible_lifeinsights['Q1d'] = 0;
+            visible_lifeinsights['Q3d'] = 0;
+            visible_lifeinsights['Q4d'] = 0;
+            visible_lifeinsights['Q5d'] = 0;
+            visible_lifeinsights['Q6d'] = 0;
+            visible_lifeinsights['steps'] = 0;
+            visible_lifeinsights['maps'] = 1;
+            window.localStorage['visible_lifeinsights'] = JSON.stringify(visible_lifeinsights);
+        }
+
+        //maps are together.
+        //if(visible_lifeinsights['steps'] == 1)
+        //    
+    }else{
+        $scope.showAllLIButton = true;
+        $scope.title_text = "Today's gift";
+        //
+        if(type.charAt(0)=='q')
+            type = 'Q' + type.substr(1);
+
+        visible_lifeinsights['Q1d'] = 0;
+        visible_lifeinsights['Q3d'] = 0;
+        visible_lifeinsights['Q4d'] = 0;
+        visible_lifeinsights['Q5d'] = 0;
+        visible_lifeinsights['Q6d'] = 0;
+        visible_lifeinsights['steps'] = 0;
+        visible_lifeinsights['maps'] = 0;
+        //visible_lifeinsights['maps'] = 0;
+        visible_lifeinsights[type] = 1;
+
+        //console.log(JSON.stringify(visible_lifeinsights));
+    }
+
+    //
+    $scope.showMaps = false;
+    if(visible_lifeinsights['maps'] == 1)
+        $scope.showMaps = true;
+
+    loadQuestionLifeInsights();
+    loadLifeInsightsLocStepsData(); 
+
+
     //----------------------------------------
     //-- Daily insights questions
     //----------------------------------------
-    saraDatafactory.loadLifeInsightsData(function(returnValue) {
-        if (returnValue == null) {
-            $http.get('js/lifeinsights.json').success(function(data2) {
-                generateDailySurveyInsights(data2);
-            });
-        } else {
-            generateDailySurveyInsights(JSON.parse(returnValue));
-        }
-    });
+    function loadQuestionLifeInsights(){
+        saraDatafactory.loadLifeInsightsData(function(returnValue) {
+            if (returnValue == null) {
+                $http.get('js/lifeinsights.json').success(function(data2) {
+                    generateDailySurveyInsights(data2);
+                });
+            } else {
+                generateDailySurveyInsights(JSON.parse(returnValue));
+            }
+        });
+    }
 
 
     function generateDailySurveyInsights(data2){
@@ -47,6 +128,10 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaSt
             //console.log(JSON.stringify(data2["Q1d"]['data']));
 
             for(var i=0; i < questions.length; i++){
+
+                //
+                if(visible_lifeinsights[questions[i]] == 0)
+                    continue;
 
                 var dates = JSON.parse(data2[questions[i]]['dates']);
                 var data = JSON.parse(data2[questions[i]]['data']);
@@ -93,15 +178,17 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaSt
     //----------------------------------------
     //-- Steps and locations
     //----------------------------------------
-    saraDatafactory.loadLifeInsightsLocStepsData(function(returnValue) {
-        if (returnValue == null) {
-            $http.get('js/lifeinsightsLOCSTEPS.json').success(function(data2) {
-                loadLocationStepCount(data2);
-            });
-        } else {
-            loadLocationStepCount(JSON.parse(returnValue));
-        }
-    });
+    function loadLifeInsightsLocStepsData(){
+        saraDatafactory.loadLifeInsightsLocStepsData(function(returnValue) {
+            if (returnValue == null) {
+                $http.get('js/lifeinsightsLOCSTEPS.json').success(function(data2) {
+                    loadLocationStepCount(data2);
+                });
+            } else {
+                loadLocationStepCount(JSON.parse(returnValue));
+            }
+        });
+    }
     
     //$http.get('js/lifeinsightsLOCSTEPS.json').success(function(data2) {
     //    loadLocationStepCount(data2);
@@ -210,7 +297,9 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaSt
         lifeinsight.img = 'img/steps2.png';
         lifeinsight.subtext = "Average step count at different hours for the last 14 days";
         //console.log(JSON.stringify(lin))
-        $scope.lifeinsights.push(lifeinsight);
+
+        if(visible_lifeinsights['steps'] == 1)
+            $scope.lifeinsights.push(lifeinsight);
         //$scope.options = options;
         //$scope.data = data;
 
@@ -372,6 +461,10 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $cordovaSt
     //
     $scope.goHome = function() {
         $location.path("/main");
+    };
+
+    $scope.showLifeInishgts = function(){
+        $location.path("/lifeinsights/all");
     };
 
 });

@@ -35,6 +35,16 @@ app.run(function($ionicPlatform) {
 
 app.config(function($routeProvider) {
     $routeProvider
+        /*
+        .when("/", {
+            templateUrl: "templates/main.html",
+            controller: "MainCtrl"
+                //templateUrl : "templates/survey.html",
+                //controller : "SurveyCtrl"
+                //templateUrl : "templates/recall.html",
+                //controller : "RecallCtrl"
+        })
+        */
         .when("/main", {
             templateUrl: "templates/main.html",
             controller: "MainCtrl"
@@ -72,7 +82,7 @@ app.config(function($routeProvider) {
             templateUrl: "templates/reinforcement.html",
             controller: "ReinforcementCtrl"
         })
-        .when("/lifeinsights", {
+        .when("/lifeinsights/:type", {
             templateUrl: "templates/lifeinsights.html",
             controller: "LifeInsightsCtrl"
         })
@@ -196,6 +206,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 // 
 
                 //So, I need to keep track of if rewards are given from daily and active tasks already.
+                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+
+                ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
                 var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
@@ -205,32 +218,63 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                         if('reward' in reinfrocement_data[moment().format('YYYYMMDD')]){
                         }else{
-                            reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 1;
+
+                            if(Math.random() > 0.5){ //means show
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 1;
 
 
-                            if (scope.current_level === "GameSmall")
-                                game.state.states["GameSmall"].showBubbles();
-                                //game.state.states["GameSmall"].updatescore(args.state);
+                                //save the data first
+                                //
+                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
 
-                            if (scope.current_level === "Game")
-                                game.state.states["Game"].showBubbles();
+                                //
+                                //-- write it down to 'rl_data'
+                                //
+                                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+                                ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
+                                var reinforcement_record = rl_data['reinfrocement_data'] || {};
+                                if(Object.keys(reinforcement_record).length === 0)
+                                     rl_data['reinfrocement_data'] = {};
 
 
-                            if (scope.current_level === "Level1Small")
-                                game.state.states["Level1Small"].showBubbles();
+                                //save only for today.
+                                rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+                                //
+                                $rootScope.isRealReinforcement = true;
+
+                                //now show the reward.
+                                if (scope.current_level === "GameSmall")
+                                    game.state.states["GameSmall"].showBubbles(true);
+                                    //game.state.states["GameSmall"].updatescore(args.state);
+
+                                if (scope.current_level === "Game")
+                                    game.state.states["Game"].showBubbles(true);
 
 
-                            if (scope.current_level === "Level1")
-                                game.state.states["Level1"].showBubbles();
+                                if (scope.current_level === "Level1Small")
+                                    game.state.states["Level1Small"].showBubbles(true);
+
+
+                                if (scope.current_level === "Level1")
+                                    game.state.states["Level1"].showBubbles(true);
+
+                                
+                            }else{
+                                //
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 0;
+                                rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                            }
 
                             //
-                            window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                            //if(reinfrocement_data[moment().format('YYYYMMDD')]['reward'] != 1)
+                            //    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
-                            //write it down to 'rl_data'
                             //
-                            rl_data['reinfrocement_data'] = reinfrocement_data;
-                            window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-                            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
                         }
                         
                     }else
@@ -243,19 +287,19 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
             scope.$on('show:reinforcementdemo', function() {
                  if (scope.current_level === "GameSmall")
-                    game.state.states["GameSmall"].showBubbles();
+                    game.state.states["GameSmall"].showBubbles(false);
                                 //game.state.states["GameSmall"].updatescore(args.state);
 
                 if (scope.current_level === "Game")
-                    game.state.states["Game"].showBubbles();
+                    game.state.states["Game"].showBubbles(false);
 
 
                 if (scope.current_level === "Level1Small")
-                    game.state.states["Level1Small"].showBubbles();
+                    game.state.states["Level1Small"].showBubbles(false);
 
 
                 if (scope.current_level === "Level1")
-                    game.state.states["Level1"].showBubbles();
+                    game.state.states["Level1"].showBubbles(false);
 
             });
 
@@ -532,26 +576,32 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
 
-app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, $ionicPopup, $timeout, $location, $cordovaStatusbar, $cordovaInAppBrowser, $interval, $rootScope, saraDatafactory) {
+app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $rootScope, $ionicPlatform, $ionicPopup, $timeout, $location, $cordovaStatusbar, $cordovaInAppBrowser, $interval, $rootScope, saraDatafactory) {
 
+    /*
     $scope.getUserFromLocalStorage = function() {
         
         awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
             if (err) {
-                $scope.error.message = err.message;
-                if (isValid == false)
-                    return false;
-                }
+
+                console.log("Login is not available");
+                $location.path("/login");
+                $scope.$apply();
+                //$scope.error.message = err.message;
+                //if (isValid == false)
+                    //return false;
+            }
                 //if(isValid) $state.go('todo', {}, {reoload: true})
-                if (isValid) {
-                    $location.path("/main");
-                    $scope.$apply();
-                }
+            if (isValid) {
+                console.log("Login is available");
+                //$location.path("/login");
+                //$scope.$apply();
+            }
                 //$state.go('todo', {}, {reoload: true})
 
-            });
+        });
         
-    }
+    }*/
 
 
 
@@ -612,16 +662,15 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
     }
     
     var promise = $interval(testResumePause, 2000);
+
+
+
     function testResumePause() {
         console.log("App paused: " + isPaused);
         if(isPaused==false)
             readActiveTaskData();
     }
 
-
-    $ionicPlatform.on('resume', function() {
-        console.log("App resumed");
-    });
     
     //var insideReading = false;
     function readActiveTaskData() {
@@ -732,8 +781,6 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
     }
 
 
-
-
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
         console.log("Interval canceled");
@@ -759,6 +806,8 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
 
     $scope.showRewarDemo = function(points) {
         //console.log('came here');
+        //
+        $rootScope.isRealReinforcement = false;
         $scope.$broadcast('show:reinforcementdemo');
     };
 
@@ -782,7 +831,11 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
 
 
     $scope.showLifeInishgts = function(){
-        $location.path("/lifeinsights");
+        $location.path("/lifeinsights/all");
+    };
+
+    $scope.showAllLifeInishgts = function(){
+        $location.path("/lifeinsights/demo");
     };
 
     $scope.$on('survey:logdata', function(event, data) {
@@ -1045,7 +1098,7 @@ app.controller("MainCtrl", function($scope, $state, $rootScope, $ionicPlatform, 
                 '<p style="line-height:1.2;">Weekly Survey<br><spa style="font-size: 12px;">Sunday after 6PM</span></p>' +
                 '</button>',
             */    
-
+            
 
             template: '<button class="button button-full button-royal" ng-click="startDailySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Survey<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
@@ -1153,13 +1206,20 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
         };
 
 
+        $scope.showlogin = true;
+        $scope.bgCol = '#000';
+
         $scope.getUserFromLocalStorage = function() {
-            /*
+            
             awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
                 if (err) {
                     $scope.error.message = err.message;
-                    if (isValid == false)
+                    $scope.showlogin = false;
+                    $scope.bgCol = '#fff';
+
+                    if (isValid == false){
                         return false;
+                    }
                 }
                 //if(isValid) $state.go('todo', {}, {reoload: true})
                 if (isValid) {
@@ -1169,7 +1229,7 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
                 //$state.go('todo', {}, {reoload: true})
 
             });
-            */
+            
         }
 
         $scope.signIn = function(login) {
@@ -1218,87 +1278,3 @@ app.controller("RedCtrl", function($scope, $http, $location, $cordovaStatusbar, 
 });
 
 
-app.controller("ReinforcementCtrl", function($scope, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
-    
-    if(Math.random() > 0.5)
-        $scope.rein_image = 'img/reinforcements/ken_hair.gif';
-    else
-        $scope.rein_image = 'img/reinforcements/devil_kid.jpg';
-
-    //
-    $scope.goHome = function() {
-        $location.path("/");
-    };
-
-
-    //console.log($location.path());
-
-    //status bar color
-    //document.addEventListener("deviceready", onDeviceReady, false);
-
-    /*
-    function onDeviceReady() {
-        console.log(StatusBar);
-        if (ionic.Platform.isAndroid()) {
-            //$cordovaStatusbar.overlaysWebView(true);
-            //$cordovaStatusbar.styleHex('#4527A0');
-            if (window.StatusBar) {
-                StatusBar.overlaysWebView(true);
-                StatusBar.backgroundColorByHexString("#303F9F"); //Light
-                //StatusBar.style(2); //Black, transulcent
-                //StatusBar.style(3); //Black, opaque
-            }
-        }
-    }
-
-    saraDatafactory.testtstr();
-    */
-
-
-    /*
-    $scope.cards = [
-        {name: 'clubs', symbol: '♣', show:true, up:100, class: 'blue', img:'img/blue.png', show_image: true},
-        {name: 'diamonds', symbol: '♦', show:false, up:130, class: 'red', img:'img/blue.png', show_image: false},
-        {name: 'hearts', symbol: '♥', show:false, up:160, class: 'green', img:'img/blue.png', show_image: false},
-        {name: 'spades', symbol: '♠', show:false, up:190, class: 'yellow', img:'img/blue.png', show_image: true}
-    ];
-
-
-    $scope.remove = function (index) {
-        $scope.cards.splice(index, 1);
-    };
-
-    $scope.options = {
-          isThrowOut: function (offset, elementWidth, throwOutConfidence) {
-                console.log('isThrowOut', offset, elementWidth, throwOutConfidence);
-                return throwOutConfidence === 1;
-          }
-    };
-
-    $scope.toshow = false;
-    var index  = 1;
-
-    //
-    var increment = 30;
-    $scope.cards[0].up = 10;
-    $scope.cards[1].up = $scope.cards[0].up + 30;
-    $scope.cards[2].up = $scope.cards[1].up + 30;
-    $scope.cards[3].up = $scope.cards[2].up + 30;
-
-    //
-    $scope.throwOut = function () {
-        //var myElement = document.getElementsByTagName('li[swing-card]:last');
-        //console.log(myElement);
-        //myElement.addClass('animated rotateOutUpLeft');
-
-        //this will work when animate is completed.
-        //$timeout(function () {
-        //    $scope.cards.splice(-1);
-        //}, 400);
-         $scope.cards[index].show = true;
-         index = index + 1;
-    };
-    */
-
-
-});

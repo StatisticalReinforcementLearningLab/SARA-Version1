@@ -371,7 +371,7 @@ FishGame.Level1Small.prototype = {
                 if(data[i].name.valueOf() === "Salmon")
                     this.addSalmon();
 
-                if(data[i].name.valueOf() === "Angry fish")
+                if(data[i].name.valueOf() === "Deep undersea fish")
                     this.addAngryFish();
 
 
