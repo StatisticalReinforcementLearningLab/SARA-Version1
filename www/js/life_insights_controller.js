@@ -30,9 +30,12 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
     var visible_lifeinsights = {};
 
     if(type === 'demo'){
+
+        //
         $scope.showAllLIButton = false;
         $scope.title_text = "All life insights";
 
+        //
         visible_lifeinsights['Q1d'] = 1;
         visible_lifeinsights['Q3d'] = 1;
         visible_lifeinsights['Q4d'] = 1;

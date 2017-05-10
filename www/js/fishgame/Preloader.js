@@ -76,10 +76,12 @@ FishGame.Preloader.prototype = {
 		//divers
 		this.load.atlasJSONArray('purplediver', 'sprite/purple-diver-sprite.png', 'sprite/purple-diver-sprite.json');
 		this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
-
+		this.load.atlasJSONArray('fatdiver', 'sprite/fat_swimmer.png', 'sprite/fat_swimmer.json');
 
 		//submarine
 		this.load.atlasJSONArray('submarine', 'sprite/submarine.png', 'sprite/submarine.json');
+		this.load.atlasJSONArray('submarine_at', 'sprite/submarine_at.png', 'sprite/submarine_at.json');
+		//fatdiver2.png
 		//this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
 
 		//
@@ -96,6 +98,7 @@ FishGame.Preloader.prototype = {
 		//
 		this.load.image('smiley', 'img/smiley.png');
 		this.load.image('diver', 'img/diver-0.png');
+		this.load.image('fatdiver2', 'img/fatdiver2.png');
 	},
 
 	create: function () {

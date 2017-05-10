@@ -13,6 +13,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     console.log("" + $scope.isRealReinforcement);
     //
     var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+    rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
     var reinfrocement_data_today = rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] || {}; // {} when undefined or demo.   
 
     var type;
@@ -23,12 +24,24 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
         type = "money";
     */
 
-    var reward_options = ['gif','memes','money','life_insights'];
+
+
+    var reward_options = ['gif','memes'];//,'money','life_insights'];
+
+    if($rootScope.reinforcementType=="Demo")
+        reward_options = ['gif', 'memes', 'life_insights'];//means it is a demo so I can show anything.
+
     var random_int = getRandomInt(0, reward_options.length-1);//
     type = reward_options[random_int];
     //type = reward_options[3];
 
-    reinfrocement_data_today['reward_type'] = type;
+    if($rootScope.reinforcementType=="ActiveTasks"){
+        type = 'life_insights';
+        reinfrocement_data_today['reward_type_at'] = type;
+    }
+
+    if($rootScope.reinforcementType=="DailySurvey")
+        reinfrocement_data_today['reward_type_ds'] = type;
 
     //add a meme
     if(type === 'memes' || type === 'gif'){
@@ -44,7 +57,10 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
 
             //
             $scope.rein_image = data2[index].filename;
-            reinfrocement_data_today['reward_type_extra'] = data2[index].filename;
+
+            //
+            if($rootScope.reinforcementType=="DailySurvey")
+                reinfrocement_data_today['reward_type_extra_ds'] = data2[index].filename;
         });
     }
 
@@ -107,10 +123,10 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
 
         if(rand_index == -1){
             $location.path("/lifeinsights/" + all);
-            reinfrocement_data_today['reward_type_extra'] = 'all';
+            reinfrocement_data_today['reward_type_extra_at'] = 'all';
         }else{
             $location.path("/lifeinsights/" + life_insight_keys[rand_index]);
-            reinfrocement_data_today['reward_type_extra'] = life_insight_keys[rand_index];
+            reinfrocement_data_today['reward_type_extra_at'] = life_insight_keys[rand_index];
         }
     }
 

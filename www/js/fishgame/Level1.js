@@ -101,6 +101,101 @@ FishGame.Level1.prototype = {
         this.ionic_scope = scope;
     },
 
+
+    showBubbles2: function(){
+        //add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+
+        var blackdiver = this.add.sprite(-100, 303, 'submarine_at');
+        blackdiver.anchor.setTo(.5,.5);
+        blackdiver.animations.add('swim');
+        blackdiver.animations.play('swim', 25, true);
+        blackdiver.scale.setTo(1.3, 1.3);
+        var t = this.add.tween(blackdiver).to({ x: this.world.centerX}, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+        t.onComplete.add(this.addBubbles2, this);
+        
+    },
+
+    addBubbles2: function(){    
+        var delay = 0;
+        for (var i = 0; i < 100; i++)
+        {
+            var sprite = this.add.sprite(-100 + (this.world.randomX), this.height+100, 'ball');
+            sprite.scale.set(this.rnd.realInRange(0.3, 0.6));
+            var speed = this.rnd.between(1000, 2000);
+            var tween = this.add.tween(sprite);
+            tween.to({y: -256}, speed, Phaser.Easing.Sinusoidal.In, true, delay, 0, false);
+            delay += 100;
+
+            if(i==0)
+                tween.onComplete.add(this.checkLastBubble2, this);
+
+            if(i>2)
+                delay += 100;
+                //this.checkLastBubble(sprite);
+        }
+    },
+
+    checkLastBubble2: function(b) {
+        /*
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            t= this.add.tween(b).to({ x: -100 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+        */
+
+        //
+        var graphics = this.add.graphics(0,50);
+        graphics.lineStyle(0);
+        graphics.beginFill(0x006622, 0.8);
+        graphics.drawRect(0, 0, this.game.width, this.game.height-100);
+        graphics.endFill();
+
+        //  Apply the shadow to the Stroke only
+        //text2.setShadow(2, 2, "#E65100", 2, true, false);
+
+        //you earned a reward
+        var pirate = this.add.image(this.game.width-145, 90, 'pirate');
+        //pirate.anchor.setTo(-0.3, 1.4);
+        pirate.scale.setTo(0.7, 0.7);
+
+        //
+        var text3 = this.add.text(10, 60, "Active tasks are done", { font: "24px Arial Black", fill: "#b33e00" });
+        text3.stroke = "#FFE0B2";
+        text3.strokeThickness = 3;
+
+        //
+        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        text1.stroke = "#FFE0B2";
+        text1.strokeThickness = 4;
+        //  Apply the shadow to the Stroke only
+        text1.setShadow(2, 2, "#E65100", 2, true, false);
+
+
+        //
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        text2.stroke = "#FFE0B2";
+        text2.strokeThickness = 0;
+        //  Apply the shadow to the Stroke only
+        //text2.setShadow(2, 2, "#E65100", 2, true, false);
+
+        //
+        var sprite = this.add.sprite(this.world.centerX, this.world.centerY, 'gift');
+        sprite.anchor.setTo(0.9, 0.2);
+        sprite.scale.setTo(0.35,0.35);
+        sprite.alpha = 0;
+        this.add.tween(sprite).to( { alpha: 1 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
+        sprite.inputEnabled = true;
+        sprite.events.onInputDown.add(this.showReward, this);
+        
+
+        //
+        console.log("don't know " + b.y);
+    },
+
+
     showBubbles: function(){
         //add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
 
@@ -112,6 +207,8 @@ FishGame.Level1.prototype = {
         var t = this.add.tween(blackdiver).to({ x: this.world.centerX+20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
         t.onComplete.add(this.addBubbles, this);
     },
+
+
 
     addBubbles: function(){    
         var delay = 0;
@@ -579,16 +676,35 @@ FishGame.Level1.prototype = {
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
             b.scale.x = -1*b.scale.x;
-            t= this.add.tween(b).to({ x: -200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            //t= this.add.tween(b).to({ x: -200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t= this.add.tween(b).to({ x: -100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this); 
         }
 
         if(b.x < 0){
             //console.log('left to right, ' + b.x);
             b.scale.x = -1*b.scale.x;
-            t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: window.innerWidth + 100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
         }
+
+        /*
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            t= this.add.tween(b).to({ x: -100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+
+        if(b.x < 0){
+            //console.log('left to right, ' + b.x);
+            b.scale.x = -1*b.scale.x;
+            t = this.add.tween(b).to({ x: window.innerWidth + 100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this);
+        }
+        */
     },      
     
     buildFish: function() {

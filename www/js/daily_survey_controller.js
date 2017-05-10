@@ -212,6 +212,75 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
 
     }
 
+    init();
+    function init() {
+        var c = document.getElementById("myCanvas");
+
+        c.style.width ='100%';
+        c.width  = c.offsetWidth;
+        c.height = c.width;
+
+
+        var ctx = c.getContext("2d");
+        var imageObj = new Image();
+        imageObj.src = 'https://s3.amazonaws.com/sara-umich/appfiles/affect_grid.png';
+        imageObj.onload = function(){
+        ctx.drawImage(imageObj, 0, 0, imageObj.width,    imageObj.height, // source rectangle
+                       0, 0, c.width, c.height); // destination rectangle
+        }
+
+        //corner points
+        var top_x = (42.0/354.0)*c.width;
+        var top_y = (32.0/354.0)*c.height;
+        var bottom_x = (320.0/354.0)*c.width;
+        var bottom_y = (320.0/354.0)*c.height;
+        
+        c.addEventListener("mousedown", function (e) {
+            drawing = true;
+            lastPos = getMousePos(c, e);
+            console.log("x:" + lastPos.x + ", y:" + lastPos.y + ":::: " + c.width + "," + c.height);
+
+            var x = -1;
+            var y = -1;
+            if((lastPos.x >= top_x) && (lastPos.y >= top_y) && (lastPos.x <= bottom_x) && (lastPos.y <= bottom_y)){
+                x = 10 * (lastPos.x - top_x) / (bottom_x - top_x) - 5;
+                y = 5 - 10 * (lastPos.y - top_y) / (bottom_y - top_y);
+                console.log("x:" + x + ", y:" + y);
+            }else{
+                return;
+            }
+            
+            var rect = c.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.clearRect(0, 0, rect.right-rect.left, rect.bottom-rect.top);
+            ctx.closePath();
+            
+            //
+            ctx.drawImage(imageObj, 0, 0, imageObj.width,    imageObj.height, // source rectangle
+                       0, 0, c.width, c.height); // destination rectangle
+            
+            //ctx.drawImage(imageObj, 0, 0);
+            ctx.beginPath();
+            ctx.arc(lastPos.x,lastPos.y,10,0,2*Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+            
+            
+            
+        }, false);
+        //alert("holla");
+    }
+
+    function getMousePos(canvasDom, mouseEvent) {
+        var rect = canvasDom.getBoundingClientRect();
+        return {
+          x: mouseEvent.clientX - rect.left,
+          y: mouseEvent.clientY - rect.top
+        };
+    }
 
     //load the questions
     $scope.goHome = function() {

@@ -212,15 +212,17 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
-                    if(('at' in reinfrocement_data[moment().format('YYYYMMDD')]) && ('ds' in reinfrocement_data[moment().format('YYYYMMDD')])){
+                    //means reinforcement have some data.
+                    //----  && ('ds' in reinfrocement_data[moment().format('YYYYMMDD')]))
+                    if('at' in reinfrocement_data[moment().format('YYYYMMDD')]){
                         //
                         console.log("All survey completed. give reward");
 
-                        if('reward' in reinfrocement_data[moment().format('YYYYMMDD')]){
+                        if('reward_at' in reinfrocement_data[moment().format('YYYYMMDD')]){
                         }else{
 
-                            if(Math.random() > 0.5){ //means show
-                                reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 1;
+                            if(Math.random() > 0){ //means show
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at'] = 1;
 
 
                                 //save the data first
@@ -236,34 +238,31 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 if(Object.keys(reinforcement_record).length === 0)
                                      rl_data['reinfrocement_data'] = {};
 
-
                                 //save only for today.
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
                                 //
                                 $rootScope.isRealReinforcement = true;
+                                $rootScope.reinforcementType = "ActiveTasks"; //DailySurvey
 
                                 //now show the reward.
                                 if (scope.current_level === "GameSmall")
-                                    game.state.states["GameSmall"].showBubbles(true);
+                                    game.state.states["GameSmall"].showBubbles2(true);
                                     //game.state.states["GameSmall"].updatescore(args.state);
 
                                 if (scope.current_level === "Game")
-                                    game.state.states["Game"].showBubbles(true);
-
+                                    game.state.states["Game"].showBubbles2(true);
 
                                 if (scope.current_level === "Level1Small")
-                                    game.state.states["Level1Small"].showBubbles(true);
-
+                                    game.state.states["Level1Small"].showBubbles2(true);
 
                                 if (scope.current_level === "Level1")
-                                    game.state.states["Level1"].showBubbles(true);
+                                    game.state.states["Level1"].showBubbles2(true);
 
-                                
                             }else{
                                 //
-                                reinfrocement_data[moment().format('YYYYMMDD')]['reward'] = 0;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at'] = 0;
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                                 saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
@@ -278,7 +277,75 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         }
                         
                     }else
-                        console.log("All surveys completed. don't give reward");
+                        console.log("Active tasks completed. don't give reward");
+
+                    //check the daily survey
+                    //---- && ('ds' in reinfrocement_data[moment().format('YYYYMMDD')]))
+                    if('ds' in reinfrocement_data[moment().format('YYYYMMDD')]){
+                        //
+                        console.log("All survey completed. give reward");
+
+                        if('reward_ds' in reinfrocement_data[moment().format('YYYYMMDD')]){
+                        }else{
+
+                            if(Math.random() > 0){ //means show
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds'] = 1;
+
+
+                                //save the data first
+                                //
+                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+
+                                //
+                                //-- write it down to 'rl_data'
+                                //
+                                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+                                ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
+                                var reinforcement_record = rl_data['reinfrocement_data'] || {};
+                                if(Object.keys(reinforcement_record).length === 0)
+                                     rl_data['reinfrocement_data'] = {};
+
+                                //save only for today.
+                                rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+                                //
+                                $rootScope.isRealReinforcement = true;
+                                $rootScope.reinforcementType = "DailySurvey";
+
+                                //now show the reward.
+                                if (scope.current_level === "GameSmall")
+                                    game.state.states["GameSmall"].showBubbles(true);
+                                    //game.state.states["GameSmall"].updatescore(args.state);
+
+                                if (scope.current_level === "Game")
+                                    game.state.states["Game"].showBubbles(true);
+
+                                if (scope.current_level === "Level1Small")
+                                    game.state.states["Level1Small"].showBubbles(true);
+
+                                if (scope.current_level === "Level1")
+                                    game.state.states["Level1"].showBubbles(true);
+
+                            }else{
+                                //
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds'] = 0;
+                                rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                            }
+
+                            //
+                            //if(reinfrocement_data[moment().format('YYYYMMDD')]['reward'] != 1)
+                            //    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
+                            //
+
+                        }
+                        
+                    }else
+                        console.log("Daily survey completed. don't give reward");    
+
                 }else{
                     console.log("Not all survey completed. don't give reward");
                 }
@@ -300,6 +367,25 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 if (scope.current_level === "Level1")
                     game.state.states["Level1"].showBubbles(false);
+
+            });
+
+
+            scope.$on('show:reinforcementdemoAT', function() {
+                 if (scope.current_level === "GameSmall")
+                    game.state.states["GameSmall"].showBubbles2(false);
+                                //game.state.states["GameSmall"].updatescore(args.state);
+
+                if (scope.current_level === "Game")
+                    game.state.states["Game"].showBubbles2(false);
+
+
+                if (scope.current_level === "Level1Small")
+                    game.state.states["Level1Small"].showBubbles2(false);
+
+
+                if (scope.current_level === "Level1")
+                    game.state.states["Level1"].showBubbles2(false);
 
             });
 
@@ -808,7 +894,16 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         //console.log('came here');
         //
         $rootScope.isRealReinforcement = false;
+        $rootScope.reinforcementType = "DailySurvey"; //"ActiveTasks"; //DailySurvey
         $scope.$broadcast('show:reinforcementdemo');
+    };
+
+    $scope.showRewarDemoAT = function(points) {
+        //console.log('came here');
+        //
+        $rootScope.isRealReinforcement = false;
+        $rootScope.reinforcementType = "ActiveTasks";
+        $scope.$broadcast('show:reinforcementdemoAT');
     };
 
 
@@ -1098,7 +1193,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                 '<p style="line-height:1.2;">Weekly Survey<br><spa style="font-size: 12px;">Sunday after 6PM</span></p>' +
                 '</button>',
             */    
-            
+
 
             template: '<button class="button button-full button-royal" ng-click="startDailySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Survey<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
