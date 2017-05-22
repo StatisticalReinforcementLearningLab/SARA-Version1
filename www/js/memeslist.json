@@ -1,90 +1,506 @@
 [
   {
-    "filename" : "img/reinforcements/memes/IM14.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM15.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM16.png",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM17.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM18.png",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM19.png",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM20.png",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM21.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM22.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM23.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM24.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/IM25.jpg",
-    "type" : "inspirational"
-  },
-  {
-    "filename" : "img/reinforcements/memes/HM1.jpg",
-    "type" : "funny"
+    "filename" : "img/reinforcements/memes/HM1.png",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oo5SZ7"
   },
   {
     "filename" : "img/reinforcements/memes/HM2.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2pHwuUD"
   },
   {
     "filename" : "img/reinforcements/memes/HM3.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2oU9K12"
   },
   {
     "filename" : "img/reinforcements/memes/HM4.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2pSL33X"
   },
   {
     "filename" : "img/reinforcements/memes/HM5.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2pWRUKz"
   },
   {
     "filename" : "img/reinforcements/memes/HM6.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2rmMedJ"
   },
   {
     "filename" : "img/reinforcements/memes/HM7.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2o8lMGY"
   },
   {
     "filename" : "img/reinforcements/memes/HM8.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2pdH6dg"
   },
   {
     "filename" : "img/reinforcements/memes/HM9.jpg",
-    "type" : "funny"
+    "type" : "funny",
+    "link" : "http://bit.ly/2pQpTrv"
   },
   {
     "filename" : "img/reinforcements/memes/HM10.png",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pdvU0j"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM11.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2o8o2Oj"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM12.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pdKDs7"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM13.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pjLAA7"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM14.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pHAjJu"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM15.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oUlzEe"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM16.png",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oEJLsr"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM17.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2p2li1n"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM18.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2q7CqCQ"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM19.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pYpliX"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM20.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pR6kvo"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM21.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2qNcosU"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM22.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oochmN"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM23.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oEOgnB"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM24.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oYLjRC"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM25.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pQDkUB"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM26.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oYB1AO"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM27.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2q7O68B"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM28.png",
+    "type" : "funny",
+    "link" : "http://bit.ly/2ptk7vQ"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM29.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2oYRll5"
+  },
+  {
+    "filename" : "img/reinforcements/memes/HM30.jpg",
+    "type" : "funny",
+    "link" : "http://bit.ly/2pXOgA7"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM1.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pWtEYv"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM2.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pHpcO3"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM3.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pHhnHS"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM4.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pe2zmi"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM5.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pSW98J"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM6.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2peeLnb"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM7.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oOOI5y"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM8.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2rmke9m"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM9.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2qNzb81"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM10.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oUyGp0"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM11.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oUyHt4"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM12.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2o8k2xb"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM13.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pWgZoq"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM14.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2ooDlma"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM15.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pYwTSA"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM16.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pYjv0O"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM17.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oFgYF7"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM18.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2c1ljvV"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM19.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2qobPFh"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM20.png",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oEYiFA"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM21.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pXgjzW"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM22.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pYl8fh"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM23.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oEYXqd"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM24.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2qNHJfp"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM25.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2rcf5UU"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM26.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pXuftv"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM27.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2rmBhbo"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM28.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pGIGG1"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM29.jpg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2pti62O"
+  },
+  {
+    "filename" : "img/reinforcements/memes/IM30.jpeg",
+    "type" : "inspirational",
+    "link" : "http://bit.ly/2oEphA2"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG1.gif",
     "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG2.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG3.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG4.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG5.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG6.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG7.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG8.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG10.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG11.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG12.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG13.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG15.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG16.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG17.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG18.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG19.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG20.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG21.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG22.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG23.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG24.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/HG29.gif",
+    "type" : "funny"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG1.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG2.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG3.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG5.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG6.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG7.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG8.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG9.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG10.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG11.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG12.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG13.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG14.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG15.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG17.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG18.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG19.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG20.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG21.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG22.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG23.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG24.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG25.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG26.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG27.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG28.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG29.gif",
+    "type" : "inspirational"
+  },
+  {
+    "filename" : "img/reinforcements/gifs/IG30.gif",
+    "type" : "inspirational"
   }
 ]

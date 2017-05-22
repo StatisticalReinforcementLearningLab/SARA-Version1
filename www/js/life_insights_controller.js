@@ -19,6 +19,11 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     "0 = very social, 4 = very lonely",
                     "0 = low excitment, 4 = very exciting"];   
 
+    var lifeInsightsHighStress = ["High stress", "10 hours", "Lots of fun", 
+                "Very lonely", "Very exciting"];
+    var lifeInsightsLowStress = ["Low stress", "0 hour", "Few fun", 
+                "Not lonely at all", "Not exciting"];
+
     //
     $scope.lifeinsights = [];
 
@@ -107,7 +112,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
     function loadQuestionLifeInsights(){
         saraDatafactory.loadLifeInsightsData(function(returnValue) {
             if (returnValue == null) {
-                $http.get('js/lifeinsights.json').success(function(data2) {
+                $http.get('js/lifeinsightsBig.json').success(function(data2) {
                     generateDailySurveyInsights(data2);
                 });
             } else {
@@ -116,7 +121,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
         });
     }
 
-
+    var date_size_full = 0;
     function generateDailySurveyInsights(data2){
 
             //
@@ -150,6 +155,9 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                 }
 
                 //console.log("" + dates.length);
+                if(total_data > 7)
+                    total_data = 7;
+                date_size_full = total_data;
                 for(var j=0; j < dates.length; j++){
                     if(data[j] != -1){
                         //
@@ -157,19 +165,30 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                             data[j] = data[j]/60;
                         //if(questions[i] == "Q5d")
                         //    data[j] = 4-data[j];
+                        //
+                        console.log("Do: " + (total_data - j) + "," + data[j] + "," + j) ;
+                        data_overlays.unshift([total_data - j, data[j]+1, j]);
+                    }else
+                        data_overlays.unshift([total_data - j, 0.5001, j]);
 
-                        data_overlays.unshift([total_data - j, data[j]]);
-                    }
+                    if(j==6)
+                        break;
+
+                    //if
                     //if(j==1)
                     //   break;
                 }
-
+                console.log("data_overlays");
+                //console.log(data_overlays);
 
                 //
                 var lin = loadviz(data_overlays, questions[i], qYaxis[i]);
                 lin.title = lifeInsightsTitle[i];
                 lin.img = qimgs[i];
                 lin.subtext = qSubText[i];
+                lin.top_message = lifeInsightsHighStress[i];
+                lin.bottom_message = lifeInsightsLowStress[i];
+                lin.showTopBottom = true;
                 //console.log(JSON.stringify(lin))
                 $scope.lifeinsights.push(lin);
                 data_overlays = [];
@@ -299,6 +318,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
         lifeinsight.title = "Times you <b>walk</b> in a typical day";
         lifeinsight.img = 'img/steps2.png';
         lifeinsight.subtext = "Average step count at different hours for the last 14 days";
+        lifeinsight.showTopBottom = false;
         //console.log(JSON.stringify(lin))
 
         if(visible_lifeinsights['steps'] == 1)
@@ -358,20 +378,20 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
 
     function loadviz(data_overlays,q,qYaxis) {
 
-        var data_size = data_overlays.length;
-        //console.log("" + data_size);
+        var data_size = date_size_full;//data_overlays.length; //date_size_full;//data_overlays.length;
+        console.log("data_size" + data_size);
         //console.log("" + JSON.stringify(data_overlays));
 
         //$scope.data = [];
         var options = {
             chart: {
-                type: 'lineChart',
+                type: 'historicalBarChart',
                 height: 250,
                 margin: {
-                    top: 20,
-                    right: 20,
-                    bottom: 65,
-                    left: 48
+                    top: 10,
+                    right: 10,
+                    bottom: 20,
+                    left: 10
                 },
                 x: function(d) {
                     return d[0];
@@ -386,8 +406,10 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                 },
                 color: ["#00796B"],
                 duration: 100,
+                groupSpacing: 0.5,
+                showYAxis:true,
                 xAxis: {
-                    axisLabel: 'days ago',
+                    axisLabel: '',
                     tickFormat: function(d) {
                         //console.log("" + data_size + ", " + d + ", " + qYaxis);
                         if (data_size==1){
@@ -398,14 +420,35 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                         }else{
                             if (d == data_size)
                                 return "Today"
-                            else
-                                return data_size - d; //d3.time.format('%x')(new Date(d))
+                            else{
+                                //var m = moment(); // Initial moment object
+                                //d = "" + d;
+                                //m.set({'year': parseInt(d.substring(0, 4)), 'month': parseInt(d.substring(4,6))-1, 'date': parseInt(d.substring(6,8)) });
+
+                                //console.log("" + parseInt(d.substring(0, 4)) + ", " + parseInt(d.substring(4,6)));
+                                //m.set({'year': 2013, 'month': 5 });
+                                //console.log(d + ", " + m.format('YYYYMMDD'));
+                                //console.log(m.format('dddd').substring(0,2) + "/" + m.format('DD'));//data_size - d;)
+                                //return m.format('dddd').substring(0,2) + "/" + m.format('D');//data_size - d; //d3.time.format('%x')(new Date(d))
+                                //return d;
+                                var m = moment();
+                                m = m.subtract(data_size-d, 'day');
+
+
+                                var day_abbr = m.format('dddd').substring(0,2);
+                                //if((day_abbr=='Fr') || (day_abbr=='Mo') || (day_abbr=='We'))
+                                //    day_abbr = m.format('dddd').substring(0,1);
+
+                                return  day_abbr + "/" + m.format('D');
+                            }
                         }
                     },
-                    ticks: null,
+                    ticks: 7,
                     rotateLabels: 0,
                     axisLabelDistance: 0,
-                    showMaxMin: true
+                    showMaxMin: false,
+                    orient:'bottom',
+                    tickSize: 10
                 },
                 yAxis: {
                     axisLabel: qYaxis,
@@ -417,11 +460,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     rotateLabels: -30,
                     showMaxMin: false
                 },
-                tooltip: {
-                    keyFormatter: function(d) {
-                        return d; //d3.time.format('%x')(new Date(d));
-                    }
-                },
+                tooltips: false,
                 padData: true,
                 zoom: {
                     enabled: false,
@@ -432,18 +471,39 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     verticalOff: true,
                     unzoomEventType: 'dblclick.zoom'
                 },
-                forceY: [-0.5, 4.5]
+                staggerLabel: true,
+                forceY: [0.49, 4.5]
             }
         };
+
+        //
+        var data_overlays_trunc = [];
+        var k=0;
+        console.log()
+        for(var j=data_overlays.length-1; j>=0; j--,k++){
+            if(k==7)
+                break;
+            data_overlays_trunc[j] = data_overlays[j];
+
+        }
 
         var data = [{
             "key": q,
             "bar": true,
-            "values": data_overlays
+            "values": data_overlays_trunc
         }];  
 
 
-        var lifeinsight = {"data":data, "options":options};
+        var lifeinsight = {"data":data, "options":options, "label": "id_" + q};
+
+        //d3.select('#' + 'id_' + q + ' nv-x nv-axis nvd3-svg').attr('transform', 'translate(0,' + 0 + ')');;
+        var svg = d3.select('#' + 'id_' + q + ' svg');
+        svg.append("circle")
+                          .attr("cx", 30)
+                          .attr("cy", 30)
+                         .attr("r", 20);
+        console.log(svg);
+
         return lifeinsight;
         //
         /*
@@ -469,5 +529,29 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
     $scope.showLifeInishgts = function(){
         $location.path("/lifeinsights/all");
     };
+
+    function wrap(text, width) {
+          text.each(function() {
+            var text = d3.select(this),
+                words = text.text().split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                y = text.attr("y"),
+                dy = parseFloat(text.attr("dy")),
+                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+            while (word = words.pop()) {
+              line.push(word);
+              tspan.text(line.join(" "));
+              if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+              }
+            }
+          });
+    }
 
 });

@@ -81,7 +81,57 @@ FishGame.Level1.prototype = {
         meme.inputEnabled = true;
         meme.events.onInputDown.add(this.showBubbles, this);
 
+        
 
+        //text.anchor.set(0.5);
+
+        //banner.inputEnabled = true;
+        //banner.events.onInputDown.add(this.showBubbles, this);
+
+        //
+        //this.showBanner();
+        setTimeout(function () {
+            //checkReinforcement();  
+
+        }, 500);
+        
+    },
+
+    showBanner: function(){
+        //--- banner
+        var banner = this.add.image(00, this.height-180, 'banner');
+        banner.scale.setTo(.6, .7);
+        banner.inputEnabled = true;
+        banner.events.onInputDown.add(this.hideBanner, this);
+
+
+        var banner_fish = this.add.image(260, this.height-190, 'banner_fish');
+        banner_fish.scale.setTo(.55, .55);
+        banner_fish.inputEnabled = true;
+        banner_fish.events.onInputDown.add(this.hideBanner, this);
+
+        //
+        var style = { font: "18px Arial", fill: "#f1c40f", align: "left", fontWeights: 'lighter' };
+        var text = this.add.text(10, this.height-165, "Both daily survey and active\ntasks are worth 60 points", style);
+        text.strokeThickness = 0;
+        text.inputEnabled = true;
+        text.events.onInputDown.add(this.hideBanner, this);
+
+        var style = { font: "13px Arial", fill: "#f1c40f", align: "left", fontStyle: 'italic', fontWeights: 'lighter'};
+        var text = this.add.text(215, this.height-105, "Tap to hide", style);
+        text.strokeThickness = 0;
+        text.inputEnabled = true;
+        text.events.onInputDown.add(this.hideBanner, this);
+
+        //make a left ot right animation.
+
+
+    },
+
+    hideBanner:function(){
+        console.log("clicked");
+
+        //deleted all the elements
     },
 
     logdata: function() {

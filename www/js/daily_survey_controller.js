@@ -1,4 +1,4 @@
-app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ionicPopup, $routeParams, ngProgressFactory, saraDatafactory) {
+app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $sce, $ionicPopup, $routeParams, ngProgressFactory, saraDatafactory) {
 
     //status bar color
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -104,9 +104,13 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         //$sce.trustAsHtml(survey_string); 
         //survey_string;
 
+        //init();
+
         $scope.survey.starttimeUTC = new Date().getTime();
 
     });
+
+
 
 
     //function affectclick(index,mood){
@@ -212,9 +216,17 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
 
     }
 
-    init();
-    function init() {
+    //init();
+    //$scope.init2 = function() {
+    var promise = $interval(init, 500);
+    //init();
+    function init(){
         var c = document.getElementById("myCanvas");
+        //alert("holla");
+        if(c==null)
+            return;
+        else
+            $interval.cancel(promise);
 
         c.style.width ='100%';
         c.width  = c.offsetWidth;
@@ -238,14 +250,18 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         c.addEventListener("mousedown", function (e) {
             drawing = true;
             lastPos = getMousePos(c, e);
-            console.log("x:" + lastPos.x + ", y:" + lastPos.y + ":::: " + c.width + "," + c.height);
+            //console.log("x:" + lastPos.x + ", y:" + lastPos.y + ":::: " + c.width + "," + c.height);
 
             var x = -1;
             var y = -1;
             if((lastPos.x >= top_x) && (lastPos.y >= top_y) && (lastPos.x <= bottom_x) && (lastPos.y <= bottom_y)){
                 x = 10 * (lastPos.x - top_x) / (bottom_x - top_x) - 5;
-                y = 5 - 10 * (lastPos.y - top_y) / (bottom_y - top_y);
-                console.log("x:" + x + ", y:" + y);
+                y = 5 - 10 * (lastPos.y - top_y) / (bottom_y - top_y) - 5;
+                //console.log("x:" + x + ", y:" + y);
+                $scope.survey.QMood = "" + x + ":" + y;
+
+                //
+                $scope.inputchanged("QMood");
             }else{
                 return;
             }
@@ -609,6 +625,8 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
         //make a percentage
         //console.log("" + 100*$scope.total_clicked/13 + ", " + $scope.total_clicked + ", " + clicked_index);
         //$scope.progressbar.set(100*$scope.total_clicked/13);
+        //
+        //init();
 
     }
 
@@ -768,6 +786,14 @@ app.controller("DailySurveyCtrl", function($scope, $http, $location, $sce, $ioni
                 '<label><input type="radio" ng-model="survey.' + i + '" value="high-happy"/><img style="width:18%;" src=img/1.png></label>',
                 '</label></div>'].join(" ");
                 */
+            }
+
+            if (obj.type == "moodgrid2") {
+                survey_string = [survey_string,
+                    '<canvas id="myCanvas" width="310" height="310" style="border:0px solid #000000;padding:10px;">',
+                    'Your browser does not support the HTML5 canvas tag.',
+                    '</canvas>'
+                ].join(" ");
             }
 
 

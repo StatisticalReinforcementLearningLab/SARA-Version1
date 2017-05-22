@@ -12,7 +12,7 @@
   {
     "name":"Q2d",
     "text":"How are you feeling today? Please choose one",
-    "type":"moodgrid"
+    "type":"moodgrid2"
   },
   {
     "name":"Q3d",

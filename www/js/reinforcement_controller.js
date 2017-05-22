@@ -43,6 +43,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     if($rootScope.reinforcementType=="DailySurvey")
         reinfrocement_data_today['reward_type_ds'] = type;
 
+
     //add a meme
     if(type === 'memes' || type === 'gif'){
         $http.get('js/memeslist.json').success(function(data2) {
@@ -57,6 +58,9 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
 
             //
             $scope.rein_image = data2[index].filename;
+
+            //
+            $scope.all_images = data2;
 
             //
             if($rootScope.reinforcementType=="DailySurvey")

@@ -81,7 +81,13 @@ FishGame.Preloader.prototype = {
 		//submarine
 		this.load.atlasJSONArray('submarine', 'sprite/submarine.png', 'sprite/submarine.json');
 		this.load.atlasJSONArray('submarine_at', 'sprite/submarine_at.png', 'sprite/submarine_at.json');
-		//fatdiver2.png
+
+		//--- RedBanner.png
+		//this.load.atlasJSONArray('banner', 'sprite/RedBanner.png', 'sprite/RedBanner.json');
+		this.load.image('banner', 'img/RedBanner.png');
+		this.load.image('banner_fish', 'img/banner_fish.png');
+
+
 		//this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
 
 		//

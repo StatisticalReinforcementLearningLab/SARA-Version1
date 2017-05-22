@@ -26,9 +26,25 @@
         <h2 ng-bind-html="lifeinsight.title"></h2>
         <p>{{lifeinsight.subtext}}</p>
       </div>
-      <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
-      
+      <div style="margin-left:0px; margin-right:0px;margin-top:0px; background:#F4FF81; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 15px;" ng-show="lifeinsight.showTopBottom"> {{lifeinsight.top_message}}
+      </div>
+      <div id="{{lifeinsight.label}}">
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+      </div>
       <!--
+      <div id="container" style="position:relative;">
+          <div id="div1"><nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3></div>
+          <div id="div2"><nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3></div>
+      </div>
+      -->
+
+      <div style="margin-left:0px; margin-right:0px;margin-top:5px; background:#FCE4EC; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 15px;" ng-show="lifeinsight.showTopBottom"> {{lifeinsight.bottom_message}}
+      </div>      
+
+      <!--
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+
       <div class="item item-body">
         <p>
           <b>Suggestion</b>: This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
@@ -69,6 +85,7 @@
     </div> 
     -->
     </div>
+    <br/>
   </div>
 
    <div class="card" ng-show = "showMaps">

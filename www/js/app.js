@@ -1370,6 +1370,150 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
 ]);
 
 app.controller("RedCtrl", function($scope, $http, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+
+    //var data = sinAndCos();
+    //console.log(JSON.stringify(data));
+
+
+    nv.addGraph(function() {
+        chart = nv.models.lineChart()
+            .options({
+                duration: 300,
+                useInteractiveGuideline: true
+            })
+        ;
+        // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+        var x = d3.scale.ordinal()
+                .rangeRoundBands([0, 10], .1, .3);
+        
+        //var xAxis = d3.svg.axis()
+        //    .scale(x)
+        //    .orient("top");
+
+
+        chart.xAxis
+            .axisLabel("")
+            .tickFormat(d3.format(',.1f'))
+            .staggerLabels(false);
+
+        //
+        chart.yAxis
+            .axisLabel('Voltage (v)')
+            .tickFormat(function(d) {
+                if (d == null) {
+                    return 'N/A';
+                }
+                return d3.format(',.2f')(d);
+            });
+
+        //
+        data = sinAndCos();
+
+
+        var svg = d3.select('#chart1').append('svg');
+
+        /*        
+        svg.append("g")
+          .attr("class", "nv-x nv-axis nvd3-svg")
+          .attr("transform", "translate(0," + 30 + ")")
+          .call(xAxis)
+          .selectAll(".tick text")
+          .call(wrap, x.rangeBand());
+        */ 
+
+        svg.datum(data)
+           .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        var xx = document.getElementsByClassName("nv-x nv-axis nvd3-svg");
+        console.log(xx[0].outerHTML);
+        var str = xx[0].outerHTML;
+        var res = str.replace("translate(0,220)", "translate(0,-20)");
+        console.log(res);
+        //var xx = document.getElementsByClassName("nvd3 nv-wrap nv-lineChart");
+        //console.log(xx);
+        //console.log(xx[0].innerHTML);
+
+        return chart;
+    });
+
+
+    function sinAndCos() {
+        var sin = [],
+            sin2 = [],
+            cos = [],
+            rand = [],
+            rand2 = []
+            ;
+        for (var i = 0; i < 10; i++) {
+            sin.push({x: i, y: i % 10 == 5 ? null : Math.sin(i/10) }); //the nulls are to show how defined works
+            sin2.push({x: i, y: Math.sin(i/5) * 0.4 - 0.25});
+            cos.push({x: i, y: .5 * Math.cos(i/10)});
+            rand.push({x:i, y: Math.random() / 10});
+            rand2.push({x: i, y: Math.cos(i/10) + Math.random() / 10 })
+        }
+        return [
+            {
+                area: false,
+                values: sin,
+                key: "Sine Wave",
+                color: "#ff7f0e",
+                strokeWidth: 4,
+                classed: 'dashed'
+            }
+            /*,
+            {
+                values: cos,
+                key: "Cosine Wave",
+                color: "#2ca02c"
+            },
+            {
+                values: rand,
+                key: "Random Points",
+                color: "#2222ff"
+            },
+            {
+                values: rand2,
+                key: "Random Cosine",
+                color: "#667711",
+                strokeWidth: 3.5
+            },
+            {
+                area: true,
+                values: sin2,
+                key: "Fill opacity",
+                color: "#EF9CFB",
+                fillOpacity: .1
+            }
+            */
+        ];
+    }
+
+    function wrap(text, width) {
+      text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")),
+            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+          }
+        }
+      });
+    }
+
 });
 
 

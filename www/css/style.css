@@ -455,11 +455,6 @@ input[type=radio]:checked ~ .checkfun::before{
   border: 0px solid black;
 }
 
-
-.tick line {
-  display: none
-}
-
 .nv-point {
   stroke-opacity: 1 !important;
   stroke-width: 5px;
