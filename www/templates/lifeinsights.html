@@ -1,6 +1,6 @@
 <ion-view view-title="Login" name="login-view" ng-init="connect()">
 
-  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+  <ion-header-bar class="bar-dark" style="background:#2e6b67;">
         <div class="buttons">
             <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
         </div>
@@ -13,21 +13,28 @@
   <!--
   <nvd3 options="options" data="data"></nvd3>
   -->
+  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">Congratulations!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">You unlocked a life-insight</center>
 
+
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-hide="showAllLIButton">The following insights are based some information you gave us</center>
+  <center style="font-size: 14px;line-height: 15px;padding-bottom:10px;" ng-hide="showAllLIButton">More insights will be unlocked as you fill out more active tasks</center>
+  <!--
   <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">Congratulations!!</center>
   <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">You unlocked a life insight.</center>
-	<center style="font-size: 16px;line-height: 25px;" ng-show="showAllLIButton">You will be able to access this life insight by clicking the pearl icon</center>
+  -->
   <div ng-repeat="lifeinsight in lifeinsights">
     <div class="card">
       <div style="position: absolute;top:4px;left: 4px;z-index: 20;" >
           <img src={{lifeinsight.img}} style="width:75px;height:auto;">
       </div>
-      <div class="item item-avatar" style="background: #E0F2F1;border-left: 2px solid #004D40; padding-left: 90px;">
-        <h2 ng-bind-html="lifeinsight.title"></h2>
-        <p>{{lifeinsight.subtext}}</p>
+      <div class="item item-avatar" style="background: #c9e8e6;border-left: 2px solid #004D40; padding-left: 90px;">
+        <div ng-bind-html="lifeinsight.title"></div>
+        <p ng-hide="lifeinsight.showTopBottom">{{lifeinsight.subtext}}</p> 
       </div>
-      <div style="margin-left:0px; margin-right:0px;margin-top:0px; background:#F4FF81; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 15px;" ng-show="lifeinsight.showTopBottom"> {{lifeinsight.top_message}}
+      <div style="margin-left:0px; margin-right:0px;margin-top:0px; background:#eef7f7; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 14px;" ng-show="lifeinsight.showTopBottom" ng-bind-html="lifeinsight.top_message">
       </div>
+
       <div id="{{lifeinsight.label}}">
         <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
       </div>
@@ -38,7 +45,7 @@
       </div>
       -->
 
-      <div style="margin-left:0px; margin-right:0px;margin-top:5px; background:#FCE4EC; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 15px;" ng-show="lifeinsight.showTopBottom"> {{lifeinsight.bottom_message}}
+      <div style="margin-left:0px; margin-right:0px;margin-top:5px; background:#eef7f7; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 14px;" ng-show="lifeinsight.showTopBottom" ng-bind-html="lifeinsight.bottom_message"> 
       </div>      
 
       <!--
@@ -90,7 +97,7 @@
 
    <div class="card" ng-show = "showMaps">
         <div class="item item-avatar" style="background: #E0F2F1;border-left: 2px solid #004D40; padding-left: 10px;">
-	        <h2 style="padding-bottom: 5px;">Two most frequent <b>locations</b> in your life</h2>
+	        <h2 style="padding-bottom: 5px;"><b>Which <b>two locations</b> did you visit the most this week?</h2>
 
 	        <p style="padding-bottom: 5px;">
 						<img src="img/location_icon2.png" style="width:15px;height:auto;float: left;" />
@@ -142,14 +149,39 @@
 	              stroke-weight="2">
             </shape>
             <div id="map" data-tap-disabled="true"></div>
+              <div class="bar bar-footer bar-positive" ng-show="showAllLIButton">
+          <div class="title" ng-click="showLifeInishgts()">Show all life insights</div>
+        </div>
         -->
   </div> 
 
   </ion-content>
 
+  <div class="bar bar-footer bar-dark" style="background:#2e6b67;">
+    <div class="title" ng-click="goHome()">Back to aquarium</div>
+    <!--
+    <p style="font-size: 18px;padding-top:8px;">Rate this meme</p>
+    <div class="rating">
+      <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating"name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating"name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating"name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
+    </div>
+    -->
+  </div>
+    <!--
+    <p style="font-size: 18px;padding-top:8px;">Rate this insight</p>
+    <div class="rating">
+      <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating"name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating"name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating"name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
+    </div>
+    -->
+  </div>
 
-  <div class="bar bar-footer bar-positive" ng-show="showAllLIButton">
-	  <div class="title" ng-click="showLifeInishgts()">Show all life insights</div>
-	</div>
+
 
 </ion-view>

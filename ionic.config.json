@@ -1,4 +1,8 @@
 {
   "name": "SARA",
-  "app_id": "574bb514"
+  "app_id": "574bb514",
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*"
+  ]
 }

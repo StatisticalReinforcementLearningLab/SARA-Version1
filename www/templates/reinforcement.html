@@ -4,29 +4,45 @@
         <div class="buttons">
             <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
         </div>
-        <h1 class="title" style="color:#fff;">Today's gift</h1>
+        <h1 class="title" style="color:#fff;">Today's meme</h1>
   </ion-header-bar>
 
 
   <ion-content class="padding">
 
+  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;">Congratulations!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;">You unlocked a meme</center>
+  <br>
   <img src="{{rein_image}}" alt="Smiley face" width="100%">
+
+  <div id="el"></div>
 
   <!--
   <div ng-repeat="image in all_images">
     {{image.filename}}
     <img src="{{image.filename}}" alt="Smiley face" width="100%">
   </div>
-  -->
-
-
-  
-  <!--
   <p>{{isRealReinforcement}}</p>
   <br>
   <br>
   <img src="img/reinforcements/devil_kid.jpg" alt="Smiley face" width="100%">
   -->
-  
+  <br>
+  <br>
+  <br>
   </ion-content>
+
+  <div class="bar bar-footer bar-dark" style="background:#3F51B5;">
+    <div class="title" ng-click="goHome()">Back to aquarium</div>
+    <!--
+    <p style="font-size: 18px;padding-top:8px;">Rate this meme</p>
+    <div class="rating">
+      <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating"name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating"name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating"name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
+    </div>
+    -->
+  </div>
 </ion-view>

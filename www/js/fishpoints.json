@@ -1,6 +1,6 @@
 [
   {
-    "name" : "Nemo-the clown fish",
+    "name" : "The clown fish",
     "level" : 1,
     "text" : "Story 1",
     "points" : 60,
@@ -48,7 +48,7 @@
     "img" : "img/angelfish.png"
   },
   {
-    "name" : "The crab",
+    "name" : "Crab",
     "level" : 1,
     "text" : "Story 1",
     "points" : 590,
@@ -96,11 +96,11 @@
     "img" : "img/seahorseyellow.png"
   },
   {
-    "name" : "Nemo Dory",
+    "name" : "Blue tang",
     "level" : 2,
     "text" : "Story 1",
     "points" : 1060,
-    "trivia" : "If you are a shark, never eat Dory. Dory is Paracanthurus hepatus, a poisonous fish.",
+    "trivia" : "If you are a shark, never eat blue tang fish. Blue tang is Paracanthurus hepatus, a poisonous fish.",
     "img" : "img/nemodori.png"
   },
   {
@@ -179,7 +179,7 @@
     "trivia" : "Dolphins communicate with each other by clicking, whistling and other sounds.",
     "img" : "img/dolphin.png"
   },{
-    "name" : "whale",
+    "name" : "Whale",
     "level" : 2,
     "text" : "Story 1",
     "points" : 2000,

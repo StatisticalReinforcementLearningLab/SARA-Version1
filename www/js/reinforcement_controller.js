@@ -1,4 +1,4 @@
-app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $location, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
     
     /*
     if(Math.random() > 0.5)
@@ -8,6 +8,21 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     */
 
     //save everything
+    
+    //we automatically go to life insight from reinforement
+    //but back button will lead us here.
+    //we need to change that.
+    /*
+    if($rootScope.leavingLI==undefined){
+        $rootScope.leavingLI = false;
+    }else{
+        if($rootScope.leavingLI == true){//means we are back from LI, so go to home.
+            $rootScope.leavingLI = false;
+            $location.path("/");
+        }
+    }
+    */
+        
 
     $scope.isRealReinforcement = $rootScope.isRealReinforcement;
     console.log("" + $scope.isRealReinforcement);
@@ -23,8 +38,21 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     else
         type = "money";
     */
-
-
+    if($rootScope.reinforcementType != "ActiveTasks")
+        saraDatafactory.copyUsageStats({'view':'reinforcement_view','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        if($rootScope.reinforcementType != "ActiveTasks")
+            saraDatafactory.copyUsageStats({'view':'reinforcement_view','status':'destroy'});
+    });
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+    
 
     var reward_options = ['gif','memes'];//,'money','life_insights'];
 
@@ -35,14 +63,16 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     type = reward_options[random_int];
     //type = reward_options[3];
 
+    var visible_lifeinsights = rl_data['reinfrocement_data']['visible_lifeinsights'] || {};
+
     if($rootScope.reinforcementType=="ActiveTasks"){
         type = 'life_insights';
-        reinfrocement_data_today['reward_type_at'] = type;
+        //reinfrocement_data_today['reward_type_at'] = type;
     }
 
-    if($rootScope.reinforcementType=="DailySurvey")
-        reinfrocement_data_today['reward_type_ds'] = type;
-
+    //if($rootScope.reinforcementType=="DailySurvey")
+    //    reinfrocement_data_today['reward_type_ds'] = type;
+    
 
     //add a meme
     if(type === 'memes' || type === 'gif'){
@@ -63,20 +93,31 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
             $scope.all_images = data2;
 
             //
-            if($rootScope.reinforcementType=="DailySurvey")
-                reinfrocement_data_today['reward_type_extra_ds'] = data2[index].filename;
+            if($rootScope.reinforcementType=="DailySurvey"){
+                reinfrocement_data_today['reward_ds_content'] = data2[index].filename;
+                if($rootScope.isRealReinforcement == true){
+                    rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+                    rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+                    window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+                    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                }
+            }
         });
     }
 
     //give the money
+    /*
     if(type === 'money'){
         $scope.rein_image = 'img/one_dollar.jpeg';
         reinfrocement_data_today['reward_type_extra'] = '1 dollar';
     }
+    */
 
 
     //ToDo: change to Cloud..
-    var visible_lifeinsights = JSON.parse(window.localStorage['visible_lifeinsights'] || '{}');
+    //var visible_lifeinsights = JSON.parse(window.localStorage['visible_lifeinsights'] || '{}');
+    //var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+    
     if(type === 'life_insights'){
         //$scope.rein_image = 'img/one_dollar.jpeg';
 
@@ -100,7 +141,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
         //console.log('' + visible_lifeinsights.length);
 
         //we have 7 life insights.
-        var life_insight_keys = ['Q1d','Q3d','Q4d','Q5d','Q6d','steps'];
+        var life_insight_keys = ['Q1d','Q3d','Q4d','Q5d','Q6d','steps','maps'];
 
         //pick a life insight index 
         var rand_index = -1;
@@ -118,6 +159,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
                 if(visible_lifeinsights[life_insight_keys[j]] == 0)
                     all_visible = false;
              }
+
              if(all_visible == true){
                 //means all are visible, so pick a random index, show that one as Billie said
                 rand_index = getRandomInt(0, 5);
@@ -125,21 +167,23 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
             }
         }
 
-        if(rand_index == -1){
+        if(rand_index == -1){//this rand_index=-1 will never happen
             $location.path("/lifeinsights/" + all);
             reinfrocement_data_today['reward_type_extra_at'] = 'all';
         }else{
             $location.path("/lifeinsights/" + life_insight_keys[rand_index]);
-            reinfrocement_data_today['reward_type_extra_at'] = life_insight_keys[rand_index];
+            reinfrocement_data_today['reward_at_content'] = life_insight_keys[rand_index];
+        }
+
+        if($rootScope.isRealReinforcement == true){
+            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
     }
 
-    if($rootScope.isRealReinforcement == true){
-        rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
-        rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
-        window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-    }
+
     //add a life insights.
     
 
@@ -154,8 +198,53 @@ app.controller("ReinforcementCtrl", function($scope, $http, $location, $rootScop
     };
 
     //
+    $scope.s = {};
+    $scope.ratingChanged = function(x){
+        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
+        var reinfrocement_data_today = rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] || {};
+        reinfrocement_data_today['reward_ds_rating'] = x;
+        reinfrocement_data_today['reward_ds_rating_ts'] = moment().format("x");
+        reinfrocement_data_today['reward_ds_rating_tz'] = moment().format("ZZ");
 
+        //console.log("" + x);
 
+        if($rootScope.isRealReinforcement == true){
+            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        }
+
+        $location.path("/main");
+    }
+
+    /*
+    var el = document.querySelector('#el');
+
+    // current rating, or initial rating
+    var currentRating = 0;
+
+    // max rating, i.e. number of stars you want
+    var maxRating= 5;
+
+    // callback to run after setting the rating
+    var callback = function(rating) { alert(rating); };
+
+    // rating instance
+    var myRating = rating(el, currentRating, maxRating, callback);
+
+    myRating.setRating(3);
+
+    // sets rating and runs callback
+    myRating.setRating(3, true);
+
+    // sets rating and doesn't run callback
+    myRating.setRating(3, false);
+
+    // gets the rating
+    myRating.getRating();
+    */
 
     //console.log($location.path());
 

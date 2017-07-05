@@ -82,9 +82,17 @@ app.config(function($routeProvider) {
             templateUrl: "templates/reinforcement.html",
             controller: "ReinforcementCtrl"
         })
+        .when("/info", {
+            templateUrl: "templates/info.html",
+            controller: "RedCtrl"
+        })
         .when("/lifeinsights/:type", {
             templateUrl: "templates/lifeinsights.html",
             controller: "LifeInsightsCtrl"
+        })
+        .when("/activetasks", {
+            templateUrl: "templates/activetasks.html",
+            controller: "ATCtrl"
         })
         .when("/red", {
             templateUrl: "templates/red.html",
@@ -131,6 +139,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             game.state.add('Level1', FishGame.Level1);
             game.state.add('Level1Small', FishGame.Level1Small);
 
+            
+
             //cognito data
             /*
             var cognito_data = {};
@@ -142,6 +152,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             console.log("cognito_data: " + JSON.stringify(cognito_data));
             saraDatafactory.storedata('rl_data',cognito_data, moment().format('YYYYMMDD'));
             */
+
+
 
 
             saraDatafactory.pullRLData(function(returnValue) {
@@ -161,7 +173,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //Make sure the call for "sdcard" permission happens.
                 //save to "data_ds_ws.txt"
                 var rl_data = JSON.parse(returnValue);
-                saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+                
 
 
                 //console.log(returnValue);
@@ -174,8 +186,10 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 game.state.states["Level1Small"].assignscope(scope);
 
                 game.state.start('Boot');
-
                 
+
+                //save now in the disk
+                saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
 
                 //console.log("json content: " + "came here");
                 //
@@ -188,9 +202,18 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //TODO: if IMEI name is empty add to the rl_data.
                 //}
+                //setTimeout(function () {
+                //    checkReinforcement();
+                    //saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']);    
+                //}, 100);
+
+                /*
                 setTimeout(function () {
-                    checkReinforcement();   
-                }, 500);
+                    saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']);//to save the username
+                    //checkReinforcement();
+                    //saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']);    
+                }, 20000);
+                */
 
             });
 
@@ -205,11 +228,21 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 // will come back from "/reward" here.
                 // 
 
+                console.log("checkReinforcement: " + scope.isFocusGroup);
+
                 //So, I need to keep track of if rewards are given from daily and active tasks already.
                 var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
 
                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
-                var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                //var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+
+                console.log("reinfrocement_data: "+ JSON.stringify($rootScope.reinfrocement_data))
+                //if undefined then get from local storage
+                if($rootScope.reinfrocement_data == undefined)
+                    $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+
+                var reinfrocement_data = $rootScope.reinfrocement_data;
+
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
                     //means reinforcement have some data.
@@ -218,11 +251,20 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         //
                         console.log("All survey completed. give reward");
 
-                        if('reward_at' in reinfrocement_data[moment().format('YYYYMMDD')]){
-                        }else{
+                        //if($rootScope.total_days < 4)
 
-                            if(Math.random() > 0){ //means show
+
+                        if(('reward_at' in reinfrocement_data[moment().format('YYYYMMDD')]) || ($rootScope.total_days < 4)){
+                        }else{
+                            //var rand_prob = Math.random();
+                            var rand_prob = getRandomInt(1, 10000);
+                            if((rand_prob%2)==0){ //means show
+
+                                //
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_at'] = 1;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_prob'] = rand_prob;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_ts'] = moment().format("x");
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
 
 
                                 //save the data first
@@ -246,26 +288,36 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 $rootScope.isRealReinforcement = true;
                                 $rootScope.reinforcementType = "ActiveTasks"; //DailySurvey
 
+                                
                                 //now show the reward.
-                                if (scope.current_level === "GameSmall")
-                                    game.state.states["GameSmall"].showBubbles2(true);
-                                    //game.state.states["GameSmall"].updatescore(args.state);
+                                if(scope.isFocusGroup == false){
+                                    if (scope.current_level === "GameSmall")
+                                        game.state.states["GameSmall"].showBubbles2(true);
+                                        //game.state.states["GameSmall"].updatescore(args.state);
 
-                                if (scope.current_level === "Game")
-                                    game.state.states["Game"].showBubbles2(true);
+                                    if (scope.current_level === "Game")
+                                        game.state.states["Game"].showBubbles2(true);
 
-                                if (scope.current_level === "Level1Small")
-                                    game.state.states["Level1Small"].showBubbles2(true);
+                                    if (scope.current_level === "Level1Small")
+                                        game.state.states["Level1Small"].showBubbles2(true);
 
-                                if (scope.current_level === "Level1")
-                                    game.state.states["Level1"].showBubbles2(true);
+                                    if (scope.current_level === "Level1")
+                                        game.state.states["Level1"].showBubbles2(true);
+                                }
+                                
 
                             }else{
                                 //
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_at'] = 0;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_prob'] = rand_prob;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_ts'] = moment().format("x");
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
+
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                                 saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
+                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
 
                             //
@@ -281,15 +333,20 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                     //check the daily survey
                     //---- && ('ds' in reinfrocement_data[moment().format('YYYYMMDD')]))
+                    //now show the reward.
+                    console.log("scope.isFocusGroup " + scope.isFocusGroup );
                     if('ds' in reinfrocement_data[moment().format('YYYYMMDD')]){
                         //
                         console.log("All survey completed. give reward");
 
                         if('reward_ds' in reinfrocement_data[moment().format('YYYYMMDD')]){
                         }else{
-
-                            if(Math.random() > 0){ //means show
+                            var rand_prob2 = getRandomInt(1, 10000);
+                            if((rand_prob2%2)==0){ //means show //means show
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds'] = 1;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_prob'] = rand_prob2;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_ts'] = moment().format("x");
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
 
 
                                 //save the data first
@@ -313,26 +370,34 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 $rootScope.isRealReinforcement = true;
                                 $rootScope.reinforcementType = "DailySurvey";
 
-                                //now show the reward.
-                                if (scope.current_level === "GameSmall")
-                                    game.state.states["GameSmall"].showBubbles(true);
-                                    //game.state.states["GameSmall"].updatescore(args.state);
+                                
+                                if(scope.isFocusGroup == false){
+                                    if (scope.current_level === "GameSmall")
+                                        game.state.states["GameSmall"].showBubbles(true);
+                                        //game.state.states["GameSmall"].updatescore(args.state);
 
-                                if (scope.current_level === "Game")
-                                    game.state.states["Game"].showBubbles(true);
+                                    if (scope.current_level === "Game")
+                                        game.state.states["Game"].showBubbles(true);
 
-                                if (scope.current_level === "Level1Small")
-                                    game.state.states["Level1Small"].showBubbles(true);
+                                    if (scope.current_level === "Level1Small")
+                                        game.state.states["Level1Small"].showBubbles(true);
 
-                                if (scope.current_level === "Level1")
-                                    game.state.states["Level1"].showBubbles(true);
-
+                                    if (scope.current_level === "Level1")
+                                        game.state.states["Level1"].showBubbles(true);
+                                }
+                                
                             }else{
                                 //
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds'] = 0;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_prob'] = rand_prob2;
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_ts'] = moment().format("x");
+                                reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
+
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                                 saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
+                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
 
                             //
@@ -352,6 +417,14 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             }
             //saraDatafactory.storedata('game_score',json_data, moment().format('YYYYMMDD'));
 
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            scope.$on('show:checkReinforcement', function() {
+                //console.log("show:checkReinforcement");
+                checkReinforcement();
+            });
             scope.$on('show:reinforcementdemo', function() {
                  if (scope.current_level === "GameSmall")
                     game.state.states["GameSmall"].showBubbles(false);
@@ -403,7 +476,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //daily survey
                 var daily_survey = scoreValue['daily_survey']; //JSON.parse(window.localStorage['daily_survey_data'] || "{}");
-                console.log(JSON.stringify(daily_survey));
+                //console.log(JSON.stringify(daily_survey));
                 scope.total_daily_surveys = 0;
                 for (var key in daily_survey) {
                     //console.log(key);
@@ -413,7 +486,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //weekly survey
                 var weekly_survey = scoreValue['weekly_survey']; //JSON.parse(window.localStorage['weekly_survey_data'] || "{}");
-                console.log(JSON.stringify(weekly_survey));
+                //console.log(JSON.stringify(weekly_survey));
                 scope.total_weekly_surveys = 0;
                 for (var key in weekly_survey) {
                     //console.log(key);
@@ -425,7 +498,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //active tasks
                 //var active_tasks_survey = scoreValue['active_tasks_survey_data'];
                 var active_tasks_survey = scoreValue['active_tasks_survey'];//JSON.parse(window.localStorage['active_tasks_survey_data'] || "{}");
-                console.log(JSON.stringify(active_tasks_survey));
+                //console.log(JSON.stringify(active_tasks_survey));
                 scope.total_active_tasks_surveys = 0;
                 //---- window.localStorage['at_data']
                 //var active_task_prior_data = {};
@@ -442,6 +515,10 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 scope.total_points = scope.total_daily_surveys * 30 + scope.total_weekly_surveys * 50 + scope.total_active_tasks_surveys * 15;
                 score_data['points'] = scope.total_points;
 
+                //this is where we need to store
+                //the total score
+                window.localStorage['fish_aquarium_score'] = "" + scope.total_points;
+
                 if ($rootScope.total_score == undefined)
                     $rootScope.total_score = scope.total_points;
                 else
@@ -456,7 +533,144 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //  End: calculate all the points
                 /////////////////////////////////////////////////////////////////////////////
 
+                //prepare data for the stars
+                showstartatthebottom(scoreValue);
+
                 return score_data;
+            }
+
+            function showstartatthebottom(scoreValue){
+
+                var daily_survey = scoreValue['daily_survey'];
+                scope.daily_survey_images = [];
+
+
+                //get the first date
+                var first_date = moment().format('YYYYMMDD');
+                for (var key in daily_survey) {
+                    first_date = key;
+                    break;
+                }
+                $rootScope.first_date_of_study = first_date;
+
+                $rootScope.total_days = 0;
+                //np data on the first day
+                if(first_date === moment().format('YYYYMMDD')){
+                    //{name: 'clubs', symbol: '♣', show:true, up:100, class: 'blue', img:'img/blue.png', show_image: true}
+                    if(daily_survey.hasOwnProperty(first_date)){
+                        scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15});
+                        $rootScope.total_days = 1;
+                    }
+                    else
+                        scope.daily_survey_images.push({img: 'img/not_done.png', width: 15});
+
+                    scope.daily_survey_images[1] = {img: 'img/today.png', width: 15};
+                    //return;
+                }else{
+                    //there is more data
+                    var current_date = first_date;
+                    var number_of_days = 1;
+                    while(true){
+
+                        if(daily_survey.hasOwnProperty(current_date))
+                            scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15});
+                        else
+                            scope.daily_survey_images.push({img: 'img/not_done.png', width: 15});
+
+                        if((scope.daily_survey_images.length+1)%5 == 0){
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.daily_survey_images.push({img: 'img/today.png', width: 15});
+                            else if((scope.daily_survey_images.length+1)%20 == 0)
+                                scope.daily_survey_images.push({img: 'img/arrow.png', width: 15, text: "" + number_of_days + " days" });
+                            else
+                                scope.daily_survey_images.push({img: 'img/nothing.png', width: 6});
+                        }else{
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.daily_survey_images.push({img: 'img/today.png', width: 15});
+                        }
+
+                        //if((scope.daily_survey_images.length+1)%15 == 0)
+
+                        if(current_date === moment().format('YYYYMMDD'))
+                            break;
+
+                        current_date = moment(current_date, "YYYYMMDD").add(1, 'day').format('YYYYMMDD');
+                        number_of_days++;
+                    }
+                    $rootScope.total_days = number_of_days;
+                }
+                //console.log(scope.daily_survey_images);
+
+
+
+                //////////////////////////
+                //
+                //-- Active task
+                //
+                var active_tasks_survey = scoreValue['active_tasks_survey'];
+                scope.active_tasks_survey_images = [];
+
+
+                //get the first date
+                var first_date = moment().format('YYYYMMDD');
+                for (var key in active_tasks_survey) {
+                    first_date = key;
+                    break;
+                }
+
+                //np data on the first day
+                if(first_date === moment().format('YYYYMMDD')){
+                    if(active_tasks_survey.hasOwnProperty(first_date))
+                        scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
+                    else
+                        scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15});
+
+                    scope.active_tasks_survey_images[1] = {img: 'img/today.png', width: 15};
+                }else{
+
+                    //there is more data
+                    var current_date = first_date;
+                    number_of_days = 1;
+                    while(true){
+
+                        if(active_tasks_survey.hasOwnProperty(current_date))
+                            scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
+                        else
+                            scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15});
+
+
+                        if((scope.active_tasks_survey_images.length+1)%5 == 0){
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.active_tasks_survey_images.push({img: 'img/today.png', width: 15});
+                            else if((scope.active_tasks_survey_images.length+1)%20 == 0)
+                                scope.active_tasks_survey_images.push({img: 'img/arrow.png', width: 15, text: "" + number_of_days + " days" });
+                            else
+                                scope.active_tasks_survey_images.push({img: 'img/nothing.png', width: 6});
+                        }else{
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.active_tasks_survey_images.push({img: 'img/today.png', width: 15});
+                        }
+
+                        //if((scope.active_tasks_survey_images.length+1)%5 == 0)
+                        //    scope.active_tasks_survey_images.push('img/nothing.png');
+
+                        //if((scope.daily_survey_images.length+1)%15 == 0)
+
+
+                        number_of_days++;
+                        if(current_date === moment().format('YYYYMMDD'))
+                            break;
+                        current_date = moment(current_date, "YYYYMMDD").add(1, 'day').format('YYYYMMDD');
+
+                        
+                    }
+                }
+                //console.log(scope.active_tasks_survey_images);
+
+
+                //scope.daily_survey_images[0] = 'img/active_task_done.png';
+                //scope.daily_survey_images[1] = 'img/not_done.png';
+                //scope.daily_survey_images[2] = 'img/survey_done.png';
             }
 
 
@@ -689,12 +903,16 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         
     }*/
 
-
+    $scope.isFocusGroup = false;
 
     window.localStorage['email'] = "sara-test";
 
     //for testing
     window.localStorage['current_level'] = 'Game';
+
+    $scope.username = window.localStorage['username'] || 'unknown';
+
+    $rootScope.insideMain = true;
 
     //status bar color
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -733,19 +951,26 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
             //readActiveTaskData();
             //promise = $interval(readActiveTaskData, 2000);
             console.log('resumed');
+            //if($rootScope.insideMain == true)
+            saraDatafactory.copyUsageStats({'view':'app','status':'resume'});
             isPaused = false;
         }, false);
 
         document.addEventListener("pause", function() {
             //$interval.cancel(promise);
             console.log('paused');
+            //if($rootScope.insideMain == true)
+            saraDatafactory.copyUsageStats({'view':'app','status':'paused'});
             isPaused = true;
         }, false);
 
 
+        saraDatafactory.copyUsageStats({'view':'main','status':'start'});
+
         //readActiveTaskData();
-        testResumePause();
+        //testResumePause();
     }
+    
     
     var promise = $interval(testResumePause, 2000);
 
@@ -753,6 +978,8 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
 
     function testResumePause() {
         console.log("App paused: " + isPaused);
+        $interval.cancel(promise);
+        promise = $interval(testResumePause, 2000);
         if(isPaused==false)
             readActiveTaskData();
     }
@@ -779,96 +1006,176 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         //insideReading = true;
 
         //console.log("Reading active tasks");
-        saraDatafactory.loadDataCollectionState(function(returnValue) {
-            if (returnValue == null) {
-                //insideReading = false;
-            }else {
-                var sdcard_data = JSON.parse(returnValue);
-                //console.log("json content: " + JSON.stringify(sdcard_data));
-                window.localStorage['imei'] = sdcard_data['imei'] || "null";
+        if (ionic.Platform.isAndroid()) {
+            saraDatafactory.loadDataCollectionState(function(returnValue) {
+                if (returnValue == null) {
+                    //insideReading = false;
+                }else {
+                    var sdcard_data = JSON.parse(returnValue);
+                    //console.log("json content: " + JSON.stringify(sdcard_data));
+                    window.localStorage['imei'] = sdcard_data['imei'] || "null";
 
-                //
-                var rl_data = JSON.parse(window.localStorage['cognito_data']);
-                var active_task_prior_data = rl_data['survey_data']['active_tasks_survey']; //JSON.parse(window.localStorage['at_data'] || "{}");
-                //active_task_data = active_task_data['active_tasks_survey_data']
+                    //
+                    var rl_data = JSON.parse(window.localStorage['cognito_data']);
+                    var active_task_prior_data = rl_data['survey_data']['active_tasks_survey']; //JSON.parse(window.localStorage['at_data'] || "{}");
+                    //active_task_data = active_task_data['active_tasks_survey_data']
 
-                //Why this works? This is just a local copy restore.
-                // -- this one is local cache. If there is something new then we don't care about the histroy. We just care of the delta.
-                // -- The delta since last one is what happened in this device. 
-                // -- We can't do anything what happened on other devices if there is a device change.
-                // -- But, on an update, it will delete the local cache.
-                // -- So, prior data needs to come from synced data. And we see if there is anything new.
-                // -- 
+                    //Why this works? This is just a local copy restore.
+                    // -- this one is local cache. If there is something new then we don't care about the histroy. We just care of the delta.
+                    // -- The delta since last one is what happened in this device. 
+                    // -- We can't do anything what happened on other devices if there is a device change.
+                    // -- But, on an update, it will delete the local cache.
+                    // -- So, prior data needs to come from synced data. And we see if there is anything new.
+                    // -- 
 
-                //if for today there is something new then add that to the main one, and add to the points
-                //---- All sdcard data will come to "active_task_prior_data"
-                var isActiveTaskAdded =  false;
-                var isActiveTaskAddedHowMany =  0;
-                var active_tasks_survey_data = sdcard_data['active_tasks_survey'];//this is the latest data.
-                for (var key in active_tasks_survey_data) {
-                    if (active_tasks_survey_data.hasOwnProperty(key)) {
-                        //console.log(key + " -> " + p[key]);
-                        if (active_task_prior_data.hasOwnProperty(key)) {
-                            //we need to see if the count is different
-                            if (active_task_prior_data[key] < active_tasks_survey_data[key]){
-                                isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key] - active_task_prior_data[key];
+                    //if for today there is something new then add that to the main one, and add to the points
+                    //---- All sdcard data will come to "active_task_prior_data"
+                    var isActiveTaskAdded =  false;
+                    var isActiveTaskAddedHowMany =  0;
+                    var active_tasks_survey_data = sdcard_data['active_tasks_survey'];//this is the latest data on sdcard
+
+                    //
+                    for (var key in active_tasks_survey_data) {
+                        if (active_tasks_survey_data.hasOwnProperty(key)) {
+                            //console.log(key + " -> " + p[key]);
+
+
+                            if (active_task_prior_data.hasOwnProperty(key)) {//date is in the prior record. so check if sd_card is incremented
+                                //we need to see if the count is different
+                                if (active_task_prior_data[key] < active_tasks_survey_data[key]){
+                                    isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key] - active_task_prior_data[key];
+                                    active_task_prior_data[key] = active_tasks_survey_data[key];
+                                    if(key===moment().format('YYYYMMDD'))
+                                        isActiveTaskAdded = true;
+                                }
+                            } else {
+                                //means we have new data, since the date don't exist
                                 active_task_prior_data[key] = active_tasks_survey_data[key];
                                 if(key===moment().format('YYYYMMDD'))
                                     isActiveTaskAdded = true;
+                                isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key];
                             }
-                        } else {
-                            //means we have new data, since the date don't exist
-                            active_task_prior_data[key] = active_tasks_survey_data[key];
-                            if(key===moment().format('YYYYMMDD'))
-                                isActiveTaskAdded = true;
-                            isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key];
                         }
                     }
-                }
-                console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
-                console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
-                console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
-                //if(isActiveTaskAdded){
-                
-                //means 2 active task has been done.
-                if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
+                    //console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
+                    //console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
+                    //console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
+                    //if(isActiveTaskAdded){
+                    
+                    //means 2 active task has been done.
+                    if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
 
-                    //see if we have given a reward already.
-                    var active_tasks_reward_records = JSON.parse(window.localStorage['active_tasks_reward_records']||'{}'); 
-                    if(active_tasks_reward_records.hasOwnProperty(moment().format('YYYYMMDD'))){
-                        //we have given rewards already so move on
-                    }else{
-                        //
-                        active_tasks_reward_records[moment().format('YYYYMMDD')] = 1;
-                        window.localStorage['active_tasks_reward_records'] = JSON.stringify(active_tasks_reward_records);
+                        //see if we have given a reward already.
+                        var active_tasks_reward_records = JSON.parse(window.localStorage['active_tasks_reward_records']||'{}'); 
+                        if(active_tasks_reward_records.hasOwnProperty(moment().format('YYYYMMDD'))){
+                            //we have given rewards already so move on
+                        }else{
+                            //
+                            active_tasks_reward_records[moment().format('YYYYMMDD')] = 1;
+                            window.localStorage['active_tasks_reward_records'] = JSON.stringify(active_tasks_reward_records);//we have given rewards
 
-                        //
+                            //this will be always 2 from now on.
+                            $scope.$broadcast('game:addscore', {
+                                state: 29,
+                                isReal: true
+                            });
+                        }
+                    }
+
+                    //if new active task has been added. 
+                    if(isActiveTaskAddedHowMany > 0){                     //
                         rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
                         window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                         saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                    }
+                    //window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
 
-                        //this will be always 2 from now on.
-                        $scope.$broadcast('game:addscore', {
+
+                    //console.log("AT data: " + JSON.stringify(active_task_prior_data));
+
+                    //save to the cloud.
+                    //saraDatafactory.storedata('game_score',active_task_prior_data, moment().format('YYYYMMDD'));
+                }
+                //insideReading = false;//means we can read again.
+            });
+        }else{
+            //
+            var rl_data = JSON.parse(window.localStorage['cognito_data']);
+            var active_task_prior_data = rl_data['survey_data']['active_tasks_survey']; //JSON.parse(window.localStorage['at_data'] || "{}");
+            
+
+            //if for today there is something new then add that to the main one, and add to the points
+            //---- All sdcard data will come to "active_task_prior_data"
+            var isActiveTaskAdded =  false;
+            var isActiveTaskAddedHowMany =  0;
+
+            //
+            var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}"); //this is the latest data on sdcard
+
+
+            //
+            for (var key in active_tasks_survey_data) {
+                if (active_tasks_survey_data.hasOwnProperty(key)) {
+                            //console.log(key + " -> " + p[key]);
+
+                            if (active_task_prior_data.hasOwnProperty(key)) {//date is in the prior record. so check if sd_card is incremented
+                                //we need to see if the count is different
+                                if (active_task_prior_data[key] < active_tasks_survey_data[key]){
+                                    isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key] - active_task_prior_data[key];
+                                    active_task_prior_data[key] = active_tasks_survey_data[key];
+                                    if(key===moment().format('YYYYMMDD'))
+                                        isActiveTaskAdded = true;
+                                }
+                            } else {
+                                //means we have new data, since the date don't exist
+                                active_task_prior_data[key] = active_tasks_survey_data[key];
+                                if(key===moment().format('YYYYMMDD'))
+                                    isActiveTaskAdded = true;
+                                isActiveTaskAddedHowMany = isActiveTaskAddedHowMany + active_tasks_survey_data[key];
+                            }
+                        }
+            }
+                    //console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
+                    //console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
+                    //console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
+                    //if(isActiveTaskAdded){
+                    
+            //means 2 active task has been done.
+            if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
+
+                        //see if we have given a reward already.
+                var active_tasks_reward_records = JSON.parse(window.localStorage['active_tasks_reward_records']||'{}'); 
+                if(active_tasks_reward_records.hasOwnProperty(moment().format('YYYYMMDD'))){
+                            //we have given rewards already so move on
+                }else{
+                    //
+                    active_tasks_reward_records[moment().format('YYYYMMDD')] = 1;
+                    window.localStorage['active_tasks_reward_records'] = JSON.stringify(active_tasks_reward_records);//we have given rewards
+
+                            //this will be always 2 from now on.
+                    $scope.$broadcast('game:addscore', {
                             state: 29,
                             isReal: true
                         });
                     }
-                }
-                //window.localStorage['at_data'] = JSON.stringify(active_task_prior_data);
-
-
-                //console.log("AT data: " + JSON.stringify(active_task_prior_data));
-
-                //save to the cloud.
-                //saraDatafactory.storedata('game_score',active_task_prior_data, moment().format('YYYYMMDD'));
             }
-            //insideReading = false;//means we can read again.
-        });
+
+            //if new active task has been added. 
+            if(isActiveTaskAddedHowMany > 0){                     //
+                rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
+                window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+            }
+        }
     }
+
+    
 
 
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
+        $rootScope.insideMain = false;
+        saraDatafactory.copyUsageStats({'view':'main','status':'destroy'});
         console.log("Interval canceled");
         $interval.cancel(promise);
     });
@@ -929,6 +1236,10 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         $location.path("/lifeinsights/all");
     };
 
+    $scope.showHelp = function(){
+        $location.path("/info");
+    };
+
     $scope.showAllLifeInishgts = function(){
         $location.path("/lifeinsights/demo");
     };
@@ -985,10 +1296,16 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
 
         //only available after 6PM.
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "1:00" + " am", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
-        if (moment().valueOf() >= daily_survey_start_time && moment().valueOf() <= daily_survey_end_time) {
+        //
+        var isFirstDay = false;
+        if($rootScope.first_date_of_study === moment().format('YYYYMMDD'))
+            isFirstDay = true;
+
+        console.log("isFirstDay: " + isFirstDay + ", " + $rootScope.first_date_of_study);
+        if ((moment().valueOf() >= daily_survey_start_time && moment().valueOf() <= daily_survey_end_time) || (isFirstDay==true)){
 
             //
             var isDailySurveyCompleted = window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] || 0;
@@ -1024,7 +1341,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
     $scope.showAlertDaily = function() {
         var alertPopup = $ionicPopup.alert({
             title: 'Daily survey unavilable',
-            template: 'Daily survey is only available between 6PM to 12AM.'
+            template: 'Survey is only available between 6PM to 12AM.'
         });
 
         alertPopup.then(function(res) {
@@ -1111,31 +1428,71 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
 
         $scope.myPopup.close();
 
+        var today_date_string = moment().format('YYYY-MM-DD');
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
-        if (device.platform === 'Android') {
-            var sApp = startApp.set({ /* params */
-                "package": "edu.stat.srl.passivedatakit",
-                "intentstart": "startActivity",
-                "component": ["edu.stat.srl.passivedatakit", "edu.stat.srl.passivedatakit.activetasks.SpatialTask.SpatialMemoryTaskA1"]
-            }, { /* extras */
+        var isFirstDay = false;
+        if($rootScope.first_date_of_study === moment().format('YYYYMMDD'))
+            isFirstDay = true;
+            
+        //console.log("" + device.platform);
+        if ((moment().valueOf() >= daily_survey_start_time && moment().valueOf() <= daily_survey_end_time) || (isFirstDay==true)){
+            
+            if(ionic.Platform.isAndroid()) {
+                var sApp = startApp.set({ /* params */
+                    "package": "edu.stat.srl.passivedatakit",
+                    "intentstart": "startActivity",
+                    "component": ["edu.stat.srl.passivedatakit", "edu.stat.srl.passivedatakit.activetasks.SpatialTask.SpatialMemoryTaskA1"]
+                }, { /* extras */
 
-            });
+                });
 
+                sApp.check(function(values) { /* success */
+                    console.log(values)
+                }, function(error) { /* fail */
+                    alert(error);
+                });
 
-            sApp.check(function(values) { /* success */
-                console.log(values)
-            }, function(error) { /* fail */
-                alert(error);
-            });
+                sApp.start(function() { /* success */
+                    console.log(values)
+                }, function(error) { /* fail */
+                    alert(error);
+                });
+            }
+            else{
+                $location.path("/activetasks");
 
-            sApp.start(function() { /* success */
-                console.log(values)
-            }, function(error) { /* fail */
-                alert(error);
-            });
+                /*
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Welcome to iOS',
+                    template: 'Under development'
+                });
+
+                alertPopup.then(function(res) {
+                    console.log('Active tasks unavilable');
+                });
+                */
+            }
+
+        }else{
+            $scope.showAlertAT();
         }
-
     };
+
+    $scope.showAlertAT = function() {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Active tasks unavilable',
+            template: 'Active tasks are only available between 6PM to 12AM.'
+        });
+
+        alertPopup.then(function(res) {
+            console.log('Active tasks unavilable');
+        });
+    };
+
+
+
 
     $scope.startTwoFingerActiveTask = function() {
         console.log("Active task survey ");
@@ -1191,6 +1548,9 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                 '</button>' +
                 '<button class="button button-full button-dark" ng-click="startWeeklySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Weekly Survey<br><spa style="font-size: 12px;">Sunday after 6PM</span></p>' +
+                '</button>' +
+                '<button class="button button-full button-dark" ng-click="startWeeklySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
+                '<p style="line-height:1.2;">Sunday Survey<br><spa style="font-size: 12px;">For demo only</span></p>' +
                 '</button>',
             */    
 
@@ -1200,9 +1560,6 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                 '</button>' +
                 '<button class="button button-full button-positive" ng-click="startSpatialActiveTask()" style="padding-top:2px;padding-bottom:-3px;">' +
                 '<p style="line-height:1.2;">Active tasks<br><spa style="font-size: 12px;">Today after 6PM</span></p>' +
-                '</button>' +
-                '<button class="button button-full button-dark" ng-click="startWeeklySurvey()" style="padding-top:2px;padding-bottom:-3px;">' +
-                '<p style="line-height:1.2;">Sunday Survey<br><spa style="font-size: 12px;">For demo only</span></p>' +
                 '</button>',
             title: 'Complete the following surveys',
             //subTitle: 'Current id: <b>' + $scope.email + '<b>',
@@ -1286,8 +1643,7 @@ app.controller('RegisterCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state',
 ]);
 
 
-app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$ionicLoading', '$location',
-    function($scope, awsCognitoIdentityFactory, $state, $ionicLoading, $location) {
+app.controller('LoginCtrl', function($scope, awsCognitoIdentityFactory, $state, $ionicLoading, $location, saraDatafactory) {
         
         var query_string = window.location.search;
         console.log("query_string: " + query_string);
@@ -1300,6 +1656,30 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
             message: null
         };
 
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        //var promise = $interval(readActiveTaskData, 2000);
+
+        var isPaused = false;
+        function onDeviceReady() {
+            console.log(StatusBar);
+            if (ionic.Platform.isAndroid()) {
+                //$cordovaStatusbar.overlaysWebView(true);
+                //$cordovaStatusbar.styleHex('#4527A0');
+                if (window.StatusBar) {
+                    StatusBar.overlaysWebView(true);
+                    StatusBar.backgroundColorByHexString("#303F9F"); //Light
+                }
+            }
+
+            saraDatafactory.copyUsageStats({'view':'login','status':'start'});
+        }
+
+        
+        $scope.$on('$destroy', function() {
+            // Make sure that the interval is destroyed too
+            saraDatafactory.copyUsageStats({'view':'login','status':'destroy'});
+        });
 
         $scope.showlogin = true;
         $scope.bgCol = '#000';
@@ -1328,6 +1708,7 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
         }
 
         $scope.signIn = function(login) {
+            window.localStorage['username'] = $scope.user.email;//save the user name
             $ionicLoading.show({
                 template: 'Loading...'
             });
@@ -1367,13 +1748,50 @@ app.controller('LoginCtrl', ['$scope', 'awsCognitoIdentityFactory', '$state', '$
             login.$setUntouched();
         }
     }
-]);
+);
 
-app.controller("RedCtrl", function($scope, $http, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+
+app.controller("ATCtrl", function($scope, $http, $ionicPlatform, $location) {
 
     //var data = sinAndCos();
     //console.log(JSON.stringify(data));
+    //load the questions
+    $scope.goHome = function() {
+        $location.path("/");
+    };
 
+    $scope.addAT = function() {
+
+        //
+        var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}");
+        active_tasks_survey_data[moment().format('YYYYMMDD')] = 2;
+        window.localStorage['active_tasks_survey'] = JSON.stringify(active_tasks_survey_data);
+
+        $location.path("/");
+    };
+});
+
+app.controller("RedCtrl", function($scope, $http, $ionicPlatform, $location, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+
+    //var data = sinAndCos();
+    //console.log(JSON.stringify(data));
+    //load the questions
+    $scope.goHome = function() {
+        $location.path("/");
+    };
+
+    saraDatafactory.copyUsageStats({'view':'info','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'info','status':'destroy'});
+    });
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
 
     nv.addGraph(function() {
         chart = nv.models.lineChart()

@@ -1,4 +1,4 @@
-app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $sce, $ionicPopup, $routeParams, ngProgressFactory, saraDatafactory) {
+app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatform,$location, $sce, $ionicPopup, $routeParams, ngProgressFactory, saraDatafactory) {
 
     //status bar color
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -17,6 +17,19 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
         }
     }
 
+    saraDatafactory.copyUsageStats({'view':'dailysurvey','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'dailysurvey','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
 
 
     $scope.notification_id = $routeParams.id;
@@ -67,7 +80,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
         console.log("Questions: " + data);
 
         //randomize the order of array
-        //data = shuffle(data);
+        data = shuffle(data);
 
         survey_data = data;
         $scope.qs = data;
@@ -235,7 +248,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
 
         var ctx = c.getContext("2d");
         var imageObj = new Image();
-        imageObj.src = 'https://s3.amazonaws.com/sara-umich/appfiles/affect_grid.png';
+        imageObj.src = 'img/affect_grid.png';
         imageObj.onload = function(){
         ctx.drawImage(imageObj, 0, 0, imageObj.width,    imageObj.height, // source rectangle
                        0, 0, c.width, c.height); // destination rectangle
@@ -927,7 +940,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
                 var min = obj.extra.choices[2];
                 var max = obj.extra.choices[3];
                 var step = obj.extra.choices[4];
-                $scope.survey[i] = 5;
+                $scope.survey[i] = -1;
                 survey_string = [survey_string,
                     '<div class = "row" style="margin-bottom=0px;">',
                     '<div class = "col col-10"><p align="center" style="padding-top:2px;padding-bottom:2px;margin:0px;border-radius:5px;background:#4e5dca;color:white;">0</p></div>',
@@ -956,7 +969,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
                 var min = obj.extra.choices[2];
                 var max = obj.extra.choices[3];
                 var step = obj.extra.choices[4];
-                $scope.survey[i] = 300;
+                $scope.survey[i] = 25*60;
                 survey_string = [survey_string,
                     '<div class = "row">',
                     '<div class = "col col-33 col-offset-67"><p align="center" style="padding:5px;border-radius:25px;background:#303F9F;color:white;"><b>{{survey.' + i + '/60}} hours</b></p></div>',
@@ -964,7 +977,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval,$location, $
                     '<div class="item range range-balanced" style="padding:10px;border-width:0px;">',
                     '<p style="text-align: center;color: black;">' + obj.extra.choices[0] + "</p>",
                     '<input type="range" min="' + min + '" max="' + max + '" value="' + min + '" step="' + step + '" ng-model="survey.' + i + '" name="' + i + '" ng-change="inputchanged(\'' + i + '\')"' + '>',
-                    '<p style="text-align: center;color:black;">' + "10<br>hours" + "</p>",
+                    '<p style="text-align: center;color:black;">' + "24<br>hours" + "</p>",
                     '</div>',
                 ].join(" ");
             }

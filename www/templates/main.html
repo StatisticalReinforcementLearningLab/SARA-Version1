@@ -1,21 +1,92 @@
 <ion-view view-title="Login" name="login-view" ng-init="getUserFromLocalStorage()">
 
           <ion-header-bar class="bar-stable" style="background:#3F51B5;">
+
                 <h1 class="title" style="color:#fff;">SARA</h1>
+
+                
+                <div class="buttons">
+                  <button class="button button-icon ion-arrow-graph-up-right" style="color:#fff;" ng-click="showLifeInishgts()"></button>
+                  <button class="button button-icon ion-trophy" style="color:#fff;" ng-click="showHelp()"></button>
+                </div>
+                
                 <!--
                 <div class="buttons">
-                     <button class="button button-icon ion-person" style="color:#fff;" ng-click="showRegister()"></button>
+                     <button class="button button-icon ion-trophy" style="color:#fff;" ng-click="showHelp()"></button>
                 </div>
-                -->
-                <div class="buttons">
+                <div class="buttons" ng-hide="isFocusGroup">
                      <button class="button button-icon ion-arrow-graph-up-right" style="color:#fff;" ng-click="showLifeInishgts()"></button>
                 </div>
+                -->
+
           </ion-header-bar>
 
           <ion-content >
-              <!-- <button ng-click="startGame()">Click me</button> -->
+              <!-- <button ng-click="startGame()">Click me</button> 
+
+
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(30)">DS+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(50)">WS+50</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(29)">AT+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(300)">R+300</button></div>
+              </div>
+              
+
+              <div class="row"  ng-hide="isFocusGroup">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(1)">Aq 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(2)">Aq 2</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(3)">Sea 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
+              </div>
+              -->
+
 
               <div w3-test-directive></div>
+              <br>
+              <div style="padding:10px;">
+                  <h4 style="margin: 3px 0">Surveys and active tasks across days</h4>  
+                  <p style="margin: 1px 0"><img src='img/active_task_done.png' style="height:12px;"></img>/<img src='img/survey_done.png' style="height:12px;"/></img> = completed, <img src='img/not_done.png' style="height:12px;"></img> = skipped</p> 
+                  <small>1 star for each day. Top-left star is 1st day. Last star is today.</small>
+              </div>
+
+              <div style="padding:10px;padding-top:15px;">
+                <p><u>Surveys across days</u></p>
+                <div  ng-repeat="x in daily_survey_images track by $index">
+                    <img ng-if="($index+1)%5!=0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <br>
+              </div>
+
+              <div style="padding:10px;">
+                <p><u>Active task across days</u></p>
+                <div  ng-repeat="x in active_tasks_survey_images track by $index">
+                    <img ng-if="($index+1)%5!=0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <br>
+              </div>
+              <p  style="padding:10px;"><b>Username</b>: {{username}}</p>
+
+              
+
+
+              <!--
+              <div class="row"  ng-hide="isFocusGroup">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
+              </div>
 
               <div class="row">
                  <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(30)">DS+30</button></div>
@@ -31,13 +102,8 @@
                  <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
               </div>
 
-              <div class="row">
-                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
-                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
-                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
-              </div>
-
-              <!--
+              
+              
               <button class="button button-full button-positive" ng-click="startGame()">Add points</button>
               <div class="list">
 

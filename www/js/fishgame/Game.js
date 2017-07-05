@@ -73,17 +73,20 @@ FishGame.Game.prototype = {
         journal.events.onInputDown.add(this.logdata, this);
 
         //
+        /*
         var trivia = this.add.image(window.innerWidth - 60, 95, 'trivia');
         trivia.scale.setTo(0.22, 0.22);
         trivia.inputEnabled = true;
         //trivia.events.onInputDown.add(this.logdata, this);
+        */
 
         //
+        /*
         var meme = this.add.image(window.innerWidth - 140, 1, 'meme');
         meme.scale.setTo(0.3, 0.3);
         meme.inputEnabled = true;
         meme.events.onInputDown.add(this.showBubbles, this);
-
+        */
 
         //
         this.active_task_connected = this.add.image(10, 40, 'disconnected');
@@ -103,6 +106,14 @@ FishGame.Game.prototype = {
 
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
+
+        this.checkReinforcement();
+
+    },
+
+    //show the reward
+    checkReinforcement: function(){
+        this.ionic_scope.$emit('show:checkReinforcement',this.ionic_scope);
     },
 
     showBubbles2: function(){
@@ -160,29 +171,27 @@ FishGame.Game.prototype = {
         //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         //you earned a reward
-        var pirate = this.add.image(this.game.width-145, 90, 'fatdiver2');
+        var pirate = this.add.image(this.game.width-145, 100, 'fatdiver2');
         //pirate.anchor.setTo(-0.3, 1.4);
         pirate.scale.setTo(0.7, 0.7);
 
         //
-        var text3 = this.add.text(10, 60, "Active tasks are done", { font: "24px Arial Black", fill: "#b33e00" });
+        var text3 = this.add.text(10, 60, "An extra gift\ntoday", { font: "35px Arial Black", fill: "#b33e00" });
         text3.stroke = "#FFE0B2";
-        text3.strokeThickness = 3;
+        text3.strokeThickness = 4;
 
         //
-        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        var text1 = this.add.text(10, 160, "for completing\nactive tasks", { font: "24px Arial Black", fill: "#b33e00" });
         text1.stroke = "#FFE0B2";
-        text1.strokeThickness = 4;
+        text1.strokeThickness = 2;
         //  Apply the shadow to the Stroke only
         text1.setShadow(2, 2, "#E65100", 2, true, false);
 
 
         //
-        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift\nto open", { font: "24px Arial Black", fill: "#FFE0B2" });
         text2.stroke = "#FFE0B2";
         text2.strokeThickness = 0;
-        //  Apply the shadow to the Stroke only
-        //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         //
         var sprite = this.add.sprite(this.world.centerX, this.world.centerY, 'gift');
@@ -261,24 +270,22 @@ FishGame.Game.prototype = {
         pirate.scale.setTo(0.7, 0.7);
 
         //
-        var text3 = this.add.text(10, 60, "You filled today's surveys", { font: "24px Arial Black", fill: "#b33e00" });
+        var text3 = this.add.text(10, 60, "An extra gift\ntoday", { font: "35px Arial Black", fill: "#b33e00" });
         text3.stroke = "#FFE0B2";
-        text3.strokeThickness = 3;
+        text3.strokeThickness = 4;
 
         //
-        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        var text1 = this.add.text(10, 160, "for filling out\nthe survey", { font: "24px Arial Black", fill: "#b33e00" });
         text1.stroke = "#FFE0B2";
-        text1.strokeThickness = 4;
+        text1.strokeThickness = 2;
         //  Apply the shadow to the Stroke only
         text1.setShadow(2, 2, "#E65100", 2, true, false);
 
 
         //
-        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift\nto open", { font: "24px Arial Black", fill: "#FFE0B2" });
         text2.stroke = "#FFE0B2";
         text2.strokeThickness = 0;
-        //  Apply the shadow to the Stroke only
-        //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         
         
@@ -355,9 +362,8 @@ FishGame.Game.prototype = {
               if(current_points >= data[i].points){
 
                 //nemo
-                if(data[i].name.valueOf() === "Nemo-the clown fish")
+                if(data[i].name.valueOf() === "The clown fish")
                     this.animateClownFish();
-
 
                 //starfish
                 if(data[i].name.valueOf() === "Star fish")
@@ -376,7 +382,7 @@ FishGame.Game.prototype = {
                 if(data[i].name.valueOf() === "Angel fish")
                     this.animateAngelFish();
 
-                if(data[i].name.valueOf() === "The crab")
+                if(data[i].name.valueOf() === "Crab")
                     this.animateCrab();
 
                 if(data[i].name.valueOf() === "Carp fish")
@@ -821,6 +827,35 @@ FishGame.Game.prototype = {
         //console.log('start again ' + b.name);
 
         //if()
+        var change_amount = Math.floor(this.rnd.realInRange(0, 50));
+        if(Math.floor(this.rnd.realInRange(0, 10))==2)
+            change_amount = 3*change_amount;
+        var pos_y = b.y + Math.floor(this.rnd.realInRange(-1*change_amount, change_amount));
+        while((pos_y > this.height) || (pos_y < 70)){
+            pos_y = b.y + Math.floor(this.rnd.realInRange(-1*change_amount, change_amount));
+        }
+
+
+
+        //if()
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            //t= this.add.tween(b).to({ x: -200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t= this.add.tween(b).to({ x: -100+Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+
+        if(b.x < 0){
+            //console.log('left to right, ' + b.x);
+            b.scale.x = -1*b.scale.x;
+            //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: window.innerWidth + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this);
+        }
+
+        /*
         if(b.x > window.innerWidth){ 
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
@@ -836,23 +871,24 @@ FishGame.Game.prototype = {
             t = this.add.tween(b).to({ x: window.innerWidth + 50 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
         }
+        */
     },
     
     buildFish: function() {
-		  //assign number of fish
-			numfish = 0;
-			//assign type and age of fish
-			var fishType = ["green1", "horse1", "purple1", "pink1", "magenta1"]
+          //assign number of fish
+            numfish = 0;
+            //assign type and age of fish
+            var fishType = ["green1", "horse1", "purple1", "pink1", "magenta1"]
             this.fishGroup = this.add.group();
             this.fishGroup.enableBody = true;
-			for(i = 0; i < numfish; i++){
-            	var b = this.fishGroup.create(this.rnd.integerInRange(0, this.world.width), this.rnd.integerInRange(this.world.height-300, this.world.height-200), fishType[i]);
-            	b.anchor.setTo(0.5, 0.5);
-            	b.body.moves = false;
-            	b.inputEnabled = true; //true;
-            	b.events.onInputDown.add(this.addTally, this);
-            	this.assignFishMovement(b);
-			}
+            for(i = 0; i < numfish; i++){
+                var b = this.fishGroup.create(this.rnd.integerInRange(0, this.world.width), this.rnd.integerInRange(this.world.height-300, this.world.height-200), fishType[i]);
+                b.anchor.setTo(0.5, 0.5);
+                b.body.moves = false;
+                b.inputEnabled = true; //true;
+                b.events.onInputDown.add(this.addTally, this);
+                this.assignFishMovement(b);
+            }
     },
     
     assignFishMovement: function(b) {

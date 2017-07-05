@@ -1,4 +1,4 @@
-app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $ionicPopup, $routeParams,ngProgressFactory,saraDatafactory) {
+app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPlatform, $location, $sce, $ionicPopup, $routeParams,ngProgressFactory,saraDatafactory) {
   
     //status bar color
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -41,6 +41,21 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
       "text":"Test q"
     }
   ];
+
+
+  saraDatafactory.copyUsageStats({'view':'weekly_survey','status':'start'});
+  $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'weekly_survey','status':'destroy'});
+  });
+  var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+  $scope.$on('$destroy', deregisterSecond);
+
 
   var survey_data = [];
   var autocomplete_options = [];
@@ -161,6 +176,84 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
       return shuffled_data_array;
 
       
+    }
+    var promise = $interval(init, 500);
+    function init(){
+        var c = document.getElementById("myCanvas");
+        //alert("holla");
+        if(c==null)
+            return;
+        else
+            $interval.cancel(promise);
+
+        c.style.width ='100%';
+        c.width  = c.offsetWidth;
+        c.height = c.width;
+
+
+        var ctx = c.getContext("2d");
+        var imageObj = new Image();
+        imageObj.src = 'img/affect_grid.png';
+        imageObj.onload = function(){
+        ctx.drawImage(imageObj, 0, 0, imageObj.width,    imageObj.height, // source rectangle
+                       0, 0, c.width, c.height); // destination rectangle
+        }
+
+        //corner points
+        var top_x = (42.0/354.0)*c.width;
+        var top_y = (32.0/354.0)*c.height;
+        var bottom_x = (320.0/354.0)*c.width;
+        var bottom_y = (320.0/354.0)*c.height;
+        
+        c.addEventListener("mousedown", function (e) {
+            drawing = true;
+            lastPos = getMousePos(c, e);
+            //console.log("x:" + lastPos.x + ", y:" + lastPos.y + ":::: " + c.width + "," + c.height);
+
+            var x = -1;
+            var y = -1;
+            if((lastPos.x >= top_x) && (lastPos.y >= top_y) && (lastPos.x <= bottom_x) && (lastPos.y <= bottom_y)){
+                x = 10 * (lastPos.x - top_x) / (bottom_x - top_x) - 5;
+                y = 5 - 10 * (lastPos.y - top_y) / (bottom_y - top_y) - 5;
+                //console.log("x:" + x + ", y:" + y);
+                $scope.survey.QMood = "" + x + ":" + y;
+
+                //
+                $scope.inputchanged("QMood");
+            }else{
+                return;
+            }
+            
+            var rect = c.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.clearRect(0, 0, rect.right-rect.left, rect.bottom-rect.top);
+            ctx.closePath();
+            
+            //
+            ctx.drawImage(imageObj, 0, 0, imageObj.width,    imageObj.height, // source rectangle
+                       0, 0, c.width, c.height); // destination rectangle
+            
+            //ctx.drawImage(imageObj, 0, 0);
+            ctx.beginPath();
+            ctx.arc(lastPos.x,lastPos.y,10,0,2*Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+            
+            
+            
+        }, false);
+        //alert("holla");
+    }
+
+    function getMousePos(canvasDom, mouseEvent) {
+        var rect = canvasDom.getBoundingClientRect();
+        return {
+          x: mouseEvent.clientX - rect.left,
+          y: mouseEvent.clientY - rect.top
+        };
     }
     
     
@@ -472,7 +565,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
 
       //make a percentage
       //console.log("" + 100*$scope.total_clicked/13 + ", " + $scope.total_clicked + ", " + clicked_index);
-      $scope.progressbar.set(100*$scope.total_clicked/12);
+      $scope.progressbar.set(100*$scope.total_clicked/14);
 
     }
 
@@ -660,6 +753,14 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                 */
             }
 
+            if (obj.type == "moodgrid2") {
+                survey_string = [survey_string,
+                    '<canvas id="myCanvas" width="310" height="310" style="border:0px solid #000000;padding:10px;">',
+                    'Your browser does not support the HTML5 canvas tag.',
+                    '</canvas>'
+                ].join(" ");
+            }
+
 
 
 
@@ -800,7 +901,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                 var min = obj.extra.choices[2];
                 var max = obj.extra.choices[3];
                 var step = obj.extra.choices[4];
-                $scope.survey[i] = 300;
+                $scope.survey[i] = 25*60;
                 survey_string = [survey_string,
                     '<div class = "row">',
                     '<div class = "col col-33 col-offset-67"><p align="center" style="padding:5px;border-radius:25px;background:#303F9F;color:white;"><b>{{survey.' + i + '/60}} hours</b></p></div>',
@@ -808,7 +909,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                     '<div class="item range range-balanced" style="padding:10px;border-width:0px;">',
                     '<p style="text-align: center;color: black;">' + obj.extra.choices[0] + "</p>",
                     '<input type="range" min="' + min + '" max="' + max + '" value="' + min + '" step="' + step + '" ng-model="survey.' + i + '" name="' + i + '" ng-change="inputchanged(\'' + i + '\')"' + '>',
-                    '<p style="text-align: center;color:black;">' + "10<br>hours" + "</p>",
+                    '<p style="text-align: center;color:black;">' + "24<br>hours" + "</p>",
                     '</div>',
                 ].join(" ");
             }
@@ -817,7 +918,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $location, $sce, $io
                 var min = obj.extra.choices[2];
                 var max = obj.extra.choices[3];
                 var step = obj.extra.choices[4];
-                $scope.survey[i] = 1;
+                $scope.survey[i] = 0;
                 survey_string = [survey_string,
                     '<div class = "row" style="margin-bottom=0px;">',
                     '<div class = "col col-10"></div>',

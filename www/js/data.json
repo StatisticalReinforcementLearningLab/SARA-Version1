@@ -11,7 +11,7 @@
   },
   {
     "name":"Q2d",
-    "text":"How are you feeling today? Please choose one",
+    "text":"How are you feeling today? Please click on the spot that best represents your mood",
     "type":"moodgrid2"
   },
   {
@@ -20,7 +20,7 @@
     "type":"radiobutton",
     "type":"range2",
     "extra":{
-      "choices":["Zero<br>min","600<br>min",0,600,30]
+      "choices":["0<br>hour","600<br>min",0,1440,30]
     }
   },
   {

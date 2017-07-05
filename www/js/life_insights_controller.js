@@ -1,4 +1,4 @@
-app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routeParams, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap) {
+app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $location, $routeParams, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap) {
     
     var type = $routeParams.type;
     console.log("" + type);
@@ -9,8 +9,11 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
     //
     var questions = ["Q1d","Q3d","Q4d","Q5d","Q6d"];// ,"Q7d"];
     var qimgs = ["img/stress.png","img/freetime.png","img/dance2.png","img/social.png","img/exciting.png"];
-    var lifeInsightsTitle = ["Daily <b>stress</b> levels", "<b>Free hours</b> each day", "Level of <b>fun</b> each day", 
-                "Degree of <b>loneliness</b>", "How <b>exciting</b> were your days?"];
+    var lifeInsightsTitle = ["How <b>relaxed</b> did you feel this week?", 
+                "How much <b>free time</b> did you have this week?", 
+                "How much <b>fun</b> did you have this week?  <i class='em em-tada'></i>", 
+                "How <b>lonely</b> did you feel this week?", 
+                "How <b>new</b> and <b>exciting</b> was your week?"];
 
     var qYaxis = ["Stress level","Hours free","Level of fun","Degree of loneliness","Level of exicitement"];        
     var qSubText = ["0 = low stress, 4 = high stress", 
@@ -19,18 +22,51 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     "0 = very social, 4 = very lonely",
                     "0 = low excitment, 4 = very exciting"];   
 
-    var lifeInsightsHighStress = ["High stress", "10 hours", "Lots of fun", 
-                "Very lonely", "Very exciting"];
-    var lifeInsightsLowStress = ["Low stress", "0 hour", "Few fun", 
-                "Not lonely at all", "Not exciting"];
+    var lifeInsightsHighStress = ["Stressed <i class='em em-name_badge'></i><i class='em em-sweat_drops'></i>", 
+                                    "15 hours <i class='em em-clock10'></i>", 
+                                    "day was fun <i class='em em-balloon'></i>", 
+                                    "day was like <i class='em em-two_women_holding_hands'>", 
+                                    "day was like <i class='em em-fire'></i><i class='em em-dancers'></i><i class='em em-palm_tree'></i>"];
+    var lifeInsightsLowStress = ["Relaxed <i class='em em-sunglasses'></i><i class='em em-boat'></i>", 
+                                    "0 hour <i class='em em-clock12'></i>", 
+                                    "day was lame  <i class='em em--1'></i>", 
+                                    "day was like <i class='em em-person_frowning'></i", 
+                                    "day was like <i class='em em-zzz'></i>"];
 
     //
     $scope.lifeinsights = [];
 
 
+    saraDatafactory.copyUsageStats({'view':'lifeIn_'+type,'status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'lifeIn_'+type,'status':'destroy'});
+    });
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        $location.path("/");
+        //navigator.app.();
+        window.location = "#/main";
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
     //
-
-
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(StatusBar);
+        if (ionic.Platform.isAndroid()) {
+            //$cordovaStatusbar.overlaysWebView(true);
+            //$cordovaStatusbar.styleHex('#4527A0');
+            if (window.StatusBar) {
+                StatusBar.overlaysWebView(true);
+                StatusBar.backgroundColorByHexString("#004D40"); //Light
+                //StatusBar.style(2); //Black, transulcent
+                //StatusBar.style(3); //Black, opaque
+            }
+        }
+    }
     //
     var visible_lifeinsights = {};
 
@@ -38,7 +74,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
 
         //
         $scope.showAllLIButton = false;
-        $scope.title_text = "All life insights";
+        $scope.title_text = "All data insights";
 
         //
         visible_lifeinsights['Q1d'] = 1;
@@ -57,9 +93,15 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
     }
     else if(type === 'all'){
         $scope.showAllLIButton = false;
-        $scope.title_text = "Life insights";
+        $scope.title_text = "All data insights";
         //
-        visible_lifeinsights = JSON.parse(window.localStorage['visible_lifeinsights'] || '{}');
+
+        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        if(rl_data.hasOwnProperty('reinfrocement_data') && rl_data['reinfrocement_data'].hasOwnProperty('visible_lifeinsights'))
+            visible_lifeinsights = rl_data['reinfrocement_data']['visible_lifeinsights'] || {};
+        else
+            visible_lifeinsights = {};
+        
         if(visible_lifeinsights.hasOwnProperty('Q1d')){
             console.log(JSON.stringify(visible_lifeinsights));
         }else{
@@ -79,7 +121,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
         //    
     }else{
         $scope.showAllLIButton = true;
-        $scope.title_text = "Today's gift";
+        $scope.title_text = "Today's life insight";
         //
         if(type.charAt(0)=='q')
             type = 'Q' + type.substr(1);
@@ -162,14 +204,18 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     if(data[j] != -1){
                         //
                         if(questions[i] == "Q3d")
-                            data[j] = data[j]/60;
+                            data[j] = data[j]/60 + 2 ; //2 is added because null shows up as zero
+                        else
+                            data[j] = data[j] + 2;
                         //if(questions[i] == "Q5d")
                         //    data[j] = 4-data[j];
                         //
-                        console.log("Do: " + (total_data - j) + "," + data[j] + "," + j) ;
-                        data_overlays.unshift([total_data - j, data[j]+1, j]);
+                        
+                        data_overlays.unshift([total_data - j, data[j], j]);
                     }else
-                        data_overlays.unshift([total_data - j, 0.5001, j]);
+                        data_overlays.unshift([total_data - j, null, j]);
+
+                    console.log("Do: " + (total_data - j) + "," + data[j] + "," + j + ", " + questions[i]) ;
 
                     if(j==6)
                         break;
@@ -178,7 +224,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     //if(j==1)
                     //   break;
                 }
-                console.log("data_overlays");
+                //console.log(data_overlays);
                 //console.log(data_overlays);
 
                 //
@@ -189,6 +235,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                 lin.top_message = lifeInsightsHighStress[i];
                 lin.bottom_message = lifeInsightsLowStress[i];
                 lin.showTopBottom = true;
+                lin.question = questions[i];
                 //console.log(JSON.stringify(lin))
                 $scope.lifeinsights.push(lin);
                 data_overlays = [];
@@ -309,15 +356,17 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
             }
         };
 
+        
+
         var data = [{
             "key": "Steps per hours",
             "bar": true,
             "values": data_overlays
         }];
         var lifeinsight = {"data":data, "options":options};
-        lifeinsight.title = "Times you <b>walk</b> in a typical day";
+        lifeinsight.title = "When were you the most <b>active</b> this week? ";
         lifeinsight.img = 'img/steps2.png';
-        lifeinsight.subtext = "Average step count at different hours for the last 14 days";
+        lifeinsight.subtext = "Average # of steps throughout the day (when you carreid the phone!)   ";
         lifeinsight.showTopBottom = false;
         //console.log(JSON.stringify(lin))
 
@@ -381,11 +430,14 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
         var data_size = date_size_full;//data_overlays.length; //date_size_full;//data_overlays.length;
         console.log("data_size" + data_size);
         //console.log("" + JSON.stringify(data_overlays));
+        var t_forceY = [1.49, 6.5];
+        if(q==='Q3d')
+            t_forceY = [2, 17];
 
         //$scope.data = [];
         var options = {
             chart: {
-                type: 'historicalBarChart',
+                type: 'lineChart',
                 height: 250,
                 margin: {
                     top: 10,
@@ -454,7 +506,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     axisLabel: qYaxis,
                     axisLabelDistance: -20,
                     tickFormat: function(d) {
-                        return d; //d3.format(',.1f')(d);
+                        return ""; //d //d3.format(',.1f')(d);
                     },
                     ticks: 5,
                     rotateLabels: -30,
@@ -472,7 +524,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
                     unzoomEventType: 'dblclick.zoom'
                 },
                 staggerLabel: true,
-                forceY: [0.49, 4.5]
+                forceY: t_forceY
             }
         };
 
@@ -552,6 +604,27 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $location, $routePara
               }
             }
           });
+    }
+
+
+    $scope.ratingChanged = function(x){
+        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
+        var reinfrocement_data_today = rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] || {};
+        reinfrocement_data_today['reward_at_rating'] = x;
+        reinfrocement_data_today['reward_at_rating_ts'] = moment().format("x");
+        reinfrocement_data_today['reward_at_rating_tz'] = moment().format("ZZ");
+
+        //console.log("" + x);
+
+        if($rootScope.isRealReinforcement == true){
+            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        }
+
+        $location.path("/main");
     }
 
 });

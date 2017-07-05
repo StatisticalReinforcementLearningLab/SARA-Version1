@@ -83,11 +83,12 @@ FishGame.Level1Small.prototype = {
         this.buildAquarium();
 
         //
+        /*
         var meme = this.add.image(window.innerWidth - 140, 1, 'meme');
         meme.scale.setTo(0.3, 0.3);
         meme.inputEnabled = true;
         meme.events.onInputDown.add(this.showBubbles, this);
-
+        */
 
         //
         var journal = this.add.image(window.innerWidth - 70, 1, 'fish_journal');
@@ -103,6 +104,13 @@ FishGame.Level1Small.prototype = {
         //this.game.onResume.add(yourGameResumedFunc, this);
 
         this.isPaused = false;
+
+        this.checkReinforcement();
+    },
+
+    //show the reward
+    checkReinforcement: function(){
+        this.ionic_scope.$emit('show:checkReinforcement',this.ionic_scope);
     },
 
 
@@ -257,25 +265,25 @@ FishGame.Level1Small.prototype = {
         //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         //you earned a reward
-        var pirate = this.add.image(this.game.width-145, 90, 'pirate');
+        var pirate = this.add.image(this.game.width-145, 100, 'pirate');
         //pirate.anchor.setTo(-0.3, 1.4);
         pirate.scale.setTo(0.7, 0.7);
 
         //
-        var text3 = this.add.text(10, 60, "Active tasks are done", { font: "24px Arial Black", fill: "#b33e00" });
+        var text3 = this.add.text(10, 60, "An extra gift\ntoday", { font: "35px Arial Black", fill: "#b33e00" });
         text3.stroke = "#FFE0B2";
-        text3.strokeThickness = 3;
+        text3.strokeThickness = 4;
 
         //
-        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        var text1 = this.add.text(10, 160, "for completing\nactive tasks", { font: "24px Arial Black", fill: "#b33e00" });
         text1.stroke = "#FFE0B2";
-        text1.strokeThickness = 4;
+        text1.strokeThickness = 2;
         //  Apply the shadow to the Stroke only
         text1.setShadow(2, 2, "#E65100", 2, true, false);
 
 
         //
-        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift\nto open", { font: "24px Arial Black", fill: "#FFE0B2" });
         text2.stroke = "#FFE0B2";
         text2.strokeThickness = 0;
         //  Apply the shadow to the Stroke only
@@ -349,29 +357,27 @@ FishGame.Level1Small.prototype = {
         //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         //you earned a reward
-        var pirate = this.add.image(this.game.width-145, 90, 'pirate');
+        var pirate = this.add.image(this.game.width-145, 100, 'pirate');
         //pirate.anchor.setTo(-0.3, 1.4);
         pirate.scale.setTo(0.7, 0.7);
 
         //
-        var text3 = this.add.text(10, 60, "You filled today's surveys", { font: "24px Arial Black", fill: "#b33e00" });
+        var text3 = this.add.text(10, 60, "An extra gift\ntoday", { font: "35px Arial Black", fill: "#b33e00" });
         text3.stroke = "#FFE0B2";
-        text3.strokeThickness = 3;
+        text3.strokeThickness = 4;
 
         //
-        var text1 = this.add.text(10, 100, "Here is\na gift for\nyou", { font: "35px Arial Black", fill: "#b33e00" });
+        var text1 = this.add.text(10, 160, "for filling out\nthe survey", { font: "24px Arial Black", fill: "#b33e00" });
         text1.stroke = "#FFE0B2";
-        text1.strokeThickness = 4;
+        text1.strokeThickness = 2;
         //  Apply the shadow to the Stroke only
         text1.setShadow(2, 2, "#E65100", 2, true, false);
 
 
         //
-        var text2 = this.add.text(10, this.game.height-130, "Click on the gift to\nsee what you got", { font: "24px Arial Black", fill: "#FFE0B2" });
+        var text2 = this.add.text(10, this.game.height-130, "Click on the gift\nto open", { font: "24px Arial Black", fill: "#FFE0B2" });
         text2.stroke = "#FFE0B2";
         text2.strokeThickness = 0;
-        //  Apply the shadow to the Stroke only
-        //text2.setShadow(2, 2, "#E65100", 2, true, false);
 
         
         
@@ -442,7 +448,7 @@ FishGame.Level1Small.prototype = {
             if(current_points >= data[i].points){
 
                 //nemo
-                if(data[i].name.valueOf() === "Nemo Dory")
+                if(data[i].name.valueOf() === "Blue tang")
                     this.addDori();
 
 
@@ -516,7 +522,7 @@ FishGame.Level1Small.prototype = {
                     old_points < data[i].points){
 
                 //nemo
-                if(data[i].name.valueOf() === "Nemo Dory")
+                if(data[i].name.valueOf() === "Blue tang")
                     this.addDori();
 
 
@@ -573,6 +579,7 @@ FishGame.Level1Small.prototype = {
         ////////////////////////////////////////////////////////////
         // mid aquarium
         ////////////////////////////////////////////////////////////
+        /*
         if(this.totalPoints >= 1360){//means bubbles are available
             var dori = this.add.sprite(90, 100, 'dori');
             dori.animations.add('swim');
@@ -585,7 +592,9 @@ FishGame.Level1Small.prototype = {
             nemo.animations.play('swim', 7, true);
             nemo.angle += 10;
             nemo.scale.setTo(-0.5, 0.5);
-        }else{
+        }else
+        */
+        {
             this.clownFish = this.add.sprite(-100, 283, 'clownfish');
             this.clownFish.anchor.setTo(.5,.5);
             this.clownFish.animations.add('swim');
@@ -606,12 +615,13 @@ FishGame.Level1Small.prototype = {
     },
 
     addYellowTang: function() {  
-        var yellowtang = this.add.sprite(70, 180, 'yellowtang');
+        var yellowtang = this.add.sprite(window.innerWidth + 70, 120, 'yellowtang');
         yellowtang.animations.add('swim');
         yellowtang.animations.play('swim', 10, true);
         yellowtang.scale.setTo(0.45, 0.45);
-        yellowtang.angle -= 10;
+        //yellowtang.angle -= 10;
         yellowtang.anchor.setTo(.5,.5);
+        this.gobothways(yellowtang);
     },
 
 
@@ -622,17 +632,18 @@ FishGame.Level1Small.prototype = {
         jellyfish.animations.add('swim');
         jellyfish.animations.play('swim', 15, true);
         jellyfish.scale.setTo(0.25, 0.25);
+        this.add.tween(jellyfish).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
 
     },
 
 
     addSalmon: function() { 
-        var salmon = this.add.sprite(window.innerWidth - 100, 240, 'salmon');
+        var salmon = this.add.sprite(-250, 370, 'salmon');
         salmon.animations.add('swim');
         salmon.animations.play('swim', 10, true);
         salmon.scale.setTo(0.4, 0.4);
         salmon.anchor.setTo(.5,.5);
-
+        this.gobothways(salmon);
 
 
         ////////////////////////////////////////////////////////////
@@ -779,7 +790,36 @@ FishGame.Level1Small.prototype = {
         }
         */
 
+        var change_amount = Math.floor(this.rnd.realInRange(0, 50));
+        if(Math.floor(this.rnd.realInRange(0, 10))==2)
+            change_amount = 3*change_amount;
+        var pos_y = b.y + Math.floor(this.rnd.realInRange(-1*change_amount, change_amount));
+        while((pos_y > this.height) || (pos_y < 70)){
+            pos_y = b.y + Math.floor(this.rnd.realInRange(-1*change_amount, change_amount));
+        }
+
+
+
         //if()
+        if(b.x > window.innerWidth){ 
+            //console.log('right to left, ' + b.x);
+            //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
+            b.scale.x = -1*b.scale.x;
+            //t= this.add.tween(b).to({ x: -200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t= this.add.tween(b).to({ x: -100+Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this); 
+        }
+
+        if(b.x < 0){
+            //console.log('left to right, ' + b.x);
+            b.scale.x = -1*b.scale.x;
+            //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: window.innerWidth + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t.onComplete.add(this.stopFish, this);
+        }
+
+        //if()
+        /*
         if(b.x > window.innerWidth){ 
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
@@ -795,7 +835,7 @@ FishGame.Level1Small.prototype = {
             //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
             t = this.add.tween(b).to({ x: window.innerWidth + 100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
-        }
+        }*/
     },      
     
     buildFish: function() {

@@ -81,7 +81,8 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     };
 
 
-    sync = function(callback2 = undefined) {
+    sync = function(callback2) {
+        callback2 = callback2 || undefined;
         return awsCognitoSyncFactory.synchronize(dataset, function(err, state) {
             console.log("syncing: 2: " + err + ", " + datasetName);
             if (err) {
@@ -466,7 +467,8 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         var value_ds_ws = {};
         value_ds_ws['daily_survey'] = value_ds; //value['daily_survey'];
         value_ds_ws['weekly_survey'] = value_ws; //value['weekly_survey'];
-        value_ds_ws['username'] = window.localStorage['username'] || 'unknwon';
+        value_ds_ws['username'] = window.localStorage['username'] || 'unknwon2';
+        value_ds_ws['score'] = window.localStorage['fish_aquarium_score'] || '0';
         //value_ds_ws['active_tasks_survey'] = value['active_tasks_survey'];
 
         if (ionic.Platform.isAndroid()) {
@@ -664,10 +666,87 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
                 });
             });
         }
-
-
     };
 
+
+
+    //
+    sara.copyUsageStats = function(data) {
+        //
+
+        //var h = sjcl.codec.hex, count = 2048 ;
+        //var salt = h.fromBits(sjcl.random.randomWords('10','0'));
+        //var encrypted_message = sjcl.encrypt("password", JSON.stringify(data),{count:2048,salt:salt,ks:256});
+        //var encrypted_message = sjcl.encrypt("password", JSON.stringify(data),{count:2048,ks:256});
+        //var encrypted_message = window.sjcl.encrypt("password", "data");
+        //console.log("Encrypted: " + encrypted_message);
+        //console.log("Decrypted: " + window.sjcl.decrypt("password", encrypted_message));
+
+
+
+        //data = JSON.stringify(data);
+        //var encrypted = data;
+        //var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)");
+        //var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
+        //console.log("Encrypted: " + encrypted);
+        //console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+
+        var string_to_write = moment().format('x') + "," + JSON.stringify(data);
+
+        var existing_usage_data = window.localStorage["usage_data"] || '';
+        if(existing_usage_data === ''){ //no data is available
+            existing_usage_data = {};
+            existing_usage_data['date'] = '';
+        }else
+            existing_usage_data = JSON.parse(existing_usage_data);
+
+        //check if the date is today. We won't keep old records.
+        if(existing_usage_data['date'] === moment().format('YYYYMMDD')){
+        }else{
+            existing_usage_data['date'] = moment().format('YYYYMMDD');
+            existing_usage_data['data'] = [];//we start a new one;
+        }
+        //{'view':'main','status':'resume'}
+        existing_usage_data['data'].push({'view':data.view, 'status': data.status, 'ts':moment().format('x'), 'readable_ts':moment().format("YYYY-MM-DD H:mm:ss a ZZ")});   
+        //existing_usage_data['data'] = [];
+        window.localStorage["usage_data"] = JSON.stringify(existing_usage_data);
+
+
+        if (ionic.Platform.isAndroid()) {
+            var directory = cordova.file.externalRootDirectory;
+            $cordovaFile.checkDir(cordova.file.externalRootDirectory + "/SensorLogger/", "data")
+                .then(function(success) {
+
+                    var file_location = moment().format('YYYYMMDD') + "_usage.txt";
+                    //console.log("File loc: " + directory + "/SensorLogger/data/" + file_location);
+
+
+                    //$cordovaFile.writeFile(cordova.file.applicationStorageDirectory, file_location, encrypted, true )
+                    //--- lifeinsight/
+                    $cordovaFile.writeFile(directory + "/SensorLogger/data/", file_location, JSON.stringify(existing_usage_data, null, 4), true)
+                        .then(function(success) {
+                            // success
+                            console.log("File written " + file_location);
+                        }, function(error) {
+                            // error
+                            console.log("ERROR ERROR ERROR ERROR ERROR: " + JSON.stringify(error));
+                        });
+
+                }, function(error) {
+                    // error
+                    $cordovaFile.createDir(directory + "/SensorLogger/", "data", false)
+                        .then(function(success) {
+                            // success
+                            //call again man
+                            sara.copyDailtSurveyForLifeInsight(data, type);
+                        }, function(error) {
+                            // error
+                            console.log("ERROR: Probably on a device");
+                            //means I 
+                });
+            });
+        }
+    };
 
 
     encrypt = function(msg, pass) {

@@ -18,8 +18,8 @@
   },
   {
     "name":"Q2d",
-    "text":"How are you feeling today? Please choose one",
-    "type":"moodgrid"
+    "text":"How are you feeling today? Please click on the spot that best represents your mood",
+    "type":"moodgrid2"
   },
   {
     "name":"Q3d",
@@ -27,7 +27,7 @@
     "type":"radiobutton",
     "type":"range2",
     "extra":{
-      "choices":["Zero<br>min","600<br>min",0,600,30]
+      "choices":["0<br>hours","600<br>min",0,1440,30]
     }
   },
   {
@@ -85,7 +85,7 @@
   },
   {
     "name":"Q1",
-    "text":"This past week, did you do or say things without thinking",
+    "text":"This past week, did you do or say things without thinking?",
     "type":"radiobutton",
     "extra":{
       "choices":["Rarely/Never","Occasionally","Often","Almost Always/Always"],
@@ -94,7 +94,7 @@
   },
   {
     "name":"Q2",
-    "text":"This past week, did you plan tasks carefully",
+    "text":"This past week, did you plan tasks carefully?",
     "type":"radiobutton",
     "extra":{
       "choices":["Rarely/Never","Occasionally","Often","Almost Always/Always"],
@@ -112,7 +112,7 @@
   },
   {
     "name":"Q3n",
-    "text":"How frequently have you smoked cigarettes this week?",
+    "text":"How frequently have you smoked cigarettes last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["Not at all","Less than one cigarette per day","1-5 cigarettes per day","About ½ pack per day","About 1 pack per day","About 1 ½ packs per day","Two packs or more per day"],
@@ -120,8 +120,17 @@
     }
   },
   {
+    "name":"Q3e",
+    "text":"How many days this past week did you use an electronic vaporizer to inhale a nicotine mist?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0","1","2","3","4","6 or more days"],
+      "orientation": "vertical"
+    }
+  },
+  {
     "name":"Q4",
-    "text":"Did you drink alcohol this week?",
+    "text":"Did you drink alcohol last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["yes","no"],
@@ -130,7 +139,7 @@
   },
   {
     "name":"Q41",
-    "text":"Which days did you drink alcohol this week?",
+    "text":"Which days did you drink alcohol last week?",
     "type":"checkbox",
     "extra":{
       "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -143,7 +152,7 @@
   },
   {
     "name":"Q41sun",
-    "text":"How many drinks did you have on <b>Sunday</b> this week?",
+    "text":"How many drinks did you have on <b>Sunday/today</b>?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -156,7 +165,7 @@
   },
   {
     "name":"Q41mon",
-    "text":"How many drinks did you have on <b>Monday</b> this week?",
+    "text":"How many drinks did you have on <b>Monday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -169,7 +178,7 @@
   },
   {
     "name":"Q41tue",
-    "text":"How many drinks did you have on <b>Tuesday</b> this week?",
+    "text":"How many drinks did you have on <b>Tuesday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -182,7 +191,7 @@
   },
   {
     "name":"Q41wed",
-    "text":"How many drinks did you have on <b>Wednesday</b> this week?",
+    "text":"How many drinks did you have on <b>Wednesday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -195,7 +204,7 @@
   },
   {
     "name":"Q41thu",
-    "text":"How many drinks did you have on <b>Thursday</b> this week?",
+    "text":"How many drinks did you have on <b>Thursday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -208,7 +217,7 @@
   },
   {
     "name":"Q41fri",
-    "text":"How many drinks did you have on <b>Friday</b> this week?",
+    "text":"How many drinks did you have on <b>Friday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -221,7 +230,7 @@
   },
   {
     "name":"Q41sat",
-    "text":"How many drinks did you have on <b>Saturday</b> this week?",
+    "text":"How many drinks did you have on <b>Saturday</b> last week?",
     "type":"range3",
     "extra":{
       "choices":["0","20",0,20,1],
@@ -234,7 +243,7 @@
   },
   {
     "name":"Q42",
-    "text":"Pick the top reason(s) why you drank this week:",
+    "text":"Pick the top reason(s) why you drank last week:",
     "type":"checkbox",
     "extra":{
       "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed, anxious or angry", "To make social gatherings more fun","Other"],
@@ -247,7 +256,7 @@
   },
   {
     "name":"Q43",
-    "text":"Pick the top reason(s) why you didn’t drink this week",
+    "text":"Pick the top reason(s) why you didn’t drink last week",
     "type":"checkbox",
     "extra":{
       "choices":["Did not want to", "No chance/time", "Out of alcohol", "Trying to cut back", "More important things to do", "Cost","Other"],
@@ -260,7 +269,7 @@
   },
   {
     "name":"Q6",
-    "text":"In the past week, overall how tempted were you to use marijuana this week? ",
+    "text":"In the past week, overall how tempted were you to use marijuana? ",
     "type":"radiobutton",
     "extra":{
       "choices":["Not<br>at all","Very<br>strong"],
@@ -270,7 +279,7 @@
   },
   {
     "name":"Q7",
-    "text":"Did you use marijuana (hash, weed) this week?",
+    "text":"Did you use marijuana (hash, weed) last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["yes","no"],
@@ -279,7 +288,7 @@
   },
   {
     "name":"Q71",
-    "text":"Which days did you use marijuana (hash, weed) this week? ",
+    "text":"Which days did you use marijuana (hash, weed) last week? ",
     "type":"checkbox",
     "extra":{
       "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -292,7 +301,7 @@
   },
   {
     "name":"Q71Sun",
-    "text":"How much marijuana did you use on <b>Sunday</b> this week?",
+    "text":"How much marijuana did you use on <b>Sunday/today</b>?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -306,7 +315,7 @@
   },
   {
     "name":"Q71Mon",
-    "text":"How much marijuana did you use on <b>Monday</b> this week?",
+    "text":"How much marijuana did you use on <b>Monday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -320,7 +329,7 @@
   },
   {
     "name":"Q71tues",
-    "text":"How much marijuana did you use on <b>Tuesday</b> this week?",
+    "text":"How much marijuana did you use on <b>Tuesday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -334,7 +343,7 @@
   },
   {
     "name":"Q71Wed",
-    "text":"How much marijuana did you use on <b>Wednesday</b> this week?",
+    "text":"How much marijuana did you use on <b>Wednesday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -348,7 +357,7 @@
   },
   {
     "name":"Q71thu",
-    "text":"How much marijuana did you use on <b>Thursday</b> this week?",
+    "text":"How much marijuana did you use on <b>Thursday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -362,7 +371,7 @@
   },
   {
     "name":"Q71fri",
-    "text":"How much marijuana did you use on <b>Friday</b> this week?",
+    "text":"How much marijuana did you use on <b>Friday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -376,7 +385,7 @@
   },
   {
     "name":"Q71sat",
-    "text":"How much marijuana did you use on <b>Saturday</b> this week?",
+    "text":"How much marijuana did you use on <b>Saturday</b> last week?",
     "type":"radiobutton",
     "extra":{
       "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
@@ -390,7 +399,7 @@
   },
   {
     "name":"Q72",
-    "text":"Pick the top reason(s) why you used marijuana this week",
+    "text":"Pick the top reason(s) why you used marijuana last week",
     "type":"checkbox",
     "extra":{
       "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed, anxious or angry", "To make social gatherings more fun","Other"],
@@ -403,7 +412,7 @@
   },
   {
     "name":"Q73",
-    "text":"Pick the top reason(s) why you didn’t use marijuana this week",
+    "text":"Pick the top reason(s) why you didn’t use marijuana last week",
     "type":"checkbox",
     "extra":{
       "choices":["Did not want to", "No chance/time", "Out of weed", "Trying to cut back", "More important things to do", "Cost","Other"],

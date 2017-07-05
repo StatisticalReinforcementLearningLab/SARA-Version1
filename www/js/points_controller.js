@@ -1,5 +1,5 @@
 
-app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,$rootScope,saraDatafactory) {
+app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,$rootScope,saraDatafactory,$ionicPlatform) {
     console.log($location.path() + ", " + $rootScope.total_points);
 
     
@@ -27,6 +27,12 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
         //window.localStorage['score_data'] = returnValue;
     });
     */
+
+    saraDatafactory.copyUsageStats({'view':'treasure_chest','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'treasure_chest','status':'destroy'});
+    });
 
 
     //
@@ -172,6 +178,15 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
         }
         return total;
     }
+
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
 
 
 
