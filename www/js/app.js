@@ -29,7 +29,54 @@ app.run(function($ionicPlatform) {
         if (navigator.splashscreen) {
             navigator.splashscreen.hide();
         }
+
+
+        //
+
+        var pushConfig = {
+            android: {
+                senderID: "blabla"
+            },
+            browser: {
+                pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+            },
+            ios: {
+                alert: "true",
+                badge: "true",
+                sound: "true"
+            },
+            windows: {}
+        };
+
+        var push = window.PushNotification.init(pushConfig);
+        console.log("No problemo with push. PUSH!!! PUSH!!! PUSH!!" + window.PushNotification);
+        push.on('registration', function(data) {
+            var token = data.registrationId;
+            console.log('OK: register noitfy ', token);
+            window.localStorage['registrationId'] = token;
+        });
+
+        push.on('notification', function(data) {
+            // data.message,
+            // data.title,
+            // data.count,
+            // data.sound,
+            // data.image,
+            // data.additionalData
+            console.log('notification event');
+        });
+
+        push.on('error', function(e) {
+            // e.message
+            console.log('push error = ' + e.message);
+        });
+        
+
+
     });
+
+
+
 });
 
 
@@ -980,6 +1027,8 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         console.log("App paused: " + isPaused);
         $interval.cancel(promise);
         promise = $interval(testResumePause, 2000);
+        console.log("RegID: " + (window.localStorage['registrationId'] || 'not found'));
+
         if(isPaused==false)
             readActiveTaskData();
     }
