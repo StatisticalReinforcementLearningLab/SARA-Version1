@@ -20,7 +20,7 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
         }
     }
 
-    
+        /*
         var pushConfig = {
             android: {
                 senderID: "blabla"
@@ -29,9 +29,9 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
                 pushServiceURL: 'http://push.api.phonegap.com/v1/push'
             },
             ios: {
-                alert: true,
-                badge: true,
-                sound: true
+                alert: "true",
+                badge: "true",
+                sound: "true"
             },
             windows: {}
         };
@@ -58,8 +58,9 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
             // e.message
             console.log('push error = ' + e.message);
         });
+        */
 
-        
+
     /*
     saraDatafactory.pullBadgeData(function(returnValue) {
         // use the return value here instead of like a regular (non-evented) return value

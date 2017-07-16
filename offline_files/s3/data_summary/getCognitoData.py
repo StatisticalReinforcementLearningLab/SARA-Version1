@@ -123,9 +123,27 @@ for i in range(len(all_identities)):
                 #start_date = last_day_daily_survey[0]
                 # pdb.set_trace()
 
+                #
+                if u'money' in last_day_response[u'badges']:
+                    money = str(last_day_response[u'badges'][u'money'])
+                else:
+                    money = "0"
+                # pdb.set_trace()
+
+
+                start_date_dt = datetime.strptime("20200101", "%Y%m%d")
+                # start_date = "20200101"
                 for key in last_day_response[u'survey_data'][u'daily_survey']:
-                    start_date = key
-                    break 
+                    # start_date = key
+                    b = datetime.strptime(key, "%Y%m%d")
+                    if b < start_date_dt:
+                        start_date_dt = b
+                        start_date = key
+                    #break 
+                
+                #if "sara-study-7" in username:
+                #    pdb.set_trace()
+
 
                 total_days = 0    
                 while True:
@@ -157,19 +175,21 @@ for i in range(len(all_identities)):
                 total_ds_today = 0;
                 total_at_today = 0;
 
+                last_logged_date = ''
+                logging_string = ''
                 for k in range(30):
                     d = datetime.today() - timedelta(days=k)
                     date_str = d.strftime ("%Y%m%d")
                     day_str = d.strftime ("%A")
                     #print date_str
 
-
-
-
                     #
                     temp_data_per_day= {}
                     temp_data_per_day['date'] = date_str
                     temp_data_per_day['day'] = day_str
+
+                    #
+
 
                     if date_str in last_day_daily_survey:
                         temp_data_per_day['ds'] = last_day_daily_survey[date_str]
@@ -181,7 +201,18 @@ for i in range(len(all_identities)):
                         temp_data_per_day['at'] = last_day_active_tasks[date_str]
                     else:
                         temp_data_per_day['at'] = 0
-                    total_at = total_at + int(temp_data_per_day['at']/2.0)    
+                    total_at = total_at + int(temp_data_per_day['at']/2.0) 
+
+                    logged_count = temp_data_per_day['ds'] + int(temp_data_per_day['at']/2.0)
+
+                    if last_logged_date == '': 
+                        if logged_count > 0:
+                            last_logged_date = d.strftime("%b %d %Y")
+
+                    if logged_count > 0:        
+                        logging_string = logging_string + '|'      
+                    else:
+                        logging_string = logging_string + '-'  
 
                     #
                     data_per_day.append(temp_data_per_day)
@@ -222,7 +253,7 @@ for i in range(len(all_identities)):
                     if date_str == start_date:
                         break
 
-                total_at = total_at/2
+                #total_at = total_at
 
 
                 body = body + '</table>'
@@ -265,30 +296,37 @@ for i in range(len(all_identities)):
     data_today = str(total_ds_today) + "/" + str(total_at_today) + " (" + str(round(100*(total_ds_today+total_at_today)/2.0,2)) + ")"
 
     if total_days >= 1: 
-        data_7 = str(total_ds_7) + "/" + str(total_at_7) + " (" + str(round(100*(total_ds_7+total_at_7)/14.0,2)) + ")"
+        # data_7 = str(total_ds_7) + "/" + str(total_at_7) + " (" + str(round(100*(total_ds_7+total_at_7)/14.0,2)) + ")"
+        # total_days
+        data_7 = str(total_ds_7) + "/" + str(total_at_7) + " (" + str(round(100*(total_ds_7+total_at_7)/(total_days*2.0),2)) + ")"
     else: 
         data_7 = '--'
 
-    if total_days > 15:     
-        data_30 = str(total_ds) + "/" + str(total_at) + " (" + str(round(100*(total_ds+total_at)/60.0,2)) + ")"
+    if total_days > 1:     
+        data_30 = str(total_ds) + "/" + str(total_at) + " (" + str(round(100*(total_ds+total_at)/(total_days*2.0),2)) + ")"
     else:
         data_30 = '--'
 
-    if round(100*(total_ds_7+total_at_7)/14.0,2) < 50:
-        first_table_body = first_table_body + '<tr><td style="padding:8px; text-align: left;">' + username  + '</td><td style="padding:8px; text-align: left;">' + str(total_days) + '</td><td style="padding:8px; text-align: left;">' + data_today + '</td><td style="padding:8px; text-align: left;">' + data_7 + '</td><td style="padding:8px; text-align: left;">' + data_30 + '</td></tr>'
+    logging_string = logging_string[::-1]    
+    #if round(100*(total_ds_7+total_at_7)/14.0,2) < 50:
+    if "-study-" in username:
+        first_table_body = first_table_body + '<tr><td style="padding:8px; text-align: left;">' + username  + '</td><td style="padding:8px; text-align: left;">' + str(total_days) + '</td><td style="padding:8px; text-align: left;">' + data_today + '</td><td style="padding:8px; text-align: left;">' + data_7 + '</td><td style="padding:8px; text-align: left;">' + data_30 + '</td><td style="padding:8px; text-align: left;">' + last_logged_date + '</td><td style="padding:8px; text-align: left;">' + logging_string + '</td><td style="padding:8px; text-align: left;">' + money + '</td></tr>' 
     else:
-        first_table_body = first_table_body + '<tr><td style="padding:8px; text-align: left;"><b>' + username + '</b></td><td style="padding:8px; text-align: left;"><b>' + str(total_days) + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_today + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_7 + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_30 + '</b></td></tr>'          
+        first_table_body = first_table_body + '<tr style="color: #82B1FF;"><td style="padding:8px; text-align: left;"><b>' + username + '</b></td><td style="padding:8px; text-align: left;"><b>' + str(total_days) + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_today + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_7 + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_30 + '</b></td><td style="padding:8px; text-align: left;"><b>' + last_logged_date + '</b></td><td style="padding:8px; text-align: left;"><b>' + logging_string+ '</b></td><td style="padding:8px; text-align: left;"><b>' + money + '</b></td></tr>'
     i = i + 1
 
 
 
 body2 = '<br><br><h3>Summary</h3><b>Stored as: </b> (no_of_survey/no_of_active_tasks)'
-body2 = body2 + '<table style="width:750px; border-collapse: collapse;">'
+body2 = body2 + '<table style="width:1100px; border-collapse: collapse;">'
 body2 = body2 + '<tr><th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">id</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Total<br>days</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Today</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>7 days</th>'
-body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>30 days</th></tr>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>30 days</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>seen</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Logging over days<br> "|" is yes, "-" is no, (first day to today)</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Money</th></tr>'
 body2 = body2 + first_table_body
 body2 = body2 + '</table><br><br>'
 

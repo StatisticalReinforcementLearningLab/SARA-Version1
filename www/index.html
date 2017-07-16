@@ -75,8 +75,13 @@
     <script src="js/points_controller.js"></script>
     <script src="js/life_insights_controller.js"></script>
     <script src="js/reinforcement_controller.js"></script>
+    <script src="js/ATControllers/tappingtaskcontroller.js"></script>
+    <script src="js/ATControllers/spatialtaskcontroller.js"></script> 
+    <script src="js/inspirationalquotes.js"></script>
 
-   
+   <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic.cloud.min.js"></script>
 
     
     <!--
@@ -103,6 +108,23 @@
     <ion-pane>
         <div ng-view=""></div>
     </ion-pane>
+
+    <!--
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+    -->
+    <script src="lib/offlinejs/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAcu9Zd2zBwZvA-XC0H715h9fJd-WG9Nr4",
+        authDomain: "sara-3529f.firebaseapp.com",
+        databaseURL: "https://sara-3529f.firebaseio.com",
+        projectId: "sara-3529f",
+        storageBucket: "sara-3529f.appspot.com",
+        messagingSenderId: "831721083674"
+      };
+      firebase.initializeApp(config);
+    </script>
 
     <!--
     <div id = "gameArea"></div>

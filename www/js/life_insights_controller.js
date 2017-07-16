@@ -25,12 +25,12 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
     var lifeInsightsHighStress = ["Stressed <i class='em em-name_badge'></i><i class='em em-sweat_drops'></i>", 
                                     "15 hours <i class='em em-clock10'></i>", 
                                     "day was fun <i class='em em-balloon'></i>", 
-                                    "day was like <i class='em em-two_women_holding_hands'>", 
+                                    "day was like <i class='em em-person_frowning'></i", 
                                     "day was like <i class='em em-fire'></i><i class='em em-dancers'></i><i class='em em-palm_tree'></i>"];
     var lifeInsightsLowStress = ["Relaxed <i class='em em-sunglasses'></i><i class='em em-boat'></i>", 
                                     "0 hour <i class='em em-clock12'></i>", 
                                     "day was lame  <i class='em em--1'></i>", 
-                                    "day was like <i class='em em-person_frowning'></i", 
+                                    "day was like <i class='em em-two_women_holding_hands'>", 
                                     "day was like <i class='em em-zzz'></i>"];
 
     //

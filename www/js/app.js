@@ -8,9 +8,9 @@
 //--- http://www.ng-newsletter.com/posts/building-games-with-angular.html
 //
 
-var app = angular.module('starter', ['ionic', 'ngRoute', 'ngProgress', 'ngCordova', 'gajus.swing', 'aws.cognito.identity', 'aws.cognito.sync', 'sara.data.factory', 'ngMessages','nvd3','ngMap'])
+var app = angular.module('starter', ['ionic', 'ngRoute', 'ngProgress', 'ngCordova', 'gajus.swing', 'aws.cognito.identity', 'aws.cognito.sync', 'sara.data.factory', 'ngMessages','nvd3','ngMap','ionic.cloud'])
 
-app.run(function($ionicPlatform) {
+app.run(function($ionicPlatform,$ionicPush) {
     $ionicPlatform.ready(function() {
         if (window.cordova && window.cordova.plugins.Keyboard) {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -24,7 +24,11 @@ app.run(function($ionicPlatform) {
 
         }
         if (window.StatusBar) {
-            StatusBar.styleDefault();
+            
+            if(ionic.Platform.isIOS())
+                StatusBar.styleLightContent();
+            else
+                StatusBar.styleDefault();
         }
         if (navigator.splashscreen) {
             navigator.splashscreen.hide();
@@ -32,7 +36,7 @@ app.run(function($ionicPlatform) {
 
 
         //
-
+        /*
         var pushConfig = {
             android: {
                 senderID: "blabla"
@@ -70,7 +74,14 @@ app.run(function($ionicPlatform) {
             // e.message
             console.log('push error = ' + e.message);
         });
+        */
         
+        $ionicPush.register().then(function(t) {
+            return $ionicPush.saveToken(t);
+        }).then(function(t) {
+            console.log('Token saved:', t.token);
+            window.localStorage['registrationIdPush'] = str(t.token);
+        });
 
 
     });
@@ -80,7 +91,7 @@ app.run(function($ionicPlatform) {
 });
 
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider,$ionicCloudProvider) {
     $routeProvider
         /*
         .when("/", {
@@ -141,10 +152,66 @@ app.config(function($routeProvider) {
             templateUrl: "templates/activetasks.html",
             controller: "ATCtrl"
         })
+        .when("/tappingtaskStep1", {
+            templateUrl: "templates/tappingtaskStep1.html",
+            controller: "TappingTaskStep1Ctrl"
+        })
+        .when("/tappingtaskStep2", {
+            templateUrl: "templates/tappingtaskStep2.html",
+            controller: "TappingTaskStep2Ctrl"
+        })
+        .when("/tappingtask", {
+            templateUrl: "templates/tappingtask.html",
+            controller: "TappingTaskCtrl"
+        })
+        .when("/spatialtaskStep1", {
+            templateUrl: "templates/spatialtaskStep1.html",
+            controller: "SpatialTaskStep1Ctrl"
+        })
+        .when("/spatialtaskStep2", {
+            templateUrl: "templates/spatialtaskStep2.html",
+            controller: "SpatialTaskStep2Ctrl"
+        })
+        .when("/spatialtask", {
+            templateUrl: "templates/spatialtask.html",
+            controller: "SpatialTaskCtrl"
+        })
+        .when("/spatialtask2", {
+            templateUrl: "templates/spatialtask2.html",
+            controller: "SpatialTask2Ctrl"
+        })
+        .when("/activetaskscompleted", {
+            templateUrl: "templates/activetaskcompleted.html",
+            controller: "ActiveTasksCompletedCtrl"
+        })
+        .when("/inspirationalquotes", {
+            templateUrl: "templates/inspirationalquotes.html",
+            controller: "InspQuotesCtrl"
+        })
         .when("/red", {
             templateUrl: "templates/red.html",
             controller: "RedCtrl"
         });
+
+
+        $ionicCloudProvider.init({
+            "core": {
+              "app_id": "574bb514"
+            },
+            "push": {
+              "sender_id": "831721083674",
+              "pluginConfig": {
+                "ios": {
+                  "badge": true,
+                  "sound": true
+                },
+                "android": {
+                  "iconColor": "#343434"
+                }
+              }
+            }
+        }); 
+
 });
 
 app.directive('compile', function($compile) {
@@ -177,7 +244,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
         template: "<div id = 'gameArea'></div>",
         link: function(scope, element, attrs, injector, location, http, rootScope) {
 
-            var game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
+            var game;
+            if(ionic.Platform.isIOS())
+                game = new Phaser.Game(window.innerWidth, window.innerHeight - 64, Phaser.CANVAS, 'gameArea');
+            else
+                game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.CANVAS, 'gameArea');
+
             game.state.add('Boot', FishGame.Boot);
             game.state.add('Preloader', FishGame.Preloader);
             game.state.add('StartMenu', FishGame.StartMenu);
@@ -187,7 +259,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             game.state.add('Level1Small', FishGame.Level1Small);
 
             
-
+            //$rootScope.game = game;
             //cognito data
             /*
             var cognito_data = {};
@@ -221,8 +293,6 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //save to "data_ds_ws.txt"
                 var rl_data = JSON.parse(returnValue);
                 
-
-
                 //console.log(returnValue);
                 updateTheScore(returnValue);
 
@@ -923,7 +993,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
 
-app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $rootScope, $ionicPlatform, $ionicPopup, $timeout, $location, $cordovaStatusbar, $cordovaInAppBrowser, $interval, $rootScope, saraDatafactory) {
+app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactory, $state, $rootScope, $ionicPlatform, $ionicPopup, $timeout, $location, $cordovaStatusbar, $cordovaInAppBrowser, $interval, $rootScope, saraDatafactory) {
 
     /*
     $scope.getUserFromLocalStorage = function() {
@@ -1001,6 +1071,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
             //if($rootScope.insideMain == true)
             saraDatafactory.copyUsageStats({'view':'app','status':'resume'});
             isPaused = false;
+            //$rootScope.game.lockRender = true;
         }, false);
 
         document.addEventListener("pause", function() {
@@ -1009,6 +1080,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
             //if($rootScope.insideMain == true)
             saraDatafactory.copyUsageStats({'view':'app','status':'paused'});
             isPaused = true;
+            //$rootScope.game.lockRender = false;
         }, false);
 
 
@@ -1017,24 +1089,79 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         //readActiveTaskData();
         //testResumePause();
     }
-    
-    
-    var promise = $interval(testResumePause, 2000);
 
+    $scope.$on('cloud:push:notification', function(event, data) {
+      var msg = data.message;
+      //alert(msg.title + ': ' + msg.text);
+      //console.log(JSON.stringify(data));
+
+      //data.extra
+      var extra = data["message"]["raw"]["additionalData"]["extra"];
+      console.log("Extra type: " + extra.type);
+      $rootScope.insp_message = extra;
+
+      //---- 
+      if(extra.type === "engagement")
+        $location.path("/inspirationalquotes");
+
+      
+    });
+    
+    
+    var promise = $interval(testResumePause, 1000);
+    $scope.money = window.localStorage['total_money_earned'] || 0;
 
 
     function testResumePause() {
         console.log("App paused: " + isPaused);
         $interval.cancel(promise);
-        promise = $interval(testResumePause, 2000);
-        console.log("RegID: " + (window.localStorage['registrationId'] || 'not found'));
-
+        promise = $interval(testResumePause, 1000);
+        var regid = $ionicPush.token;//window.localStorage['registrationIdPush']; // || 'not found';
+        //console.log("RegID: " + regid);
         if(isPaused==false)
             readActiveTaskData();
+
+
+        if (ionic.Platform.isIOS()) {
+            if($scope.username === 'unknown')
+                return;
+
+            if(regid != undefined){
+                //console.log("RegID: " + regid);
+                var stored_regid = window.localStorage['registrationIdPush'] || 'unknown'; 
+                //console.log('stored_regid ' + stored_regid);
+                //console.log('regid ' + regid);
+                if(stored_regid === regid.token){
+                }else{
+                    window.localStorage['registrationIdPush'] = regid.token;
+                    var updates = {};
+
+                    var newPostKey = firebase.database().ref().child('iOS').child('HistoryRegToken').push().key;
+
+                    var data = {};
+                    data['username'] = $scope.username;
+                    data['regId'] = $ionicPush.token;
+                    data['ts'] = new Date().getTime();
+                    data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+
+                    updates['/iOS/RegToken/' + $scope.username] = data;
+                    updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+                    firebase.database().ref().update(updates);
+                }
+            }
+        }
+        //updates['/user-posts/' + $scope.survey.id + '/' + newPostKey] = $scope.survey;
+        //
+        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        if(rl_data.hasOwnProperty('badges')){
+            $scope.money = rl_data['badges']['money'];
+            window.localStorage['total_money_earned'] = $scope.money;
+        }
     }
 
-    
+
     //var insideReading = false;
+    //readActiveTaskData();
     function readActiveTaskData() {
         //read active task data here.
         //problem is we need to load it every 5 seconds.
@@ -1055,6 +1182,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         //insideReading = true;
 
         //console.log("Reading active tasks");
+        /*
         if (ionic.Platform.isAndroid()) {
             saraDatafactory.loadDataCollectionState(function(returnValue) {
                 if (returnValue == null) {
@@ -1148,6 +1276,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                 //insideReading = false;//means we can read again.
             });
         }else{
+        */    
             //
             var rl_data = JSON.parse(window.localStorage['cognito_data']);
             var active_task_prior_data = rl_data['survey_data']['active_tasks_survey']; //JSON.parse(window.localStorage['at_data'] || "{}");
@@ -1184,10 +1313,10 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                             }
                         }
             }
-                    //console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
-                    //console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
-                    //console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
-                    //if(isActiveTaskAdded){
+            //console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
+            //console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
+            //console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
+            //if(isActiveTaskAdded){
                     
             //means 2 active task has been done.
             if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
@@ -1215,7 +1344,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                 saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
             }
-        }
+        //}
     }
 
     
@@ -1353,6 +1482,8 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         if($rootScope.first_date_of_study === moment().format('YYYYMMDD'))
             isFirstDay = true;
 
+        //isFirstDay = true;
+
         console.log("isFirstDay: " + isFirstDay + ", " + $rootScope.first_date_of_study);
         if ((moment().valueOf() >= daily_survey_start_time && moment().valueOf() <= daily_survey_end_time) || (isFirstDay==true)){
 
@@ -1478,7 +1609,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         $scope.myPopup.close();
 
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         var isFirstDay = false;
@@ -1488,29 +1619,36 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
         //console.log("" + device.platform);
         if ((moment().valueOf() >= daily_survey_start_time && moment().valueOf() <= daily_survey_end_time) || (isFirstDay==true)){
             
+            /*
             if(ionic.Platform.isAndroid()) {
-                var sApp = startApp.set({ /* params */
+                var sApp = startApp.set({ 
                     "package": "edu.stat.srl.passivedatakit",
                     "intentstart": "startActivity",
                     "component": ["edu.stat.srl.passivedatakit", "edu.stat.srl.passivedatakit.activetasks.SpatialTask.SpatialMemoryTaskA1"]
-                }, { /* extras */
+                }, { 
 
                 });
 
-                sApp.check(function(values) { /* success */
+                sApp.check(function(values) {
                     console.log(values)
-                }, function(error) { /* fail */
+                }, function(error) {
                     alert(error);
                 });
 
-                sApp.start(function() { /* success */
+                sApp.start(function() { 
                     console.log(values)
-                }, function(error) { /* fail */
+                }, function(error) {
                     alert(error);
                 });
             }
             else{
-                $location.path("/activetasks");
+            */
+
+            //$location.path("/activetasks");
+            //$location.path("/tappingtask");
+            $location.path("/tappingtaskStep1");
+                
+                
 
                 /*
                 var alertPopup = $ionicPopup.alert({
@@ -1522,7 +1660,7 @@ app.controller("MainCtrl", function($scope, awsCognitoIdentityFactory, $state, $
                     console.log('Active tasks unavilable');
                 });
                 */
-            }
+            //}
 
         }else{
             $scope.showAlertAT();

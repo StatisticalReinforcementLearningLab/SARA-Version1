@@ -50,7 +50,8 @@ FishGame.Game.prototype = {
 
     
     buildWorld: function() {
-        this.height = window.innerHeight-44;
+        //this.height = window.innerHeight-44;
+        this.height = this.game.height;
         var titlescreen = this.add.image(0, this.height-160, 'titlescreen');
         titlescreen.scale.setTo(0.85, 0.85);
 
@@ -102,6 +103,10 @@ FishGame.Game.prototype = {
         treasure.inputEnabled = true;
         treasure.events.onInputDown.add(this.showunlockables, this);
 
+        //
+        this.game.onPause.add(this.yourGamePausedFunc, this);
+        this.game.onResume.add(this.yourGameResumedFunc, this);
+
 
 
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
@@ -109,6 +114,21 @@ FishGame.Game.prototype = {
 
         this.checkReinforcement();
 
+    },
+
+    yourGamePausedFunc: function(){
+        console.log("Game paused");
+        //this.isPaused = true;
+        this.game.lockRender = true;
+        //this.filter.destroy();
+        //this.sprite.destroy();
+    },
+
+    yourGameResumedFunc: function(){
+        console.log("Game resumed");
+        //this.addWater();
+        //this.isPaused = false;
+        this.game.lockRender = false;
     },
 
     //show the reward
@@ -400,6 +420,15 @@ FishGame.Game.prototype = {
                 if(data[i].name.valueOf() === "Sea horse")
                     this.animateSeaHorse();
 
+                if(data[i].name.valueOf() === "Butterfly fish")
+                    this.animateButterflyFish();
+
+                if(data[i].name.valueOf() === "Guppy")
+                    this.animateGuppyFish();
+
+                if(data[i].name.valueOf() === "Tiger barb")
+                    this.animateTigerbarb();
+
                 //if(data[i].name.valueOf() === "Tiger barb")
                 //    this.animateTigerbarb();
 
@@ -514,6 +543,34 @@ FishGame.Game.prototype = {
 
     },
 
+    animateButterflyFish: function(){
+        //angel
+        var angelfish = this.add.sprite(-100, this.height-300, 'butterfly');
+        angelfish.animations.add('swim');
+        angelfish.animations.play('swim', 10, true);
+        angelfish.scale.setTo(0.5, 0.5);
+        this.gobothways(angelfish);    
+    },
+
+    animateTigerbarb: function(){    
+        //
+        //if(this.totalPoints >= 50 && this.totalPoints < 75)
+        var angelfish = this.add.sprite(-100, this.height-120, 'tigerbarb');
+        angelfish.animations.add('swim');
+        angelfish.animations.play('swim', 10, true);
+        angelfish.scale.setTo(0.6, 0.6);
+        this.gobothways(angelfish); 
+    },
+
+    animateGuppyFish: function(){    
+        //
+        //if(this.totalPoints >= 50 && this.totalPoints < 75)
+        var angelfish = this.add.sprite(-100, 60, 'guppy');
+        angelfish.animations.add('swim');
+        angelfish.animations.play('swim', 10, true);
+        angelfish.scale.setTo(0.5, 0.5);
+        this.gobothways(angelfish); 
+    },
 
     animateSquid: function(){
         //squid

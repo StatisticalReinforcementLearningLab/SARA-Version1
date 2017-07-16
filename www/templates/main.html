@@ -1,11 +1,12 @@
 <ion-view view-title="Login" name="login-view" ng-init="getUserFromLocalStorage()">
 
-          <ion-header-bar class="bar-stable" style="background:#3F51B5;">
+          <ion-header-bar class="bar-stable" style="background:#3F51B5;" align-title="left">
 
                 <h1 class="title" style="color:#fff;">SARA</h1>
 
                 
                 <div class="buttons">
+                  <h3 style="color:#fff;font-size:15px;padding-top:7px;padding-right:5px;">${{money}}</h3>
                   <button class="button button-icon ion-arrow-graph-up-right" style="color:#fff;" ng-click="showLifeInishgts()"></button>
                   <button class="button button-icon ion-trophy" style="color:#fff;" ng-click="showHelp()"></button>
                 </div>

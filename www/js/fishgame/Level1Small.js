@@ -33,7 +33,8 @@ FishGame.Level1Small.prototype = {
     },
     
     buildWorld: function() {
-        this.height = window.innerHeight-44;
+        //this.height = window.innerHeight-44;
+        this.height = this.game.height;
         var undersea = this.add.image(0, 0, 'undersea');
         undersea.scale.setTo(0.8, 0.8);
 
@@ -115,16 +116,18 @@ FishGame.Level1Small.prototype = {
 
 
     yourGamePausedFunc: function(){
-        //console.log("Game paused");
-        this.isPaused = true;
+        console.log("Game paused");
+        //this.isPaused = true;
+        this.game.lockRender = true;
         //this.filter.destroy();
         //this.sprite.destroy();
     },
 
     yourGameResumedFunc: function(){
-        //console.log("Game resumed");
+        console.log("Game resumed");
         //this.addWater();
-        this.isPaused = false;
+        //this.isPaused = false;
+        this.game.lockRender = false;
     },
 
     addWater: function(){

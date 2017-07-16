@@ -74,6 +74,9 @@ FishGame.Preloader.prototype = {
 		this.load.spritesheet('greenstarfish', 'sprite/greenstarfish.png', 512, 512, 3);
 		this.load.spritesheet('redstarfish', 'sprite/redstarfish.png', 512, 512, 3);
 		this.load.spritesheet('bluestarfish', 'sprite/bluestarfish.png', 512, 512, 3);
+		this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
+		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
+		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
 
 		
 
@@ -154,7 +157,7 @@ FishGame.Preloader.prototype = {
         if(this.ready == false) {
             this.ready = true;
 
-            //this.ionic_scope.total_points = 1770;  	
+            //this.ionic_scope.total_points = 1750;  	
 
             if(this.ionic_scope.total_points <770){
             	this.state.start('GameSmall');

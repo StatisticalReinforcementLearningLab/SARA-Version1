@@ -3,17 +3,33 @@
     "name" : "The clown fish",
     "level" : 1,
     "text" : "Story 1",
-    "points" : 60,
+    "points" : 30,
     "img" : "img/nemo.png",
     "trivia": "Do you know the animators of \"Finding nemo\" studied dogs’ facial expressions and eyes to animate the fishes’ expressions?"
   },
   {
-    "name" : "Star fish",
+    "name" : "Butterfly fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 60,
+    "img" : "img/butterfly.png",
+    "trivia": "Do you know there are 114 species of butterfly fish?"
+  },
+  {
+    "name" : "Gold fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 90,
+    "img" : "img/goldfish.png",
+    "trivia": "Do you know gold fishes can recognize faces?"
+  },
+  {
+    "name" : "Guppy",
     "level" : 1,
     "text" : "Story 1",
     "points" : 120,
-    "img" : "img/starfish.png",
-    "trivia": "Do you know starfishes have 2 stomachs and can regenerate their arms."
+    "img" : "img/guppy.png",
+    "trivia": "Female guppies are attracted to brightly colored males with orange spots on the flanks"
   },
   {
     "name" : "Squid",
@@ -24,18 +40,18 @@
     "trivia": "Some species of squid can swim at speeds up to 25 miles per hour, as fast as some sharks."
   },
   {
-    "name" : "Gold fish",
+    "name" : "Tiger barb",
     "level" : 1,
     "text" : "Story 1",
-    "points" : 300,
-    "img" : "img/goldfish.png",
-    "trivia": "Do you know gold fishes can recognize faces?"
+    "points" : 240,
+    "img" : "img/tigerbarb.png",
+    "trivia": "Tiger barbs can swim fast and  they like to spend their time by chasing other tiger barbs."
   },
   {
     "name" : "Octopus",
     "level" : 1,
     "text" : "Story 1",
-    "points" : 360,
+    "points" : 300, 
     "img" : "img/octopus.png",
     "trivia": "Do you know octopuses have 3 hearts and they have blue blood?"
   },
@@ -43,7 +59,7 @@
     "name" : "Angel fish",
     "level" : 1,
     "text" : "Story 1",
-    "points" : 470,
+    "points" : 360, 
     "trivia" : "Do you know if an angelfish's partner dies, then it has no interest in finding another partner?",
     "img" : "img/angelfish.png"
   },
@@ -51,9 +67,17 @@
     "name" : "Crab",
     "level" : 1,
     "text" : "Story 1",
-    "points" : 590,
+    "points" : 470, 
     "trivia" : "Do you know a crab's eyestalks can move in different directions which allow it to see all around?",
     "img" : "img/crabfish.png"
+  },
+  {
+    "name" : "Star fish",
+    "level" : 1,
+    "text" : "Story 1",
+    "points" : 590, 
+    "img" : "img/starfish.png",
+    "trivia": "Do you know starfishes have 2 stomachs and can regenerate their arms."
   },
   {
     "name" : "Carp fish",

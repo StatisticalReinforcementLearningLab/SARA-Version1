@@ -205,7 +205,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
         var bottom_x = (320.0/354.0)*c.width;
         var bottom_y = (320.0/354.0)*c.height;
         
-        c.addEventListener("mousedown", function (e) {
+        c.addEventListener("click", function (e) {
             drawing = true;
             lastPos = getMousePos(c, e);
             //console.log("x:" + lastPos.x + ", y:" + lastPos.y + ":::: " + c.width + "," + c.height);
@@ -298,9 +298,24 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
           rl_data['survey_data']['weekly_survey'][moment().format('YYYYMMDD')] = 1;
           rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
 
+          if(ionic.Platform.isIOS()){
+              if(rl_data.hasOwnProperty('life-insights')){
+              }else{
+                  rl_data['life-insights'] = {};
+                  rl_data['life-insights']['daily_survey'] = {};
+                  rl_data['life-insights']['at_sp'] = {};
+                  rl_data['life-insights']['at_tap'] = {};
+              }
+              var survey_responses = "" + $scope.survey['Q1d'] + "," + $scope.survey['QMood'] + "," + $scope.survey['Q3d'] + "," + $scope.survey['Q4d'] + "," + $scope.survey['Q5d'] + ","  + $scope.survey['Q6d'];
+              rl_data['life-insights']['daily_survey'][moment().format('YYYYMMDD')] = survey_responses;
+          }
+
           //save to cognito
           saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
           window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+
+
 
 
           //save to sd card
