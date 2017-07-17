@@ -115,6 +115,8 @@ FishGame.GameSmall.prototype = {
         this.game.onResume.add(this.yourGameResumedFunc, this);
         
         this.checkReinforcement();
+
+
     },
 
     yourGamePausedFunc: function(){
@@ -464,7 +466,7 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "Butterfly fish")
                     this.animateButterflyFish();
 
-                if(data[i].name.valueOf() === "Guppy")
+                if(data[i].name.valueOf() === "Puffer fish")
                     this.animateGuppyFish();
 
                 if(data[i].name.valueOf() === "Tiger barb")
@@ -578,31 +580,31 @@ FishGame.GameSmall.prototype = {
 
     animateButterflyFish: function(){
         //angel
-        var angelfish = this.add.sprite(-100, this.height-300, 'butterfly');
-        angelfish.animations.add('swim');
-        angelfish.animations.play('swim', 10, true);
-        angelfish.scale.setTo(0.7, 0.7);
-        this.gobothways(angelfish);    
+        var butterflyFish = this.add.sprite(-100, this.height-300, 'butterfly');
+        butterflyFish.animations.add('swim');
+        butterflyFish.animations.play('swim', 10, true);
+        butterflyFish.scale.setTo(0.7, 0.7);
+        this.gobothways(butterflyFish);    
     },
 
     animateTigerbarb: function(){    
         //
         //if(this.totalPoints >= 50 && this.totalPoints < 75)
-        var angelfish = this.add.sprite(-100, this.height-120, 'tigerbarb');
-        angelfish.animations.add('swim');
-        angelfish.animations.play('swim', 10, true);
-        angelfish.scale.setTo(0.8, 0.8);
-        this.gobothways(angelfish); 
+        var tigerbarbfish = this.add.sprite(-100, this.height-120, 'tigerbarb');
+        tigerbarbfish.animations.add('swim');
+        tigerbarbfish.animations.play('swim', 10, true);
+        tigerbarbfish.scale.setTo(0.8, 0.8);
+        this.gobothways(tigerbarbfish); 
     },
 
-    animateGuppyFish: function(){    
+    animatePufferFish: function(){    
         //
         //if(this.totalPoints >= 50 && this.totalPoints < 75)
-        var angelfish = this.add.sprite(-100, 50, 'guppy');
-        angelfish.animations.add('swim');
-        angelfish.animations.play('swim', 10, true);
-        angelfish.scale.setTo(0.7, 0.7);
-        this.gobothways(angelfish); 
+        var pufferfish = this.add.sprite(-100, 50, 'puffer');
+        pufferfish.animations.add('swim');
+        pufferfish.animations.play('swim', 10, true);
+        pufferfish.scale.setTo(0.7, 0.7);
+        this.gobothways(pufferfish);
     },
     
     animateAngelFish: function(){

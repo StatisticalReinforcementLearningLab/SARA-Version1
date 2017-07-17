@@ -1,10 +1,25 @@
-app.controller("SpatialTaskCtrl", function($scope, $http, $ionicPlatform, $location, $interval, $rootScope) {
+app.controller("SpatialTaskCtrl", function($scope, $http, $ionicPlatform, $location, $interval, $rootScope, saraDatafactory) {
 
     var counter = 0;
 
     $scope.goHome = function() {
         $location.path("/");
     };
+
+    saraDatafactory.copyUsageStats({'view':'SpatialTaskCtrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'SpatialTaskCtrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
 
     $scope.images = [];
     for(var i=0; i<9; i++)
@@ -61,11 +76,38 @@ app.controller("SpatialTask2Ctrl", function($scope, $http, $ionicPlatform, $loca
         $location.path("/");
     };
 
+    saraDatafactory.copyUsageStats({'view':'SpatialTask2Ctrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'SpatialTask2Ctrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
     $scope.goHome2 = function() {
         //
-        var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}");
-        active_tasks_survey_data[moment().format('YYYYMMDD')] = 2;
-        window.localStorage['active_tasks_survey'] = JSON.stringify(active_tasks_survey_data);
+        //var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}");
+        //active_tasks_survey_data[moment().format('YYYYMMDD')] = 2;
+        //window.localStorage['active_tasks_survey'] = JSON.stringify(active_tasks_survey_data);
+        var spatial_data = {};
+        spatial_data['ts'] = new Date().getTime();
+        spatial_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+        spatial_data['type'] = "spatial";
+        spatial_data['isCorrect'] = "incorrect";
+        spatial_data['sequence'] = JSON.stringify(image_sequence);
+
+        var at_data = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
+        at_data.push(spatial_data);
+        window.localStorage['activetasks_data_today'] = JSON.stringify(at_data);
+
+
         $location.path("/activetaskscompleted");
     };
 
@@ -125,6 +167,18 @@ app.controller("SpatialTask2Ctrl", function($scope, $http, $ionicPlatform, $loca
                 saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
             }
+
+
+            var spatial_data = {};
+            spatial_data['ts'] = new Date().getTime();
+            spatial_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+            spatial_data['type'] = "spatial";
+            spatial_data['isCorrect'] = "correct";
+            spatial_data['sequence'] = JSON.stringify(image_sequence);
+
+            var at_data = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
+            at_data.push(spatial_data);
+            window.localStorage['activetasks_data_today'] = JSON.stringify(at_data);
         }
         function falshcounter() {
             //
@@ -142,7 +196,7 @@ app.controller("SpatialTask2Ctrl", function($scope, $http, $ionicPlatform, $loca
 });
 
 
-app.controller("SpatialTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $location, $interval) {
+app.controller("SpatialTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory) {
     //
     $scope.goHome = function() {
         $location.path("/");
@@ -150,10 +204,24 @@ app.controller("SpatialTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $
     $scope.goStep2 = function() {
         $location.path("/spatialtaskStep2");
     };
+
+    saraDatafactory.copyUsageStats({'view':'SpatialTaskStep1Ctrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'SpatialTaskStep1Ctrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
 });
 
 
-app.controller("SpatialTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $location, $interval) {
+app.controller("SpatialTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory) {
     //
     $scope.goHome = function() {
         $location.path("/");
@@ -161,20 +229,69 @@ app.controller("SpatialTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $
     $scope.goStep2 = function() {
         $location.path("/spatialtask");
     };
+
+    saraDatafactory.copyUsageStats({'view':'SpatialTaskStep2Ctrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'SpatialTaskStep2Ctrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
 });
 
 
-app.controller("ActiveTasksCompletedCtrl", function($scope, $http, $ionicPlatform, $location, $interval) {
+app.controller("ActiveTasksCompletedCtrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory) {
     //
     $scope.goHome = function() {
         $location.path("/");
     };
+
+    saraDatafactory.copyUsageStats({'view':'ActiveTasksCompletedCtrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'ActiveTasksCompletedCtrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
     $scope.goStep2 = function() {
         //
-        var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}");
-        active_tasks_survey_data[moment().format('YYYYMMDD')] = 2;
-        window.localStorage['active_tasks_survey'] = JSON.stringify(active_tasks_survey_data);
-        
-        $location.path("/main");
+        //var active_tasks_survey_data = JSON.parse(window.localStorage['active_tasks_survey'] || "{}");
+        //active_tasks_survey_data[moment().format('YYYYMMDD')] = 2;
+        //window.localStorage['active_tasks_survey'] = JSON.stringify(active_tasks_survey_data);
+
+        //$location.path("/main");
+        /*
+        $scope.$broadcast('game:addscore', {
+                state: 29,
+                isReal: true
+            });
+        }
+        */
+        $scope.survey = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
+        saraDatafactory.copyJSONToFile($scope.survey, 'active_task');
+
+
+        var rl_data = JSON.parse(window.localStorage['cognito_data']);
+        rl_data['survey_data']['active_tasks_survey'][moment().format('YYYYMMDD')] = 2;
+        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+
+        $location.path("/reward/29/true");
     };
 });

@@ -13,14 +13,35 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
         $location.path("/");
     };
 
+    saraDatafactory.copyUsageStats({'view':'TappingTaskCtrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'TappingTaskCtrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
+    var tap_data_left = [];
+    var tap_data_right = [];
     $scope.leftTapped = function() {
-        if(isFinished == false)
+        if(isFinished == false){
             $scope.tapcount = $scope.tapcount + 1;
+            tap_data_left.push(new Date().getTime());
+        }
     };
 
     $scope.rightTapped = function() {
-        if(isFinished == false)
+        if(isFinished == false){
             $scope.tapcount = $scope.tapcount + 1;
+            tap_data_right.push(new Date().getTime());
+        }
     };
 
     $scope.addAT = function() {
@@ -61,6 +82,19 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
             }
 
             if(counter == 13){
+
+                var tapping_data = {};
+                tapping_data['ts'] = new Date().getTime();
+                tapping_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+                tapping_data['type'] = "tapping";
+                tapping_data['left'] = tap_data_left;
+                tapping_data['right'] = tap_data_right;
+
+                var at_data = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
+                at_data.push(tapping_data);
+                window.localStorage['activetasks_data_today'] = JSON.stringify(at_data);
+
+
                 $interval.cancel(promise);
                 //$location.path("/activetasks");
                 $location.path("/spatialtaskStep1");
@@ -72,7 +106,7 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
 
 
 
-app.controller("TappingTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $location, $interval) {
+app.controller("TappingTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory, saraDatafactory) {
     //
     $scope.goHome = function() {
         $location.path("/");
@@ -80,10 +114,29 @@ app.controller("TappingTaskStep1Ctrl", function($scope, $http, $ionicPlatform, $
     $scope.goStep2 = function() {
         $location.path("/tappingtaskStep2");
     };
+
+    saraDatafactory.copyUsageStats({'view':'TappingTaskStep1Ctrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'TappingTaskStep1Ctrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
+    window.localStorage['activetasks_data_today'] = '[]';
+
+
 });
 
 
-app.controller("TappingTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $location, $interval) {
+app.controller("TappingTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory) {
     //
     $scope.goHome = function() {
         $location.path("/");
@@ -91,4 +144,21 @@ app.controller("TappingTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $
     $scope.goStep2 = function() {
         $location.path("/tappingtask");
     };
+
+
+    saraDatafactory.copyUsageStats({'view':'TappingTaskStep2Ctrl','status':'start'});
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        saraDatafactory.copyUsageStats({'view':'TappingTaskStep2Ctrl','status':'destroy'});
+    });
+
+    var deregisterSecond = $ionicPlatform.registerBackButtonAction(
+      function() {
+        //$location.path("/");
+        navigator.app.backHistory();
+      }, 100
+    );
+    $scope.$on('$destroy', deregisterSecond);
+
+
 });

@@ -311,8 +311,9 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
           }
 
           //save to cognito
-          saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
           window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+          saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+          
 
 
 

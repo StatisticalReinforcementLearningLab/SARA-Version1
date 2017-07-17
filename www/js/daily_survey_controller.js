@@ -365,9 +365,8 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
 
 
         //save to cognito
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-
+        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         //write to SD card file
         saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
 

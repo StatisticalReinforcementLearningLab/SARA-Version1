@@ -24,12 +24,12 @@
     "trivia": "Do you know gold fishes can recognize faces?"
   },
   {
-    "name" : "Guppy",
+    "name" : "Tiger barb",
     "level" : 1,
     "text" : "Story 1",
     "points" : 120,
-    "img" : "img/guppy.png",
-    "trivia": "Female guppies are attracted to brightly colored males with orange spots on the flanks"
+    "img" : "img/tigerbarb.png",
+    "trivia": "Tiger barbs can swim fast and  they like to spend their time by chasing other tiger barbs."
   },
   {
     "name" : "Squid",
@@ -38,14 +38,6 @@
     "points" : 180,
     "img" : "img/squid.png",
     "trivia": "Some species of squid can swim at speeds up to 25 miles per hour, as fast as some sharks."
-  },
-  {
-    "name" : "Tiger barb",
-    "level" : 1,
-    "text" : "Story 1",
-    "points" : 240,
-    "img" : "img/tigerbarb.png",
-    "trivia": "Tiger barbs can swim fast and  they like to spend their time by chasing other tiger barbs."
   },
   {
     "name" : "Octopus",

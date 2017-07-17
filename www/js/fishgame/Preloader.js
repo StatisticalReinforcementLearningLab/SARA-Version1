@@ -8,6 +8,9 @@ FishGame.Preloader = function(game) {
 FishGame.Preloader.prototype = {
 	
 	preload: function () {
+
+		console.log("Preloader: preload called"); 
+
 		this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloaderBar');
 		this.preloadBar.anchor.setTo(0.5, 0.5);
 		this.load.setPreloadSprite(this.preloadBar);
@@ -45,7 +48,10 @@ FishGame.Preloader.prototype = {
 		this.load.atlasJSONArray('angelfish', 'sprite/angelfish.png', 'sprite/angelfish.json');
 		this.load.atlasJSONArray('discusfish', 'sprite/discusfish.png', 'sprite/discusfish.json');
 		this.load.atlasJSONArray('bettafish', 'sprite/betta.png', 'sprite/betta.json');
-		
+		//this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
+		this.load.atlasJSONArray('puffer', 'sprite/puffer.png', 'sprite/puffer.json');
+		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
+		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
 		
 		//
 		this.load.image('fish_progress', 'sprite/fish_progress_s.png');
@@ -74,9 +80,7 @@ FishGame.Preloader.prototype = {
 		this.load.spritesheet('greenstarfish', 'sprite/greenstarfish.png', 512, 512, 3);
 		this.load.spritesheet('redstarfish', 'sprite/redstarfish.png', 512, 512, 3);
 		this.load.spritesheet('bluestarfish', 'sprite/bluestarfish.png', 512, 512, 3);
-		this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
-		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
-		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
+		
 
 		
 
@@ -120,6 +124,7 @@ FishGame.Preloader.prototype = {
 		this.load.image('diver', 'img/diver-0.png');
 		this.load.image('fatdiver2', 'img/fatdiver2.png');
 
+
 		 var progressDisplay = 0;
 		 var timerEvt = this.time.events.loop(100, function (){
             if(this.load.progress < 100){
@@ -132,10 +137,12 @@ FishGame.Preloader.prototype = {
             }
 
         }, this);
+		 
 		
 	},
 
 	create: function () {
+		console.log("Preloader: create called");
 		this.preloadBar.cropEnabled = false;
 		//this.load.image('treasuresea', 'img/treasuresea.png');
         //this.load.atlasJSONArray('greencrab', 'sprite/greencrab.png', 'sprite/greencrab.json');
@@ -152,6 +159,9 @@ FishGame.Preloader.prototype = {
     //--- See on file complete http://technotip.com/4897/progress-bar-phaser/
 
 	update: function () {
+
+		//
+		console.log("Preloader: update called");
 
 		//this.cache.isSoundDecoded('game_audio') && 
         if(this.ready == false) {

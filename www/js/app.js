@@ -246,9 +246,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
             var game;
             if(ionic.Platform.isIOS())
-                game = new Phaser.Game(window.innerWidth, window.innerHeight - 64, Phaser.CANVAS, 'gameArea');
+                game = new Phaser.Game(window.innerWidth, window.innerHeight - 64, Phaser.AUTO, 'gameArea');
             else
-                game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.CANVAS, 'gameArea');
+                game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
 
             game.state.add('Boot', FishGame.Boot);
             game.state.add('Preloader', FishGame.Preloader);
@@ -542,6 +542,17 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //console.log("show:checkReinforcement");
                 checkReinforcement();
             });
+
+            scope.$on('game:resumed', function() {
+                console.log('Render locked: false, Game: Resumed');
+                game.lockRender = false;
+            });
+
+            scope.$on('game:paused', function() {
+                console.log('Render locked: true, Game: Paused');
+                game.lockRender = true;
+            });
+
             scope.$on('show:reinforcementdemo', function() {
                  if (scope.current_level === "GameSmall")
                     game.state.states["GameSmall"].showBubbles(false);
@@ -1072,6 +1083,9 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             saraDatafactory.copyUsageStats({'view':'app','status':'resume'});
             isPaused = false;
             //$rootScope.game.lockRender = true;
+
+            $scope.$broadcast('game:resumed');
+
         }, false);
 
         document.addEventListener("pause", function() {
@@ -1080,6 +1094,10 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             //if($rootScope.insideMain == true)
             saraDatafactory.copyUsageStats({'view':'app','status':'paused'});
             isPaused = true;
+
+            //
+            $scope.$broadcast('game:paused');
+
             //$rootScope.game.lockRender = false;
         }, false);
 
@@ -1109,7 +1127,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
     
     
     var promise = $interval(testResumePause, 1000);
-    $scope.money = window.localStorage['total_money_earned'] || 0;
+    $scope.money = window.localStorage['total_money_earned'] || "0";
 
 
     function testResumePause() {
@@ -1118,8 +1136,8 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         promise = $interval(testResumePause, 1000);
         var regid = $ionicPush.token;//window.localStorage['registrationIdPush']; // || 'not found';
         //console.log("RegID: " + regid);
-        if(isPaused==false)
-            readActiveTaskData();
+        //if(isPaused==false)
+        //    readActiveTaskData();
 
 
         if (ionic.Platform.isIOS()) {
@@ -1155,7 +1173,9 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
         if(rl_data.hasOwnProperty('badges')){
             $scope.money = rl_data['badges']['money'];
-            window.localStorage['total_money_earned'] = $scope.money;
+            if($scope.money=="" || $scope.money==undefined)
+                $scope.money = "0";
+            window.localStorage['total_money_earned'] = "" + $scope.money;
         }
     }
 
@@ -1609,7 +1629,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         $scope.myPopup.close();
 
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         var isFirstDay = false;

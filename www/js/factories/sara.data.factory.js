@@ -540,58 +540,97 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         data = JSON.stringify(data);
         var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)");
         var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        console.log("Encrypted: " + encrypted);
-        console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+        //console.log("Encrypted: " + encrypted);
+        //console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
 
         if (ionic.Platform.isAndroid()) {
-            var directory = cordova.file.externalRootDirectory;
-            //directory = directory.slice(7);
 
-            // success
-            //
+            if(type == "active_task"){
+                var updates = {};
+                var survey_data = {};
+                survey_data['username'] = window.localStorage['username'] || "unknwon";
+                survey_data['ts'] = new Date().getTime();
+                survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+                survey_data['data'] = encrypted;
+                //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+                //survey_data['regId'] = $ionicPush.token;
+                //survey_data['ts'] = new Date().getTime();
+                //survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
 
-            //var Crypt = new Crypt();  // constructor  
-            /*** encrypt */
+                updates['/android/data/' + survey_data['username'] + "/" + type + "/" + moment().format('YYYYMMDD-HHmmss')] = survey_data;
+                //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+                firebase.database().ref().update(updates);
 
-            //var ciphertext = CryptoJS.AES.encrypt("plaintext", "Secret Passphrase");  
-            // H3fAh9bppeg=xuHy8woEtOfYYI18tLM76A==BKUvKCztSNl8  
+            }else{
+                var directory = cordova.file.externalRootDirectory;
+                //directory = directory.slice(7);
 
-            /*** decrypt */
-            //var plaintext  = CryptoJS.AES.decrypt(ciphertext, "Secret Passphrase"); 
-            //var xxx =  "" + encrypted.toString();
+                // success
+                //
+
+                //var Crypt = new Crypt();  // constructor  
+                /*** encrypt */
+
+                //var ciphertext = CryptoJS.AES.encrypt("plaintext", "Secret Passphrase");  
+                // H3fAh9bppeg=xuHy8woEtOfYYI18tLM76A==BKUvKCztSNl8  
+
+                /*** decrypt */
+                //var plaintext  = CryptoJS.AES.decrypt(ciphertext, "Secret Passphrase"); 
+                //var xxx =  "" + encrypted.toString();
 
 
-            $cordovaFile.checkDir(cordova.file.externalRootDirectory + "/SensorLogger/", "data")
-                .then(function(success) {
+                $cordovaFile.checkDir(cordova.file.externalRootDirectory + "/SensorLogger/", "data")
+                    .then(function(success) {
 
-                    var file_location = type + "_" + moment().format('YYYYMMDD-HHmmss') + ".txt";
-                    //console.log("File loc: " + directory + "/SensorLogger/data/" + file_location);
+                        var file_location = type + "_" + moment().format('YYYYMMDD-HHmmss') + ".txt";
+                        //console.log("File loc: " + directory + "/SensorLogger/data/" + file_location);
 
-                    //$cordovaFile.writeFile(cordova.file.applicationStorageDirectory, file_location, encrypted, true )
-                    $cordovaFile.writeFile(directory + "/SensorLogger/data/", file_location, encrypted, true)
-                        .then(function(success) {
-                            // success
-                            console.log("File written " + file_location);
-                        }, function(error) {
-                            // error
-                            console.log("ERROR ERROR ERROR ERROR ERROR: " + JSON.stringify(error));
+                        //$cordovaFile.writeFile(cordova.file.applicationStorageDirectory, file_location, encrypted, true )
+                        $cordovaFile.writeFile(directory + "/SensorLogger/data/", file_location, encrypted, true)
+                            .then(function(success) {
+                                // success
+                                console.log("File written " + file_location);
+                            }, function(error) {
+                                // error
+                                console.log("ERROR ERROR ERROR ERROR ERROR: " + JSON.stringify(error));
+                            });
+
+                    }, function(error) {
+                        // error
+                        $cordovaFile.createDir(directory + "/SensorLogger/", "data", false)
+                            .then(function(success) {
+                                // success
+                                //call again man
+                                sara.copyJSONToFile(data, type);
+                            }, function(error) {
+                                // error
+                                console.log("ERROR: Probably on a device");
+                                //means I 
                         });
 
-                }, function(error) {
-                    // error
-                    $cordovaFile.createDir(directory + "/SensorLogger/", "data", false)
-                        .then(function(success) {
-                            // success
-                            //call again man
-                            sara.copyJSONToFile(data, type);
-                        }, function(error) {
-                            // error
-                            console.log("ERROR: Probably on a device");
-                            //means I 
                     });
+            }
 
-                });
+
+        }else{
+            var updates = {};
+            var survey_data = {};
+            survey_data['username'] = window.localStorage['username'] || "unknwon";
+            survey_data['ts'] = new Date().getTime();
+            survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+            survey_data['data'] = encrypted;
+            //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+            // survey_data['regId'] = $ionicPush.token;
+            // survey_data['ts'] = new Date().getTime();
+            // survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+
+            updates['/iOS/data/' + survey_data['username'] + "/" + type + "/" + moment().format('YYYYMMDD-HHmmss')] = survey_data;
+            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+            firebase.database().ref().update(updates);
+
         }
+
+
 
         //data = JSON.parse(data);
         sara.copyDailtSurveyForLifeInsight(data2,type);

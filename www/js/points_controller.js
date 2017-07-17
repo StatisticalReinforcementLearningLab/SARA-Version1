@@ -209,7 +209,7 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
 
 
     $scope.goHome = function() {
-        $location.path("/");
+        $location.path("/main");
     };
 
     function sum(arr){
