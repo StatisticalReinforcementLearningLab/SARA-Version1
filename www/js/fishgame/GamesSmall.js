@@ -467,7 +467,7 @@ FishGame.GameSmall.prototype = {
                     this.animateButterflyFish();
 
                 if(data[i].name.valueOf() === "Puffer fish")
-                    this.animateGuppyFish();
+                    this.animatePufferFish();
 
                 if(data[i].name.valueOf() === "Tiger barb")
                     this.animateTigerbarb();
@@ -600,11 +600,21 @@ FishGame.GameSmall.prototype = {
     animatePufferFish: function(){    
         //
         //if(this.totalPoints >= 50 && this.totalPoints < 75)
+        //angel
+        /*
+        var butterflyFish = this.add.sprite(-100, this.height-300, 'butterfly');
+        butterflyFish.animations.add('swim');
+        butterflyFish.animations.play('swim', 10, true);
+        butterflyFish.scale.setTo(0.7, 0.7);
+        this.gobothways(butterflyFish);  
+        */
+        
         var pufferfish = this.add.sprite(-100, 50, 'puffer');
         pufferfish.animations.add('swim');
-        pufferfish.animations.play('swim', 10, true);
+        pufferfish.animations.play('swim', 5, true);
         pufferfish.scale.setTo(0.7, 0.7);
         this.gobothways(pufferfish);
+        
     },
     
     animateAngelFish: function(){

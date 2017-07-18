@@ -11,6 +11,8 @@ FishGame.Preloader.prototype = {
 
 		console.log("Preloader: preload called"); 
 
+		this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+
 		this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloaderBar');
 		this.preloadBar.anchor.setTo(0.5, 0.5);
 		this.load.setPreloadSprite(this.preloadBar);
@@ -49,7 +51,7 @@ FishGame.Preloader.prototype = {
 		this.load.atlasJSONArray('discusfish', 'sprite/discusfish.png', 'sprite/discusfish.json');
 		this.load.atlasJSONArray('bettafish', 'sprite/betta.png', 'sprite/betta.json');
 		//this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
-		this.load.atlasJSONArray('puffer', 'sprite/puffer.png', 'sprite/puffer.json');
+		this.load.atlasJSONArray('puffer', 'sprite/pufferfish.png', 'sprite/pufferfish.json');
 		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
 		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
 		
@@ -124,15 +126,17 @@ FishGame.Preloader.prototype = {
 		this.load.image('diver', 'img/diver-0.png');
 		this.load.image('fatdiver2', 'img/fatdiver2.png');
 
+		//start loading
+		this.load.start();
 
-		 var progressDisplay = 0;
-		 var timerEvt = this.time.events.loop(100, function (){
+		var progressDisplay = 0;
+		var timerEvt = this.time.events.loop(100, function (){
             if(this.load.progress < 100){
             	progressDisplay++;
                 console.log('loading... '+(this.load.progress)+'%' + "; " + (100*progressDisplay));
             }else{
-                loadingText.text = 'Ready, Go!';
-                //console.log('Ready, Go!');
+                //loadingText.text = 'Ready, Go!';
+                console.log('Ready, Go!');
                 this.time.events.remove(timerEvt);
             }
 
@@ -164,9 +168,7 @@ FishGame.Preloader.prototype = {
 		console.log("Preloader: update called");
 
 		//this.cache.isSoundDecoded('game_audio') && 
-        if(this.ready == false) {
-            this.ready = true;
-
+        if(this.ready == true) {
             //this.ionic_scope.total_points = 1750;  	
 
             if(this.ionic_scope.total_points <770){
@@ -195,5 +197,10 @@ FishGame.Preloader.prototype = {
             //this.state.start('Level1');
             //this.state.start('Level1Small');
         }
+	},
+
+	onLoadComplete: function () {
+	    console.log("Load complete");
+	    this.ready = true;
 	}
 };
