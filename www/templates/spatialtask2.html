@@ -48,7 +48,7 @@
           <img src="{{images[8]}}" width="100%" style="padding:5px" ng-click="tapindex(8)"></img>
       </div>
   </div>
-  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="allCorrect"><br>All correct!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;padding-top:5px;" ng-show="allCorrect">All correct!!</center>
   <!--
   <button class="button button-full button-positive" ng-click="addAT()">
       Add all active tasks
@@ -62,9 +62,9 @@
 
   </ion-content>
 
-  <div class="bar bar-footer" style="height:150px;border: 0px solid #FFFFFF;background:#ffffff">
-      <center style="width:50%;"><button ng-show="isFinished" ng-click="goHome2()" class="button button-balanced" style="padding:20px;padding-left:40px;padding-right:40px;font-size:16px;">Try later</button></center>
-      <center style="width:50%;"><button ng-hide="isCorrect" ng-click="goSpatialTask()" class="button button-assertive" style="padding:20px;padding-left:40px;padding-right:40px;font-size:16px;">Try again</button></center>
+  <div class="bar bar-footer" style="height:120px;border: 0px solid #FFFFFF;background:#ffffff" ng-show="isFinished">
+      <center style="width:50%;"><button ng-show="isFinished" ng-click="goHome2()" class="button button-balanced" style="padding:20px;padding-left:30px;padding-right:30px;font-size:16px;">Try later</button></center>
+      <center style="width:50%;"><button ng-hide="isCorrect" ng-click="goSpatialTask()" class="button button-assertive" style="padding:20px;padding-left:30px;padding-right:30px;font-size:16px;">Try again</button></center>
 
   </div>
 </ion-view>

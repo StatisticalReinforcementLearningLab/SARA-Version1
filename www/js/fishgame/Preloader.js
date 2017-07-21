@@ -39,11 +39,9 @@ FishGame.Preloader.prototype = {
         
         this.load.image('fish', 'img/fish.png');
 		this.load.image('treasure', 'img/treasure.png');
-		
 		this.load.atlasXML('octopus', 'sprite/octopus.png', 'sprite/octopus.xml');
 		this.load.atlasXML('seacreatures', 'sprite/seacreatures.png', 'sprite/seacreatures.xml');
 		this.load.atlasJSONArray('greenfish', 'sprite/swimrightgreenfish.png', 'sprite/swimrightgreenfish.json');
-		
 		this.load.atlasJSONArray('seahorseyellow', 'sprite/seahorseyellow.png', 'sprite/seahorseyellow.json');
 		this.load.atlasJSONArray('squid', 'sprite/squid.png', 'sprite/squid.json');
 		this.load.atlasJSONArray('goldfish', 'sprite/goldfish.png', 'sprite/goldfish.json');
@@ -83,8 +81,14 @@ FishGame.Preloader.prototype = {
 		this.load.spritesheet('redstarfish', 'sprite/redstarfish.png', 512, 512, 3);
 		this.load.spritesheet('bluestarfish', 'sprite/bluestarfish.png', 512, 512, 3);
 		
-
+		//
+		this.load.image('gameover', 'img/Fireworks.png');
 		
+		//
+		this.load.image('gotosea', 'img/gotosea.png');
+
+		//first_aq
+		this.load.image('first_aq', 'img/first_aq.png');
 
 		//progress bar
 		this.load.spritesheet('timer', 'sprite/timer.png', 150, 20);
@@ -169,29 +173,38 @@ FishGame.Preloader.prototype = {
 
 		//this.cache.isSoundDecoded('game_audio') && 
         if(this.ready == true) {
-            //this.ionic_scope.total_points = 1750;  	
+            //this.ionic_scope.total_points = 1650;  	
 
-            if(this.ionic_scope.total_points <770){
-            	this.state.start('GameSmall');
-            	this.ionic_scope.current_level = 'GameSmall';
-            }
+            var	username = window.localStorage['username'] || 'unknown';
+            var isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
+
+            if((this.ionic_scope.total_days > 30) && isStudyParticipant){
+            	this.state.start('Gameover');
+            }else{
+	            if(this.ionic_scope.total_points <770){
+	            	this.state.start('GameSmall');
+	            	this.ionic_scope.current_level = 'GameSmall';
+	            }
 
 
-            if(this.ionic_scope.total_points >=770 && this.ionic_scope.total_points <1060){
-            	this.state.start('Game');
-            	this.ionic_scope.current_level = 'Game';
-            }
+	            if(this.ionic_scope.total_points >=770 && this.ionic_scope.total_points <1060){
+	            	this.state.start('Game');
+	            	this.ionic_scope.current_level = 'Game';
+	            }
 
 
-            if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1710){
-            	this.state.start('Level1Small');
-            	this.ionic_scope.current_level = 'Level1Small';
-            }
+	            if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1710){
+	            	this.state.start('Level1Small');
+	            	this.ionic_scope.current_level = 'Level1Small';
+	            }
 
-            if(this.ionic_scope.total_points >=1710){
-				this.state.start('Level1');
-            	this.ionic_scope.current_level = 'Level1';
-            }
+	            if(this.ionic_scope.total_points >=1710){
+					this.state.start('Level1');
+					//this.state.start('Gameover');
+					//this.state.start('Gamelast');
+	            	this.ionic_scope.current_level = 'Level1';
+	            }
+	        }
 
             //this.state.start('Game');
             //this.state.start('Level1');

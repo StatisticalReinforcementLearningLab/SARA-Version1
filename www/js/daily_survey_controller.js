@@ -351,7 +351,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
         var rl_data = JSON.parse(window.localStorage['cognito_data']);
         rl_data['survey_data']['daily_survey'][moment().format('YYYYMMDD')] = 1;
 
-        if(ionic.Platform.isIOS()){
+        //if(ionic.Platform.isIOS()){
             if(rl_data.hasOwnProperty('life-insights')){
             }else{
                 rl_data['life-insights'] = {};
@@ -361,13 +361,16 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
             }
             var survey_responses = "" + $scope.survey['Q1d'] + "," + $scope.survey['QMood'] + "," + $scope.survey['Q3d'] + "," + $scope.survey['Q4d'] + "," + $scope.survey['Q5d'] + ","  + $scope.survey['Q6d'];
             rl_data['life-insights']['daily_survey'][moment().format('YYYYMMDD')] = survey_responses;
-        }
+        //}
 
 
         //save to cognito
+        rl_data['lastupdate'] = new Date().getTime();
         window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-        //write to SD card file
+
+        //
+        // saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        // write to SD card file
         saraDatafactory.copyJSONToFile($scope.survey, 'daily_survey');
 
 

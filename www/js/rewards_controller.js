@@ -738,7 +738,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //rl_data['badges']['money'] = monetary_reward;
         rl_data['daily_streak'] = JSON.parse(window.localStorage['reward_awarded_daily'] || "{}");
         rl_data['at_streak']= JSON.parse(window.localStorage['reward_awarded_at'] || "{}");
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD')); //sync now
+        //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD')); //sync now
+        rl_data['lastupdate'] = new Date().getTime();
         window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
         //window.localStorage['badges'] = JSON.stringify($rootScope.badges);

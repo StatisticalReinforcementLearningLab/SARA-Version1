@@ -4,12 +4,12 @@
       <h1 class="title" style="color:#fff;" ng-hide="showlogin">Login</h1>
   </ion-header-bar>
 
-  <ion-content class="padding" ng-hide="showlogin" >
+  <ion-content class="padding" ng-hide="showlogin" ng-disabled="pressedLogin">
     <form name="login" novalidate ng-submit="signIn(login)">
       <div class="list list-inset">
         <label class="item item-input">
           <input type="text" name="email" ng-model="user.email"
-            placeholder="Username"
+            placeholder="Username" autocorrect="off" autocapitalize="off" spellcheck="false"
             required>
         </label>
         <label class="item item-input">

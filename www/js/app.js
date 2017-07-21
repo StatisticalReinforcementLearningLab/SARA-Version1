@@ -134,11 +134,11 @@ app.config(function($routeProvider,$ionicCloudProvider) {
         .when("/reward/:added/:real", {
             //templateUrl : "templates/rewards.html",
             templateUrl: "templates/reward.html",
-            controller: "RewardsCtrl"
+            controller: "RewardsCtrl" //done
         })
         .when("/reinforcement", {
             templateUrl: "templates/reinforcement.html",
-            controller: "ReinforcementCtrl"
+            controller: "ReinforcementCtrl" //done
         })
         .when("/info", {
             templateUrl: "templates/info.html",
@@ -146,7 +146,7 @@ app.config(function($routeProvider,$ionicCloudProvider) {
         })
         .when("/lifeinsights/:type", {
             templateUrl: "templates/lifeinsights.html",
-            controller: "LifeInsightsCtrl"
+            controller: "LifeInsightsCtrl" //done
         })
         .when("/activetasks", {
             templateUrl: "templates/activetasks.html",
@@ -154,7 +154,7 @@ app.config(function($routeProvider,$ionicCloudProvider) {
         })
         .when("/tappingtaskStep1", {
             templateUrl: "templates/tappingtaskStep1.html",
-            controller: "TappingTaskStep1Ctrl"
+            controller: "TappingTaskStep1Ctrl" //done
         })
         .when("/tappingtaskStep2", {
             templateUrl: "templates/tappingtaskStep2.html",
@@ -244,11 +244,45 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
         template: "<div id = 'gameArea'></div>",
         link: function(scope, element, attrs, injector, location, http, rootScope) {
 
+
+            
+            var GameApp = GameApp || {};
+            /*
+            GameApp.USE_DEVICE_PIXEL_RATIO = false; // here you can change to use or not the device pixel ratio - it is not supported by all browsers
+            if (GameApp.USE_DEVICE_PIXEL_RATIO) {
+                GameApp.DEVICE_PIXEL_RATIO = window.devicePixelRatio;
+                GameApp.CANVAS_WIDTH = window.innerWidth * GameApp.DEVICE_PIXEL_RATIO;
+                GameApp.CANVAS_HEIGHT = window.innerHeight * GameApp.DEVICE_PIXEL_RATIO;
+            } else {
+                GameApp.DEVICE_PIXEL_RATIO = 1.0;
+                GameApp.CANVAS_WIDTH = window.innerWidth * GameApp.DEVICE_PIXEL_RATIO;
+                GameApp.CANVAS_HEIGHT = window.innerHeight * GameApp.DEVICE_PIXEL_RATIO;
+            }
+            */
+
+            GameApp.CANVAS_WIDTH = 382.0;
+            GameApp.CANVAS_HEIGHT = 642.0;
+
+            GameApp.ASPECT_RATIO = GameApp.CANVAS_WIDTH / GameApp.CANVAS_HEIGHT;
+            GameApp.ASPECT_RATIO_ROUND = Math.round(GameApp.ASPECT_RATIO);
+
+            if (GameApp.ASPECT_RATIO > 1) {
+                GameApp.SCALE_RATIO = GameApp.CANVAS_HEIGHT / GameApp.CANVAS_WIDTH;
+            } else {
+                GameApp.SCALE_RATIO = GameApp.CANVAS_WIDTH / GameApp.CANVAS_WIDTH;
+            }
+
+
+            
+            //var game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT, Phaser.AUTO);
+
             var game;
             if(ionic.Platform.isIOS())
-                game = new Phaser.Game(window.innerWidth, window.innerHeight - 64, Phaser.AUTO, 'gameArea');
+                //game = new Phaser.Game(window.innerWidt`h, window.innerHeight - 64, Phaser.AUTO, 'gameArea');
+                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 54, Phaser.AUTO, 'gameArea');
             else
-                game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
+                //game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
+                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 34, Phaser.AUTO, 'gameArea');
 
             game.state.add('Boot', FishGame.Boot);
             game.state.add('Preloader', FishGame.Preloader);
@@ -257,7 +291,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             game.state.add('GameSmall', FishGame.GameSmall);
             game.state.add('Level1', FishGame.Level1);
             game.state.add('Level1Small', FishGame.Level1Small);
-
+            game.state.add('Gameover', FishGame.Gameover);
+            game.state.add('Gamelast', FishGame.GameLast);
             
             //$rootScope.game = game;
             //cognito data
@@ -283,10 +318,38 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
                 //console.log(returnValue);
+                /*
                 if (returnValue == null) //return value will be a null if no internet connection, or profile don't exist
                     returnValue = window.localStorage['cognito_data'] || "{}";
                 else
                     window.localStorage['cognito_data'] = returnValue;
+                */
+
+                if(returnValue == null){
+                }else
+                    window.localStorage['latest_cloud_data'] = returnValue;
+
+
+                rl_data_str = window.localStorage['cognito_data'] || "{}";
+
+                //means no 'cognito_data'. Re-install, or new --> Restore "from cloud"
+                if(rl_data_str === "{}"){ 
+
+                    //
+                    if(returnValue == null){//means no internet data so far
+                    }else{
+                        //means we need to restore from the web.
+                        rl_data_str = returnValue;
+                        window.localStorage['cognito_data'] = returnValue;
+                    }
+                }else{
+                    //cognito_data is local storage is latest. Continue with that
+                }
+
+                //-- rl_data_str is the latest value..
+                //this is the latest value.
+                returnValue = rl_data_str;
+
 
 
                 //Make sure the call for "sdcard" permission happens.
@@ -296,11 +359,15 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //console.log(returnValue);
                 updateTheScore(returnValue);
 
+                scope.total_days = $rootScope.total_days;
+
                 game.state.states["Preloader"].assignscope(scope);
                 game.state.states["GameSmall"].assignscope(scope);
                 game.state.states["Game"].assignscope(scope);
                 game.state.states["Level1"].assignscope(scope);
                 game.state.states["Level1Small"].assignscope(scope);
+                game.state.states["Gamelast"].assignscope(scope);
+                //game.state.add('Gamelast', FishGame.GameLast);
 
                 game.state.start('Boot');
                 
@@ -331,6 +398,11 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     //saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']);    
                 }, 20000);
                 */
+                //}
+
+                //save the changes if there is a change....
+                scope.$emit('update:cloud');
+
 
             });
 
@@ -431,8 +503,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_at_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
 
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                rl_data['lastupdate'] = new Date().getTime();
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-                                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                                //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
                                 window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
@@ -511,8 +584,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 reinfrocement_data[moment().format('YYYYMMDD')]['reward_ds_ts_tz'] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
 
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                rl_data['lastupdate'] = new Date().getTime();
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-                                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                                //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
                                 window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
@@ -594,7 +668,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 scoreValue = JSON.parse(scoreValue);
                 scoreValue = scoreValue['survey_data'];
-                console.log("Updating score " + JSON.stringify(scoreValue));
+                //console.log("Updating score " + JSON.stringify(scoreValue));
                 /////////////////////////////////////////////////////////////////////////////
                 //  Start: calculate all the points
                 /////////////////////////////////////////////////////////////////////////////
@@ -799,7 +873,95 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //scope.daily_survey_images[0] = 'img/active_task_done.png';
                 //scope.daily_survey_images[1] = 'img/not_done.png';
                 //scope.daily_survey_images[2] = 'img/survey_done.png';
+                creatLifeInsights(scoreValue);
             }
+
+
+
+            function creatLifeInsights(scoreValue){
+
+                //
+                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+                var lifeinsights_data = {};
+                if("life-insights" in rl_data){
+                    lifeinsights_data = rl_data["life-insights"];
+                }else{
+                    lifeinsights_data["daily_survey"] = {};
+                    lifeinsights_data["at_sp"] = {};
+                    lifeinsights_data["at_tap"] = {};
+                }
+
+                var daily_survey = scoreValue['daily_survey'];
+
+
+                //get the first date
+                var first_date = moment().format('YYYYMMDD');
+                var first_date_moment_js = moment(first_date,"YYYYMMDD");
+                var key_moment_js;
+                for (var key in daily_survey) {
+                    key_moment_js = moment(key,"YYYYMMDD");
+                    //takes the first day only. But it may not be the first date.
+                    //break;
+                    if (key_moment_js < first_date_moment_js) {
+                        first_date = key;
+                        first_date_moment_js = moment(first_date,"YYYYMMDD");
+                    }
+                }
+
+
+                //get all dates
+                var dates = [];
+                var current_date = first_date;
+                while(true){
+                    dates.push(parseInt(current_date));
+                    if(current_date === moment().format('YYYYMMDD'))
+                        break;
+                    current_date = moment(current_date, "YYYYMMDD").add(1, 'day').format('YYYYMMDD');
+                }
+                dates = dates.reverse();
+                //console.log("Dates: " + JSON.stringify(dates));  
+
+                var life_insights = {};
+                //$scope.survey['Q1d'] + "," + $scope.survey['QMood'] + "," + $scope.survey['Q3d'] + "," + $scope.survey['Q4d'] + "," + $scope.survey['Q5d'] + ","  + $scope.survey['Q6d'];
+
+                var data_types = ['Q1d', 'Q2d', 'Q3d', 'Q4d', 'Q5d', 'Q6d', 'Q7d', 'at_sp', 'at_tap'];
+                for(var i=0; i < data_types.length-2; i++){
+                    
+
+                    //get data for life-insights
+                    var q_data = [];
+                    var q_data_test = '';
+                    for(var j=0; j<dates.length; j++){
+                        if(dates[j] in lifeinsights_data["daily_survey"]){
+                            //q_data_test = JSON.parse(lifeinsights_data["daily_survey"][dates[j]]);
+                            var str_split = lifeinsights_data["daily_survey"][dates[j]].split(',');
+
+                            q_data_test = str_split[i];
+                            if(q_data_test == 'undefined')
+                                q_data.push(-1);
+                            else
+                                q_data.push(parseInt(q_data_test)); //
+
+                            //console.log("q_data_test: " + q_data_test);
+                        }else
+                            q_data.push(-1); 
+                    }
+
+                    if(data_types[i] == 'Q2d'){
+                    }else{
+                        life_insights[data_types[i]]={};
+                        life_insights[data_types[i]]['dates'] = JSON.stringify(dates);
+                        life_insights[data_types[i]]['data'] = JSON.stringify(q_data);
+                    }
+
+                }
+                //console.log(scope.daily_survey_images);
+                //console.log(JSON.stringify(life_insights));
+                window.localStorage['lifeinsights_data'] = JSON.stringify(life_insights);
+            }
+
+
+            
 
 
             //clown fish animation
@@ -1134,6 +1296,8 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         console.log("App paused: " + isPaused);
         $interval.cancel(promise);
         promise = $interval(testResumePause, 1000);
+        //console.log("Important stats: " + window.innerWidth + "," + window.innerHeight + "," + window.devicePixelRatio);
+
         var regid = $ionicPush.token;//window.localStorage['registrationIdPush']; // || 'not found';
         //console.log("RegID: " + regid);
         //if(isPaused==false)
@@ -1486,6 +1650,44 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
     });
 
 
+    //
+    //
+    $scope.$on('update:cloud', function(event, args) {
+        //update the cloud
+        updateCloudData();
+    });
+
+
+    //-- 
+    function updateCloudData(){
+        //console.log("update cloud called");
+        
+        //cloud data initialize
+        var current_cloud_data = JSON.parse(window.localStorage['latest_cloud_data'] || '{}');
+        if(current_cloud_data.hasOwnProperty('lastupdate')){
+        }else{
+            current_cloud_data['lastupdate'] = 0;//means first time we will write what we have.
+        }
+
+        //local data initialize
+        var current_local_data = JSON.parse(window.localStorage['cognito_data'] || '{}');
+        if(current_local_data.hasOwnProperty('lastupdate')){
+        }else{
+            current_local_data['lastupdate'] = new Date().getTime(); //means first time we will store what we have.
+        }
+
+        //update if there is new data.
+        if(current_cloud_data['lastupdate'] < current_local_data['lastupdate']){
+            console.log('Cloud: updating data');
+            current_local_data['readable_ts'] = moment().format("MMMM Do YYYY, h:mm:ss a ZZ");
+            saraDatafactory.storedata('rl_data',current_local_data, moment().format('YYYYMMDD'));
+        }else
+            console.log('Cloud: no update necessary');
+
+
+    }
+
+
     ///////////////////////////////////////////////////////////////////////
     // --- Daily survey
     ///////////////////////////////////////////////////////////////////////
@@ -1494,7 +1696,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
 
         //only available after 6PM.
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         //
@@ -1629,7 +1831,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         $scope.myPopup.close();
 
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         var isFirstDay = false;
@@ -1914,7 +2116,10 @@ app.controller('LoginCtrl', function($scope, awsCognitoIdentityFactory, $state, 
             
         }
 
+        $scope.pressedLogin = false;
         $scope.signIn = function(login) {
+            //$scope.loading = true;
+            $scope.pressedLogin = true;
             window.localStorage['username'] = $scope.user.email;//save the user name
             $ionicLoading.show({
                 template: 'Loading...'
@@ -1928,6 +2133,8 @@ app.controller('LoginCtrl', function($scope, awsCognitoIdentityFactory, $state, 
                     } else {
                         $scope.error.message = err.message;
                     }
+                    //$scope.loading = false;
+                    $scope.pressedLogin = true;
                     $ionicLoading.hide();
                     $scope.$apply();
                     return false;

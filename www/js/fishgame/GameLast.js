@@ -1,4 +1,4 @@
-FishGame.GameSmall = function(game) {
+FishGame.GameLast = function(game) {
     this.totalClicks;
     this.totalPoints;
     this.fishGroup;
@@ -18,21 +18,20 @@ FishGame.GameSmall = function(game) {
 
     this.ionic_scope;
     this.height;
+
     this.active_task_connected;
     this.progress_sprite;
     this.prgress_bar_width;
 
-
     this.CANVAS_WIDTH;
-    //this.CANVAS_HEIGHT;
 };
 
-FishGame.GameSmall.prototype = {
+FishGame.GameLast.prototype = {
     
     create: function() {
         this.gameover = false;
         this.totalClicks = 0;
-        this.totalPoints = this.ionic_scope.total_points;
+        this.totalPoints = 1059;//this.ionic_scope.total_points;
         this.isPrawnAdded = false;
         this.isClownFishAdded = false;
         
@@ -40,7 +39,6 @@ FishGame.GameSmall.prototype = {
         //this.music.play('', 0, 1.0, true);
 
         this.CANVAS_WIDTH = 382.0;
-        //this.CANVAS_HEIGHT = 642.0;
         
         this.buildWorld();
         this.inputEnabled = false;
@@ -53,31 +51,40 @@ FishGame.GameSmall.prototype = {
     assignscope: function(scope) {
         this.ionic_scope = scope;
     },
+
     
     buildWorld: function() {
         //this.height = window.innerHeight-44;
-        this.height = this.game.height;
-        this.add.image(0, this.height-210, 'titlescreen');
+        this.height = this.game.height-10;
+        var titlescreen = this.add.image(0, this.height-160, 'titlescreen');
+        titlescreen.scale.setTo(0.85, 0.85);
 
         //
-        this.add.sprite(40, 40, 'timer', 1);
-
-
-        //
-        var fish_progress = this.add.image(20, 50, 'fish_progress');
-        fish_progress.scale.setTo(-0.15, 0.15);
-        fish_progress.anchor.setTo(.5,.5);
-
+        //this.add.sprite(40, 40, 'timer', 1);
 
         //
+        //var fish_progress = this.add.image(20, 50, 'fish_progress');
+        //fish_progress.scale.setTo(-0.15, 0.15);
+        //fish_progress.anchor.setTo(.5,.5);
+
+
         this.buildFish();
         this.addFishes();
 
+        /*
         //
         var journal = this.add.image(this.CANVAS_WIDTH - 70, 10, 'journal');
         journal.scale.setTo(0.4, 0.4);
         journal.inputEnabled = true;
         journal.events.onInputDown.add(this.logdata, this);
+
+        //
+        
+        var trivia = this.add.image(window.innerWidth - 60, 95, 'trivia');
+        trivia.scale.setTo(0.22, 0.22);
+        trivia.inputEnabled = true;
+        //trivia.events.onInputDown.add(this.logdata, this);
+        */
 
         //
         /*
@@ -87,42 +94,31 @@ FishGame.GameSmall.prototype = {
         meme.events.onInputDown.add(this.showBubbles, this);
         */
 
-
         //
-        this.active_task_connected = this.add.image(10, 70, 'disconnected');
-        this.active_task_connected.scale.setTo(0.15, 0.15);
-        this.active_task_connected.inputEnabled = true;
-        this.active_task_connected.events.onInputDown.add(this.logdata, this);
-        this.active_task_connected.visible = false;
-
-
-        //
-        var treasure = this.add.image(90, this.height-80, 'treasure');
-        treasure.scale.setTo(0.3, 0.3);
-        treasure.inputEnabled = true;
-        treasure.events.onInputDown.add(this.showunlockables, this);
-
-        //
-        //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
-        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
-
-        //
-        //this.showBubbles();
-
         
-        //this.clownFish.name = "clownFish";
-        //this.gobothways(this.clownFish);
+
+        //var treasure = this.add.image(90, this.height-70, 'treasure');
+        //treasure.scale.setTo(0.3, 0.3);
+        //treasure.inputEnabled = true;
+        //treasure.events.onInputDown.add(this.showunlockables, this);
 
         //
-        var banner_shown = window.localStorage['banner_shown'] || "0";// = 1;
-        if(banner_shown==="0")
-            this.showBanner();
-
         this.game.onPause.add(this.yourGamePausedFunc, this);
         this.game.onResume.add(this.yourGameResumedFunc, this);
-        
-        this.checkReinforcement();
 
+
+
+        //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
+        //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
+        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', "Fish bowl");
+        this.countdown.scale.setTo(0.7, 0.7);
+        //this.checkReinforcement();
+
+        var journal = this.add.image(this.CANVAS_WIDTH - 160, this.height-100, 'gotosea');
+        journal.scale.setTo(0.35, 0.35);
+        journal.inputEnabled = true;
+        journal.events.onInputDown.add(this.backtosea, this);
+        journal.angle -= 5;
 
     },
 
@@ -145,53 +141,6 @@ FishGame.GameSmall.prototype = {
     checkReinforcement: function(){
         this.ionic_scope.$emit('show:checkReinforcement',this.ionic_scope);
     },
-
-    showBanner: function(){
-        this.banner_object = this.add.group();
-        //--- banner
-        var banner = this.add.image(00, this.height-180, 'banner');
-        banner.scale.setTo(.6, .75);
-        banner.inputEnabled = true;
-        //banner.events.onInputDown.add(this.hideBanner, this);
-        this.banner_object.add(banner);
-        banner.events.onInputDown.add(this.hideBanner, this);
-
-        var banner_fish = this.add.image(260, this.height-190, 'banner_fish');
-        banner_fish.scale.setTo(.55, .55);
-        banner_fish.inputEnabled = true;
-        //banner_fish.events.onInputDown.add(this.hideBanner, this);
-        this.banner_object.add(banner_fish);
-        banner_fish.events.onInputDown.add(this.hideBanner, this);
-
-        //
-        var style = { font: "18px Arial", fill: "#f1c40f", align: "left", fontWeights: 'lighter' };
-        var text = this.add.text(10, this.height-165, "Click the trophy icon at the \ntop to learn more\nabout SARA", style);
-        text.strokeThickness = 0;
-        text.inputEnabled = true;
-        //text.events.onInputDown.add(this.hideBanner, this);
-        this.banner_object.add(text);
-        text.events.onInputDown.add(this.hideBanner, this);
-
-        var style = { font: "13px Arial", fill: "#f1c40f", align: "left", fontStyle: 'italic', fontWeights: 'lighter'};
-        var text2 = this.add.text(215, this.height-105, "Tap to hide", style);
-        text2.strokeThickness = 0;
-        text2.inputEnabled = true;
-        //text2.events.onInputDown.add(this.hideBanner, this);
-        this.banner_object.add(text2);
-        text2.events.onInputDown.add(this.hideBanner, this);
-
-        //make a left ot right animation.
-
-
-    },
-
-    hideBanner:function(elem){
-        console.log("clicked");
-        this.banner_object.destroy(true);
-        window.localStorage['banner_shown'] = "1";
-        //deleted all the elements
-    },
-
 
     showBubbles2: function(){
         //add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
@@ -283,8 +232,9 @@ FishGame.GameSmall.prototype = {
         //
         console.log("don't know " + b.y);
     },
+    
 
-    showBubbles: function(isReal){
+    showBubbles: function(){
         //the divers
         var purplediver = this.add.sprite(-10, 183, 'purplediver');
         purplediver.anchor.setTo(.5,.5);
@@ -300,7 +250,6 @@ FishGame.GameSmall.prototype = {
         blackdiver.scale.setTo(-0.8, 0.8);
         var t = this.add.tween(blackdiver).to({ x: this.world.centerX+20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
         t.onComplete.add(this.addBubbles, this);
-
     },
 
     addBubbles: function(){    
@@ -364,9 +313,6 @@ FishGame.GameSmall.prototype = {
         text2.stroke = "#FFE0B2";
         text2.strokeThickness = 0;
 
-        //  Apply the shadow to the Stroke only
-        //text2.setShadow(2, 2, "#E65100", 2, true, false);
-
         
         
 
@@ -395,11 +341,20 @@ FishGame.GameSmall.prototype = {
     },
 
 
-    logdata: function() {
+    backtosea: function() {
         //this.totalClicks = this.totalClicks + 1;
         //this.countdown.setText('Fishes Fed: ' + this.totalClicks);
-        this.ionic_scope.$emit('survey:logdata', this.ionic_scope);
+        //this.ionic_scope.$emit('survey:logdata', this.ionic_scope);
         //console.log("Came here");
+        if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1710){
+            this.state.start('Level1Small');
+            this.ionic_scope.current_level = 'Level1Small';
+        }
+
+        if(this.ionic_scope.total_points >=1710){
+            this.state.start('Level1');
+            this.ionic_scope.current_level = 'Level1';
+        }
     },
 
 
@@ -408,7 +363,6 @@ FishGame.GameSmall.prototype = {
         //this.countdown.setText('Fishes Fed: ' + this.totalClicks);
         //this.ionic_scope.$emit('survey:logdata');
         console.log("Came here treasure");
-        //this.game.destroy();
         this.ionic_scope.$emit('show:red',this.ionic_scope);
 
         var cache = [];
@@ -446,7 +400,6 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "The clown fish")
                     this.animateClownFish();
 
-
                 //starfish
                 if(data[i].name.valueOf() === "Star fish")
                     this.animateStarFishes();
@@ -470,6 +423,18 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "Carp fish")
                     this.animateGreenFish();
 
+                if(data[i].name.valueOf() === "Electric fish")
+                    this.animatePurpleFish();
+
+                if(data[i].name.valueOf() === "Discus fish")
+                    this.animateDiscusFish();
+
+                if(data[i].name.valueOf() === "Betta fish")
+                    this.animateBettaFish();               
+
+                if(data[i].name.valueOf() === "Sea horse")
+                    this.animateSeaHorse();
+
                 if(data[i].name.valueOf() === "Butterfly fish")
                     this.animateButterflyFish();
 
@@ -479,10 +444,14 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "Tiger barb")
                     this.animateTigerbarb();
 
+                //if(data[i].name.valueOf() === "Tiger barb")
+                //    this.animateTigerbarb();
+
               }
           }
 
-           //set the progres bar
+          //set the progres bar
+          /*
           var previoous_fish_point = 0;
           var next_fish_point = 0;
           for(var i = 0; i < data.length; i++) {
@@ -502,9 +471,12 @@ FishGame.GameSmall.prototype = {
 
           console.log("Width, " + rect.width  + "," + this.progress_sprite.width);
           this.progress_sprite.crop(rect);
+          */
 
+          
 
-    },      
+    },
+
 
     addAFish: function(added_point){
 
@@ -522,7 +494,7 @@ FishGame.GameSmall.prototype = {
                     old_points < data[i].points){
 
                 //nemo
-                if(data[i].name.valueOf() === "The clown fish")
+                if(data[i].name.valueOf() === "Nemo-the clown fish")
                     this.animateClownFish();
 
 
@@ -543,11 +515,23 @@ FishGame.GameSmall.prototype = {
                 if(data[i].name.valueOf() === "Angel fish")
                     this.animateAngelFish();
 
-                if(data[i].name.valueOf() === "Crab")
+                if(data[i].name.valueOf() === "The crab")
                     this.animateCrab();
 
                 if(data[i].name.valueOf() === "Green fish")
                     this.animateGreenFish();
+
+                if(data[i].name.valueOf() === "Electric fish")
+                    this.animatePurpleFish();
+
+                if(data[i].name.valueOf() === "Discus fish")
+                    this.animateDiscusFish();
+
+                if(data[i].name.valueOf() === "Betta fish")
+                    this.animateBettaFish();
+
+                if(data[i].name.valueOf() === "Sea horse")
+                    this.animateSeaHorse();
 
                 //if(data[i].name.valueOf() === "Tiger barb")
                 //    this.animateTigerbarb();
@@ -573,16 +557,7 @@ FishGame.GameSmall.prototype = {
           this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
           rect.width = 1 * percent * this.progress_sprite.width;
           this.progress_sprite.crop(rect);
-    },  
 
-
-    animateSquid: function(){    
-        //squid
-        var squid = this.add.sprite(- 120, this.height-150, 'squid');
-        squid.animations.add('swim');
-        squid.animations.play('swim', 5, true);
-        squid.scale.setTo(0.25, 0.25);
-        this.gobothways(squid);
     },
 
     animateButterflyFish: function(){
@@ -590,7 +565,7 @@ FishGame.GameSmall.prototype = {
         var butterflyFish = this.add.sprite(-100, this.height-300, 'butterfly');
         butterflyFish.animations.add('swim');
         butterflyFish.animations.play('swim', 10, true);
-        butterflyFish.scale.setTo(0.7, 0.7);
+        butterflyFish.scale.setTo(0.5, 0.5);
         this.gobothways(butterflyFish);    
     },
 
@@ -600,83 +575,176 @@ FishGame.GameSmall.prototype = {
         var tigerbarbfish = this.add.sprite(-100, this.height-120, 'tigerbarb');
         tigerbarbfish.animations.add('swim');
         tigerbarbfish.animations.play('swim', 10, true);
-        tigerbarbfish.scale.setTo(0.8, 0.8);
+        tigerbarbfish.scale.setTo(0.6, 0.6);
         this.gobothways(tigerbarbfish); 
     },
 
     animatePufferFish: function(){    
         //
         //if(this.totalPoints >= 50 && this.totalPoints < 75)
-        //angel
-        /*
-        var butterflyFish = this.add.sprite(-100, this.height-300, 'butterfly');
-        butterflyFish.animations.add('swim');
-        butterflyFish.animations.play('swim', 10, true);
-        butterflyFish.scale.setTo(0.7, 0.7);
-        this.gobothways(butterflyFish);  
-        */
-        
-        var pufferfish = this.add.sprite(-100, 50, 'puffer');
+        var pufferfish = this.add.sprite(-100, 60, 'puffer');
         pufferfish.animations.add('swim');
-        pufferfish.animations.play('swim', 5, true);
-        pufferfish.scale.setTo(0.7, 0.7);
-        this.gobothways(pufferfish);
-        
+        pufferfish.animations.play('swim', 10, true);
+        pufferfish.scale.setTo(0.5, 0.5);
+        this.gobothways(pufferfish); 
     },
-    
+
+    animateSquid: function(){
+        //squid
+        var squid = this.add.sprite(- 120, this.height-190, 'squid');
+        squid.animations.add('swim');
+        squid.animations.play('swim', 5, true);
+        squid.scale.setTo(0.19, 0.19);
+        this.gobothways(squid);
+
+    },
+
+
     animateAngelFish: function(){
+
         //angel
-        var angelfish = this.add.sprite(-100, this.height-250, 'angelfish');
+        var angelfish = this.add.sprite(-100, this.height-260, 'angelfish');
         angelfish.animations.add('swim');
         angelfish.animations.play('swim', 10, true);
-        angelfish.scale.setTo(0.6, 0.6);
-        this.gobothways(angelfish);    
+        angelfish.scale.setTo(0.4, 0.4);
+        this.gobothways(angelfish);
+
     },
-    
-    animateGreenFish: function(){    
+
+
+    animateDiscusFish: function(){
+
         //
-        //if(this.totalPoints >= 50 && this.totalPoints < 75)
-        var greenFish = this.add.sprite(this.CANVAS_WIDTH + 100, 103, 'greenfish');
+        var discusfish = this.add.sprite(-100, this.height-150, 'discusfish');
+        discusfish.animations.add('swim');
+        discusfish.animations.play('swim', 15, true);
+        discusfish.scale.setTo(0.4, 0.4);
+        this.gobothways(discusfish);
+
+    },
+
+
+    animateBettaFish: function(){
+
+        //
+        var bettafish = this.add.sprite(this.CANVAS_WIDTH-230, this.height-140, 'bettafish');
+        bettafish.animations.add('swim');
+        bettafish.animations.play('swim', 5, true);
+        bettafish.scale.setTo(-0.25, 0.25);
+
+
+    },
+
+
+    animateClownFish: function(){
+        //
+        this.clownFish = this.add.sprite(-100, 253, 'clownfish');
+        this.clownFish.anchor.setTo(.5,.5);
+        this.clownFish.animations.add('swim');
+        this.clownFish.animations.play('swim', 30, true);
+        this.clownFish.scale.setTo(0.35, 0.35);
+        this.clownFish.name = "clownFish";
+        this.gobothways(this.clownFish);
+
+    },
+
+
+    animateGoldFish: function(){
+        //goldfish
+        var goldfish = this.add.sprite(this.CANVAS_WIDTH+100, 193, 'goldfish');
+        goldfish.animations.add('swim');
+        goldfish.animations.play('swim', 10, true);
+        goldfish.scale.setTo(0.27, 0.27);
+        this.gobothways(goldfish);
+
+    },
+
+
+    animateGreenFish: function(){
+
+        var greenFish = this.add.sprite(this.CANVAS_WIDTH + 100, 153, 'greenfish');
         greenFish.anchor.setTo(.5,.5);
         greenFish.animations.add('swim');
         greenFish.animations.play('swim', 30, true);
-        greenFish.scale.setTo(0.3, 0.3);
+        greenFish.scale.setTo(0.2, 0.2);
         greenFish.name = "greenfish";
         this.gobothways(greenFish);
+
+
     },
 
+
+    animateSeaHorse: function(){
+
+        var seahorse = this.add.sprite(this.CANVAS_WIDTH-60, 150, 'seahorseyellow');
+        seahorse.animations.add('swim');
+        seahorse.animations.play('swim', 10, true);
+        //seahorse.anchor.setTo(0.5, 0.5);
+        seahorse.scale.setTo(0.08, 0.08);
+
+
+    },
+
+
+    animateOctpus: function(){
+        var octopus = this.add.sprite(40, 200, 'octopus');
+        octopus.animations.add('swim');
+        octopus.animations.play('swim', 30, true);
+        octopus.scale.setTo(0.2, 0.2);
+        this.add.tween(octopus).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+
+    },
+
+
+    animatePurpleFish: function(){
+
+        var purpleFish = this.add.sprite(-100, 103, 'seacreatures');
+        purpleFish.animations.add('swim', Phaser.Animation.generateFrameNames('purpleFish', 0, 20, '', 4), 30, true);
+        purpleFish.animations.play('swim');
+        purpleFish.anchor.setTo(.5,.5);
+        purpleFish.scale.setTo(0.5, 0.5);
+        purpleFish.name = "purplefish";
+        //this.add.tween(purpleFish).to({ x:  -100 }, 3500, Phaser.Easing.Quadratic.InOut, true, 0, 1000, false);
+        this.gobothways(purpleFish);
+
+
+    },
+
+
+    animateCrab: function(){
+        var crab = this.add.sprite(140, this.height-30, 'seacreatures');
+        crab.animations.add('swim', Phaser.Animation.generateFrameNames('crab1', 0, 25, '', 4), 30, true);
+        crab.animations.play('swim');
+        crab.scale.setTo(0.52, 0.52);
+
+    },
+
+
+
+
     animateStarFishes: function(){
-        var redstarfish = this.add.sprite(30, this.height-28, 'redstarfish');
+        //
+        var redstarfish = this.add.sprite(30, this.height-28+7, 'redstarfish');
         redstarfish.animations.add('swim');
         redstarfish.animations.play('swim', 2, true);
         redstarfish.anchor.setTo(0.5,0.5);
         redstarfish.angle -= 20;
-        redstarfish.scale.setTo(0.10, 0.10);
+        redstarfish.scale.setTo(0.07, 0.07);
 
-        var bluestarfish = this.add.sprite(70, this.height-22, 'bluestarfish');
+        var bluestarfish = this.add.sprite(70, this.height-22+7, 'bluestarfish');
         bluestarfish.animations.add('swim');
         bluestarfish.animations.play('swim', 1, true);
         bluestarfish.anchor.setTo(0.5,0.5);
         bluestarfish.angle -= 0;
-        bluestarfish.scale.setTo(0.06, 0.06);
+        bluestarfish.scale.setTo(0.04, 0.04);
 
-        var greenstarfish = this.add.sprite(190, this.height-22, 'greenstarfish');
+
+        var greenstarfish = this.add.sprite(90, this.height-22+7, 'greenstarfish');
         greenstarfish.animations.add('swim');
         greenstarfish.animations.play('swim', 5, true);
         greenstarfish.anchor.setTo(0.5,0.5);
         greenstarfish.angle +=10;
-        greenstarfish.scale.setTo(0.08, 0.08);
-    },
-
-    animateGoldFish: function(){
-        var goldfish = this.add.sprite(this.CANVAS_WIDTH+100, 153, 'goldfish');
-        goldfish.animations.add('swim');
-        goldfish.animations.play('swim', 10, true);
-        goldfish.scale.setTo(0.4, 0.4);
-        this.gobothways(goldfish);
-    },
-
-
+        greenstarfish.scale.setTo(0.04, 0.04);
 
         //Discus
         /*
@@ -710,21 +778,15 @@ FishGame.GameSmall.prototype = {
 
         */
 
-    //if(this.totalPoints >= 0 && this.totalPoints < 25)
-    animateClownFish: function(){
-            this.clownFish = this.add.sprite(-100, 253, 'clownfish');
-            this.clownFish.anchor.setTo(.5,.5);
-            this.clownFish.animations.add('swim');
-            this.clownFish.animations.play('swim', 30, true);
-            this.clownFish.scale.setTo(0.5, 0.5);
-            this.clownFish.name = "clownFish";
-            this.gobothways(this.clownFish);
+        //if(this.totalPoints >= 0 && this.totalPoints < 25)
+        {
+
 
 
             //this.isPrawnAdded = true;
             //this.prawn = this.add.sprite(10, this.height-50, 'seacreatures', 'prawn0000');
             //this.prawn.scale.setTo(0.5, 0.5);
-    },
+        }
 
 
         //if(this.totalPoints >= 50 && this.totalPoints < 75)
@@ -740,27 +802,106 @@ FishGame.GameSmall.prototype = {
 
 
         //if(this.totalPoints >= 100 && this.totalPoints < 125)
-    animateOctpus: function(){
-            var octopus = this.add.sprite(40, 200, 'octopus');
-            octopus.animations.add('swim');
-            octopus.animations.play('swim', 30, true);
-            octopus.scale.setTo(0.3, 0.3);
-            this.add.tween(octopus).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
-    },
+        {
+            
+        }
+
+
+        //if(this.totalPoints >= 150 && this.totalPoints < 175)
+        {
+            
+        }
 
 
         //if(this.totalPoints >= 200 && this.totalPoints < 225)
-    animateCrab: function(){
-            var crab = this.add.sprite(230, this.height-60, 'seacreatures');
-            crab.animations.add('swim', Phaser.Animation.generateFrameNames('crab1', 0, 25, '', 4), 30, true);
-            crab.animations.play('swim');
-            crab.scale.setTo(0.7, 0.7);
+        {
+            
+        }
+
+        //if(this.totalPoints >= 250 && this.totalPoints < 275)
+        {
+
+        }
+
+        //if(this.totalPoints >= 300 && this.totalPoints < 325)
+        {
+            
+        }
+
+
+
+        /*
+        var octopus = this.add.sprite(40, 200, 'octopus');
+        octopus.animations.add('swim');
+        octopus.animations.play('swim', 30, true);
+        octopus.scale.setTo(0.3, 0.3);
+        this.add.tween(octopus).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+
+
+        //crab
+        var crab = this.add.sprite(230, 440, 'seacreatures');
+        crab.animations.add('swim', Phaser.Animation.generateFrameNames('crab1', 0, 25, '', 4), 30, true);
+        crab.animations.play('swim');
+        crab.scale.setTo(0.7, 0.7);
+
+        //
+        var purpleFish = this.add.sprite(-100, 53, 'seacreatures');
+        purpleFish.animations.add('swim', Phaser.Animation.generateFrameNames('purpleFish', 0, 20, '', 4), 30, true);
+        purpleFish.animations.play('swim');
+        purpleFish.anchor.setTo(.5,.5);
+        purpleFish.scale.setTo(0.6, 0.6);
+        purpleFish.name = "purplefish";
+        //this.add.tween(purpleFish).to({ x:  -100 }, 3500, Phaser.Easing.Quadratic.InOut, true, 0, 1000, false);
+        this.gobothways(purpleFish);
+
+        //
+        var squid = this.add.sprite(90, 440, 'seacreatures', 'squid0000');
+        squid.scale.setTo(0.4, 0.4);
+
+
+        //
+        //var prawn = this.add.sprite(10, 450, 'seacreatures', 'prawn0000');
+        //prawn.scale.setTo(0.5, 0.5);
+
+        if(this.isPrawnAdded == true){
+            var prawn = this.add.sprite(10, 450, 'seacreatures', 'prawn0000');
+            prawn.scale.setTo(0.5, 0.5);
+        }
+
+        if(this.isClownFishAdded == true){
+            this.clownFish = this.add.sprite(-100, 253, 'clownfish');
+            this.clownFish.anchor.setTo(.5,.5);
+            this.clownFish.animations.add('swim');
+            this.clownFish.animations.play('swim', 30, true);
+            this.clownFish.scale.setTo(0.8, 0.8);
+            this.clownFish.name = "clownFish";
+            this.gobothways(this.clownFish);
+        }
+
+        //
+        var starfish = this.add.sprite(150, 470, 'seacreatures', 'starfish0000');
+        starfish.scale.setTo(0.7, 0.7);
+        var starfish2 = this.add.sprite(180, 460, 'seacreatures', 'starfish0000');
+        starfish2.scale.setTo(0.4, 0.4);
+
+
+        //
+        var greenFish = this.add.sprite(window.innerWidth + 100, 153, 'greenfish');
+        greenFish.anchor.setTo(.5,.5);
+        greenFish.animations.add('swim');
+        greenFish.animations.play('swim', 30, true);
+        greenFish.scale.setTo(0.4, 0.4);
+        greenFish.name = "greenfish";
+        this.gobothways(greenFish);
+        */
+
     },
 
     gobothways: function(b){
         //console.log('start again ' + b.name);
 
-        var change_amount = Math.floor(this.rnd.realInRange(0, 100));
+        //if()
+        var change_amount = Math.floor(this.rnd.realInRange(0, 50));
         if(Math.floor(this.rnd.realInRange(0, 10))==2)
             change_amount = 3*change_amount;
         var pos_y = b.y + Math.floor(this.rnd.realInRange(-1*change_amount, change_amount));
@@ -788,20 +929,20 @@ FishGame.GameSmall.prototype = {
             t.onComplete.add(this.stopFish, this);
         }
 
-        //if()
         /*
         if(b.x > window.innerWidth){ 
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
             b.scale.x = -1*b.scale.x;
-            t= this.add.tween(b).to({ x: -100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            //
+            t= this.add.tween(b).to({ x: -50 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this); 
         }
 
         if(b.x < 0){
             //console.log('left to right, ' + b.x);
             b.scale.x = -1*b.scale.x;
-            t = this.add.tween(b).to({ x: window.innerWidth + 100 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: window.innerWidth + 50 }, 7500 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
         }
         */
@@ -849,6 +990,7 @@ FishGame.GameSmall.prototype = {
         this.totalClicks = this.totalClicks + 1;
         this.countdown.setText('Fishes Fed: ' + this.totalClicks);
     },
+
 
     updatescore: function (added_points) {
         console.log("Update score called inside game, " + this.ionic_scope.total_points + ", added: " + added_points);

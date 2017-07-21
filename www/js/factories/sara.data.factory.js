@@ -52,7 +52,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
                     if (err) $scope.error.message = err.message;
                     else {
                         dataset = dataset_temp;
-                        refreshTasksList();
+                        //refreshTasksList();
                         //sync();
                         put();
                     }

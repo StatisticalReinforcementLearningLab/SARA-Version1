@@ -153,7 +153,7 @@ app.controller("SpatialTask2Ctrl", function($scope, $http, $ionicPlatform, $loca
             //$scope.isFinished = true;
             promise = $interval(falshcounter, 2000);
 
-            if(ionic.Platform.isIOS()){
+            //if(ionic.Platform.isIOS()){
                 var rl_data = JSON.parse(window.localStorage['cognito_data']);
                 if(rl_data.hasOwnProperty('life-insights')){
                 }else{
@@ -164,9 +164,10 @@ app.controller("SpatialTask2Ctrl", function($scope, $http, $ionicPlatform, $loca
                 }
                 rl_data['life-insights']['at_sp'][moment().format('YYYYMMDD')] = end_time-start_time;
                 //save to cognito
-                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                rl_data['lastupdate'] = new Date().getTime();
                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-            }
+            //}
 
 
             var spatial_data = {};
@@ -250,6 +251,15 @@ app.controller("SpatialTaskStep2Ctrl", function($scope, $http, $ionicPlatform, $
 
 app.controller("ActiveTasksCompletedCtrl", function($scope, $http, $ionicPlatform, $location, $interval, saraDatafactory) {
     //
+
+    $scope.survey = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
+    saraDatafactory.copyJSONToFile($scope.survey, 'active_task');
+    var rl_data = JSON.parse(window.localStorage['cognito_data']);
+    rl_data['survey_data']['active_tasks_survey'][moment().format('YYYYMMDD')] = 2;
+    rl_data['lastupdate'] = new Date().getTime();
+    window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+
     $scope.goHome = function() {
         $location.path("/");
     };
@@ -283,14 +293,8 @@ app.controller("ActiveTasksCompletedCtrl", function($scope, $http, $ionicPlatfor
             });
         }
         */
-        $scope.survey = JSON.parse(window.localStorage['activetasks_data_today'] || '[]');
-        saraDatafactory.copyJSONToFile($scope.survey, 'active_task');
 
-
-        var rl_data = JSON.parse(window.localStorage['cognito_data']);
-        rl_data['survey_data']['active_tasks_survey'][moment().format('YYYYMMDD')] = 2;
-        window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-        saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+        //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
         $location.path("/reward/29/true");
     };

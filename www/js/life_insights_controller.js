@@ -154,9 +154,15 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
     function loadQuestionLifeInsights(){
         saraDatafactory.loadLifeInsightsData(function(returnValue) {
             if (returnValue == null) {
-                $http.get('js/lifeinsightsBig.json').success(function(data2) {
-                    generateDailySurveyInsights(data2);
-                });
+
+                var lifeinsights_data = JSON.parse(window.localStorage['lifeinsights_data'] || '{}');
+                if('Q1d' in lifeinsights_data){
+                    generateDailySurveyInsights(lifeinsights_data);
+                }else{
+                    $http.get('js/lifeinsightsBig.json').success(function(data2) {
+                        generateDailySurveyInsights(data2);
+                    });
+                }
             } else {
                 generateDailySurveyInsights(JSON.parse(returnValue));
             }
@@ -428,11 +434,13 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
     function loadviz(data_overlays,q,qYaxis) {
 
         var data_size = date_size_full;//data_overlays.length; //date_size_full;//data_overlays.length;
-        console.log("data_size" + data_size);
+        //console.log("data_size" + data_size);
         //console.log("" + JSON.stringify(data_overlays));
         var t_forceY = [1.49, 6.5];
         if(q==='Q3d')
             t_forceY = [2, 17];
+        //if(q==='Q4d')
+        //    t_forceY = [1.49, 6.5];
 
         //$scope.data = [];
         var options = {
@@ -620,8 +628,9 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
         if($rootScope.isRealReinforcement == true){
             rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+            rl_data['lastupdate'] = new Date().getTime();
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
-            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+            //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
 
         $location.path("/main");

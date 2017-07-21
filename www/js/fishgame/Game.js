@@ -22,6 +22,8 @@ FishGame.Game = function(game) {
     this.active_task_connected;
     this.progress_sprite;
     this.prgress_bar_width;
+
+    this.CANVAS_WIDTH;
 };
 
 FishGame.Game.prototype = {
@@ -35,6 +37,8 @@ FishGame.Game.prototype = {
         
         //this.music = this.add.audio('game_audio');
         //this.music.play('', 0, 1.0, true);
+
+        this.CANVAS_WIDTH = 382.0;
         
         this.buildWorld();
         this.inputEnabled = false;
@@ -68,7 +72,7 @@ FishGame.Game.prototype = {
         this.addFishes();
 
         //
-        var journal = this.add.image(window.innerWidth - 70, 10, 'journal');
+        var journal = this.add.image(this.CANVAS_WIDTH - 70, 10, 'journal');
         journal.scale.setTo(0.4, 0.4);
         journal.inputEnabled = true;
         journal.events.onInputDown.add(this.logdata, this);
@@ -237,7 +241,7 @@ FishGame.Game.prototype = {
         purplediver.scale.setTo(0.8, 0.8);
         this.add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
 
-        var blackdiver = this.add.sprite(window.innerWidth+100, 303, 'blackdiver');
+        var blackdiver = this.add.sprite(this.CANVAS_WIDTH+100, 303, 'blackdiver');
         blackdiver.anchor.setTo(.5,.5);
         blackdiver.animations.add('swim');
         blackdiver.animations.play('swim', 30, true);
@@ -610,7 +614,7 @@ FishGame.Game.prototype = {
     animateBettaFish: function(){
 
         //
-        var bettafish = this.add.sprite(window.innerWidth-150, this.height-130, 'bettafish');
+        var bettafish = this.add.sprite(this.CANVAS_WIDTH-150, this.height-130, 'bettafish');
         bettafish.animations.add('swim');
         bettafish.animations.play('swim', 5, true);
         bettafish.scale.setTo(0.25, 0.25);
@@ -634,7 +638,7 @@ FishGame.Game.prototype = {
 
     animateGoldFish: function(){
         //goldfish
-        var goldfish = this.add.sprite(window.innerWidth+100, 193, 'goldfish');
+        var goldfish = this.add.sprite(this.CANVAS_WIDTH+100, 193, 'goldfish');
         goldfish.animations.add('swim');
         goldfish.animations.play('swim', 10, true);
         goldfish.scale.setTo(0.27, 0.27);
@@ -645,7 +649,7 @@ FishGame.Game.prototype = {
 
     animateGreenFish: function(){
 
-        var greenFish = this.add.sprite(window.innerWidth + 100, 153, 'greenfish');
+        var greenFish = this.add.sprite(this.CANVAS_WIDTH + 100, 153, 'greenfish');
         greenFish.anchor.setTo(.5,.5);
         greenFish.animations.add('swim');
         greenFish.animations.play('swim', 30, true);
@@ -659,7 +663,7 @@ FishGame.Game.prototype = {
 
     animateSeaHorse: function(){
 
-        var seahorse = this.add.sprite(window.innerWidth-60, 150, 'seahorseyellow');
+        var seahorse = this.add.sprite(this.CANVAS_WIDTH-60, 150, 'seahorseyellow');
         seahorse.animations.add('swim');
         seahorse.animations.play('swim', 10, true);
         //seahorse.anchor.setTo(0.5, 0.5);
@@ -895,7 +899,7 @@ FishGame.Game.prototype = {
 
 
         //if()
-        if(b.x > window.innerWidth){ 
+        if(b.x > this.CANVAS_WIDTH){ 
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
             b.scale.x = -1*b.scale.x;
@@ -908,7 +912,7 @@ FishGame.Game.prototype = {
             //console.log('left to right, ' + b.x);
             b.scale.x = -1*b.scale.x;
             //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
-            t = this.add.tween(b).to({ x: window.innerWidth + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: this.CANVAS_WIDTH + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
         }
 

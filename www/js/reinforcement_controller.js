@@ -98,8 +98,16 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
                 if($rootScope.isRealReinforcement == true){
                     rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
                     rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
-                    window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
-                    saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                    rl_data['lastupdate'] = new Date().getTime();
+                    window.localStorage['cognito_data'] = JSON.stringify(rl_data); 
+
+                    //save to local
+                    var reinfrocement_data_total = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                    reinfrocement_data_total[moment().format('YYYYMMDD')] = reinfrocement_data_today;
+                    window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data_total);
+                    $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+
+                    //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
                 }
             }
         });
@@ -178,8 +186,16 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
         if($rootScope.isRealReinforcement == true){
             rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
-            window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
-            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+            rl_data['lastupdate'] = new Date().getTime();
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+
+            //------ 
+            var reinfrocement_data_total = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+            reinfrocement_data_total[moment().format('YYYYMMDD')] = reinfrocement_data_today;
+            window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data_total);
+            $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+
+            //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
     }
 
@@ -212,8 +228,9 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
         if($rootScope.isRealReinforcement == true){
             rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
+            rl_data['lastupdate'] = new Date().getTime();
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
-            saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+            //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
 
         $location.path("/main");

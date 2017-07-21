@@ -12,6 +12,7 @@ FishGame.Level1Small = function(game) {
     this.filter;
     this.sprite;
     this.isPaused;
+    this.CANVAS_WIDTH;
 };
 
 FishGame.Level1Small.prototype = {
@@ -20,9 +21,11 @@ FishGame.Level1Small.prototype = {
         this.gameover = false;
         this.totalClicks = 0;
         this.totalPoints = this.ionic_scope.total_points;
-        this.music = this.add.audio('game_audio');
+        //this.music = this.add.audio('game_audio');
         //this.music.play('', 0, 1.0, true);
         
+        this.CANVAS_WIDTH = 382.0;
+
         this.buildWorld();
 
 
@@ -80,6 +83,12 @@ FishGame.Level1Small.prototype = {
 
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
 
+        //
+        var fishtank = this.add.image(5, 75, 'first_aq');
+        fishtank.scale.setTo(0.25, 0.25);
+        fishtank.inputEnabled = true;
+        fishtank.events.onInputDown.add(this.earlyaquarium, this);
+
         //this.buildFish();
         this.buildAquarium();
 
@@ -92,10 +101,12 @@ FishGame.Level1Small.prototype = {
         */
 
         //
-        var journal = this.add.image(window.innerWidth - 70, 1, 'fish_journal');
+        var journal = this.add.image(this.CANVAS_WIDTH - 70, 1, 'fish_journal');
         journal.scale.setTo(0.5, 0.5);
         journal.inputEnabled = true;
         journal.events.onInputDown.add(this.logdata, this);
+
+
 
         //add bubbles
         //this.showBubbles();
@@ -201,6 +212,15 @@ FishGame.Level1Small.prototype = {
         //this.countdown.setText('Fishes Fed: ' + this.totalClicks);
         this.ionic_scope.$emit('survey:logdata', this.ionic_scope);
         //console.log("Came here");
+    },
+
+    earlyaquarium: function() {
+        //this.totalClicks = this.totalClicks + 1;
+        //this.countdown.setText('Fishes Fed: ' + this.totalClicks);
+        //this.ionic_scope.$emit('survey:logdata', this.ionic_scope);
+        //console.log("Came here");
+
+        this.state.start('Gamelast');
     },
 
     //update the connected and disconnected things
@@ -309,7 +329,7 @@ FishGame.Level1Small.prototype = {
     showBubbles: function(){
         //add.tween(purplediver).to({ x: this.world.centerX-20 }, 800 + Math.floor(this.rnd.realInRange(0, 2000)), Phaser.Easing.Quadratic.InOut, true, 0);
 
-        var blackdiver = this.add.sprite(window.innerWidth+100, 303, 'submarine');
+        var blackdiver = this.add.sprite(this.CANVAS_WIDTH+100, 303, 'submarine');
         blackdiver.anchor.setTo(.5,.5);
         blackdiver.animations.add('swim');
         blackdiver.animations.play('swim', 30, true);
@@ -618,7 +638,7 @@ FishGame.Level1Small.prototype = {
     },
 
     addYellowTang: function() {  
-        var yellowtang = this.add.sprite(window.innerWidth + 70, 120, 'yellowtang');
+        var yellowtang = this.add.sprite(this.CANVAS_WIDTH + 70, 120, 'yellowtang');
         yellowtang.animations.add('swim');
         yellowtang.animations.play('swim', 10, true);
         yellowtang.scale.setTo(0.45, 0.45);
@@ -631,7 +651,7 @@ FishGame.Level1Small.prototype = {
     addJellyFish: function() {  
 
         //
-        var jellyfish = this.add.sprite(window.innerWidth - 80, 100, 'jellyfish');
+        var jellyfish = this.add.sprite(this.CANVAS_WIDTH - 80, 100, 'jellyfish');
         jellyfish.animations.add('swim');
         jellyfish.animations.play('swim', 15, true);
         jellyfish.scale.setTo(0.25, 0.25);
@@ -669,13 +689,13 @@ FishGame.Level1Small.prototype = {
 
 
     addCrab: function() { 
-        var redcrab = this.add.sprite(window.innerWidth-30, this.height-105, 'redcrab');
+        var redcrab = this.add.sprite(this.CANVAS_WIDTH-30, this.height-105, 'redcrab');
         redcrab.animations.add('swim');
         redcrab.animations.play('swim', 15, true);
         redcrab.scale.setTo(-0.3, 0.3);
 
         //
-        var greencrab = this.add.sprite(window.innerWidth-240, this.height-85, 'greencrab');
+        var greencrab = this.add.sprite(this.CANVAS_WIDTH-240, this.height-85, 'greencrab');
         greencrab.animations.add('swim');
         greencrab.animations.play('swim', 15, true);
         greencrab.scale.setTo(0.3, 0.3);
@@ -804,7 +824,7 @@ FishGame.Level1Small.prototype = {
 
 
         //if()
-        if(b.x > window.innerWidth){ 
+        if(b.x > this.CANVAS_WIDTH){ 
             //console.log('right to left, ' + b.x);
             //b.scale.setTo(-0.4, 0.4);//b.scale.x * (-1);
             b.scale.x = -1*b.scale.x;
@@ -817,7 +837,7 @@ FishGame.Level1Small.prototype = {
             //console.log('left to right, ' + b.x);
             b.scale.x = -1*b.scale.x;
             //t = this.add.tween(b).to({ x: window.innerWidth + 200 }, 10500, Phaser.Easing.Quadratic.InOut, true, 0);
-            t = this.add.tween(b).to({ x: window.innerWidth + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
+            t = this.add.tween(b).to({ x: this.CANVAS_WIDTH + 100 - Math.floor(this.rnd.realInRange(0, 50)), y: pos_y }, 7500 + Math.floor(this.rnd.realInRange(0000, 4000)), Phaser.Easing.Quadratic.InOut, true, 0);
             t.onComplete.add(this.stopFish, this);
         }
 

@@ -65,7 +65,7 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
             isFinished = true;
 
             if(counter==11){
-                  if(ionic.Platform.isIOS()){
+                  //if(ionic.Platform.isIOS()){
                       var rl_data = JSON.parse(window.localStorage['cognito_data']);
                       if(rl_data.hasOwnProperty('life-insights')){
                       }else{
@@ -77,8 +77,9 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
                       rl_data['life-insights']['at_tap'][moment().format('YYYYMMDD')] = $scope.tapcount;
                       //save to cognito
                       //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                      rl_data['lastupdate'] = new Date().getTime();
                       window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-                  }
+                  //}
             }
 
             if(counter == 13){
