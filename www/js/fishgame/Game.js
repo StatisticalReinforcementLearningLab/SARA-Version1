@@ -39,6 +39,9 @@ FishGame.Game.prototype = {
         //this.music.play('', 0, 1.0, true);
 
         this.CANVAS_WIDTH = 382.0;
+        if((window.innerWidth > 382.0) &&  (window.innerHeight > 642.0)){
+            this.CANVAS_WIDTH = window.innerWidth;
+        }
         
         this.buildWorld();
         this.inputEnabled = false;

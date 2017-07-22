@@ -263,13 +263,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             GameApp.CANVAS_WIDTH = 382.0;
             GameApp.CANVAS_HEIGHT = 642.0;
 
-            GameApp.ASPECT_RATIO = GameApp.CANVAS_WIDTH / GameApp.CANVAS_HEIGHT;
-            GameApp.ASPECT_RATIO_ROUND = Math.round(GameApp.ASPECT_RATIO);
-
-            if (GameApp.ASPECT_RATIO > 1) {
-                GameApp.SCALE_RATIO = GameApp.CANVAS_HEIGHT / GameApp.CANVAS_WIDTH;
-            } else {
-                GameApp.SCALE_RATIO = GameApp.CANVAS_WIDTH / GameApp.CANVAS_WIDTH;
+            if((window.innerWidth > GameApp.CANVAS_WIDTH) &&  (window.innerHeight > GameApp.CANVAS_HEIGHT)){
+                GameApp.CANVAS_WIDTH = window.innerWidth;
+                GameApp.CANVAS_HEIGHT = window.innerHeight - 10;
             }
 
 

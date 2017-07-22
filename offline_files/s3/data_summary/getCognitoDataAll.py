@@ -60,7 +60,6 @@ header = '<html><head><style>tr:nth-child(even){background-color: #f2f2f2}</styl
 body3 = '<h2 style="padding:0; margin: 0;">SARA study daily update: </h2>'
 body3 = body3 + '<h3 style="padding:0; margin: 0;">' + date_str + '</h3>'
 body3 = body3 + '<p style="padding:0; margin: 0;"> Last updated at ' + ts_str + ' today</p>'
-body3 = body3 + '<br><a href="./indexAll.html">Link for all participants</a>'
 body = "<br><br>==============================================================" +  "<br><br><br>"
 first_table_body = ""
 
@@ -118,8 +117,6 @@ for i in range(len(all_identities)):
                     continue      
                 if "sara-study-test" in username: 
                     continue
-                if "-study-" not in username: 
-                    continue    
                 if "test-0" in username: 
                     continue   
 
@@ -294,9 +291,7 @@ for i in range(len(all_identities)):
     if "sara-study-test" in username: 
         continue
     if "test-0" in username: 
-        continue
-    if "-study-" not in username: 
-        continue        
+        continue  
 
     data_today = str(total_ds_today) + "/" + str(total_at_today) + " (" + str(round(100*(total_ds_today+total_at_today)/2.0,2)) + ")"
 
@@ -340,16 +335,16 @@ body = header + "<body>" + body3 + body2 + body + "</body></html>"
 d = datetime.today()
 date_str = d.strftime ("%Y%m%d")
 
-file = open(date_str + '.html', 'w')
+file = open(date_str + '_All.html', 'w')
 file.write(body)
 file.close()
 
 
-file = open("/var/www/html/dailyupdates/" + date_str + '.html', 'w')
+file = open("/var/www/html/dailyupdates/" + date_str + '_All.html', 'w')
 file.write(body)
 file.close()
 
-file = open("/var/www/html/dailyupdates/" + 'index' + '.html', 'w')
+file = open("/var/www/html/dailyupdates/" + 'indexAll' + '.html', 'w')
 file.write(body)
 file.close()
 
