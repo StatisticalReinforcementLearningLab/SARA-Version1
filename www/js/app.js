@@ -268,6 +268,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 GameApp.CANVAS_HEIGHT = window.innerHeight - 10;
             }
 
+            /*
+            this.CANVAS_WIDTH = 382.0;
+            if((window.innerWidth > 382.0) &&  (window.innerHeight > 642.0)){
+                this.CANVAS_WIDTH = window.innerWidth;
+            }
+            */
 
             
             //var game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT, Phaser.AUTO);
