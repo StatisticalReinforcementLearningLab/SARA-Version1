@@ -261,30 +261,38 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             */
 
             GameApp.CANVAS_WIDTH = 382.0;
-            GameApp.CANVAS_HEIGHT = 642.0;
-
+            //GameApp.CANVAS_HEIGHT = 642.0;
+            console.log("w: " + window.innerWidth + ", h: " + window.innerHeight + ", dp: " + window.devicePixelRatio);
+            
+            /*
             if((window.innerWidth > GameApp.CANVAS_WIDTH) &&  (window.innerHeight > GameApp.CANVAS_HEIGHT)){
                 GameApp.CANVAS_WIDTH = window.innerWidth;
                 GameApp.CANVAS_HEIGHT = window.innerHeight - 10;
             }
-
-            /*
-            this.CANVAS_WIDTH = 382.0;
-            if((window.innerWidth > 382.0) &&  (window.innerHeight > 642.0)){
-                this.CANVAS_WIDTH = window.innerWidth;
-            }
             */
 
-            
+            if(window.innerWidth > GameApp.CANVAS_WIDTH)
+                GameApp.CANVAS_WIDTH = window.innerWidth;
+
+            //
+            GameApp.CANVAS_HEIGHT = window.innerHeight;
+            //if(GameApp.CANVAS_HEIGHT < 642.0)
+            //    GameApp.CANVAS_HEIGHT = 642.0;
             //var game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT, Phaser.AUTO);
 
             var game;
-            if(ionic.Platform.isIOS())
+            if(ionic.Platform.isIOS()){
                 //game = new Phaser.Game(window.innerWidt`h, window.innerHeight - 64, Phaser.AUTO, 'gameArea');
-                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 54, Phaser.AUTO, 'gameArea');
+                //game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 54, Phaser.AUTO, 'gameArea');
+                if(GameApp.CANVAS_HEIGHT < 642.0)//iphone SE fix.
+                    GameApp.CANVAS_HEIGHT += 60;
+                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 21*window.devicePixelRatio, Phaser.AUTO, 'gameArea');
+            }else if(ionic.Platform.isAndroid())
+                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 44, Phaser.AUTO, 'gameArea');    
             else
                 //game = new Phaser.Game(window.innerWidth, window.innerHeight - 44, Phaser.AUTO, 'gameArea');
-                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 34, Phaser.AUTO, 'gameArea');
+                //game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 34, Phaser.AUTO, 'gameArea');
+                game = new Phaser.Game(GameApp.CANVAS_WIDTH, GameApp.CANVAS_HEIGHT - 20, Phaser.AUTO, 'gameArea');
 
             game.state.add('Boot', FishGame.Boot);
             game.state.add('Preloader', FishGame.Preloader);
@@ -348,6 +356,27 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     //cognito_data is local storage is latest. Continue with that
                 }
 
+                //--other device sync issue
+                //cloud data initialize
+                var current_cloud_data = JSON.parse(window.localStorage['latest_cloud_data'] || '{}');
+                if(current_cloud_data.hasOwnProperty('lastupdate')){
+                }else{
+                    current_cloud_data['lastupdate'] = 0;//means first time we will write what we have.
+                }
+                //local data initialize
+                var current_local_data = JSON.parse(window.localStorage['cognito_data'] || '{}');
+                if(current_local_data.hasOwnProperty('lastupdate')){
+                }else{
+                    current_local_data['lastupdate'] = new Date().getTime(); //means first time we will store what we have.
+                }
+                //update if there is new data.
+                if(current_cloud_data['lastupdate'] > current_local_data['lastupdate']){
+                    console.log('Cloud: updating data');
+                    window.localStorage['cognito_data'] = returnValue;
+                    rl_data_str = returnValue;
+                }
+
+
                 //-- rl_data_str is the latest value..
                 //this is the latest value.
                 returnValue = rl_data_str;
@@ -403,7 +432,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //}
 
                 //save the changes if there is a change....
-                scope.$emit('update:cloud');
+                //scope.$emit('update:cloud');
 
 
             });
@@ -427,7 +456,15 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
                 //var reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
 
-                console.log("reinfrocement_data: "+ JSON.stringify($rootScope.reinfrocement_data))
+                //console.log("reinfrocement_data: "+ JSON.stringify($rootScope.reinfrocement_data))
+
+                if('reinfrocement_data' in rl_data){
+                    //console.log('Assigning reinfrocement_data');
+                    //window.localStorage['reinfrocement_data'] = JSON.stringify(rl_data['reinfrocement_data']);
+                }else{
+                    rl_data['reinfrocement_data'] = {};
+                }
+
                 //if undefined then get from local storage
                 if($rootScope.reinfrocement_data == undefined)
                     $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
@@ -468,11 +505,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
                                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
                                 var reinforcement_record = rl_data['reinfrocement_data'] || {};
-                                if(Object.keys(reinforcement_record).length === 0)
-                                     rl_data['reinfrocement_data'] = {};
+                                //if(Object.keys(reinforcement_record).length === 0)
+                                //     rl_data['reinfrocement_data'] = {};
 
                                 //save only for today.
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                rl_data['lastupdate'] = new Date().getTime();
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
                                 //
@@ -551,11 +589,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
                                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
                                 var reinforcement_record = rl_data['reinfrocement_data'] || {};
-                                if(Object.keys(reinforcement_record).length === 0)
-                                     rl_data['reinfrocement_data'] = {};
+                                //if(Object.keys(reinforcement_record).length === 0)
+                                //     rl_data['reinfrocement_data'] = {};
 
                                 //save only for today.
                                 rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data[moment().format('YYYYMMDD')];
+                                rl_data['lastupdate'] = new Date().getTime();
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
                                 //
@@ -607,6 +646,10 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }else{
                     console.log("Not all survey completed. don't give reward");
                 }
+
+                //
+                console.log("Cloud update initiated");
+                scope.$emit('update:cloud');
             }
             //saraDatafactory.storedata('game_score',json_data, moment().format('YYYYMMDD'));
 
@@ -748,13 +791,28 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 var daily_survey = scoreValue['daily_survey'];
                 scope.daily_survey_images = [];
 
+                //get the first date
+                var first_date = moment().format('YYYYMMDD');
+                var first_date_moment_js = moment(first_date,"YYYYMMDD");
+                var key_moment_js;
+                for (var key in daily_survey) {
+                    key_moment_js = moment(key,"YYYYMMDD");
+                    //takes the first day only. But it may not be the first date.
+                    //break;
+                    if (key_moment_js < first_date_moment_js) {
+                        first_date = key;
+                        first_date_moment_js = moment(first_date,"YYYYMMDD");
+                    }
+                }
 
                 //get the first date
+                /*
                 var first_date = moment().format('YYYYMMDD');
                 for (var key in daily_survey) {
                     first_date = key;
                     break;
                 }
+                */
                 $rootScope.first_date_of_study = first_date;
 
                 $rootScope.total_days = 0;
@@ -804,7 +862,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     $rootScope.total_days = number_of_days;
                 }
                 //console.log(scope.daily_survey_images);
-
+                console.log("todal days: " + $rootScope.total_days);
 
 
                 //////////////////////////

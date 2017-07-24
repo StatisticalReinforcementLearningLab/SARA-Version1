@@ -177,6 +177,8 @@ FishGame.Preloader.prototype = {
 
             var	username = window.localStorage['username'] || 'unknown';
             var isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
+            //isStudyParticipant = true;
+
 
             if((this.ionic_scope.total_days > 30) && isStudyParticipant){
             	this.state.start('Gameover');

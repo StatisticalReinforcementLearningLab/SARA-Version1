@@ -784,7 +784,23 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
                             //means I 
                 });
             });
+        }else{
+            var updates = {};
+            var survey_data = {};
+            survey_data['username'] = window.localStorage['username'] || "unknwon";
+            survey_data['ts'] = new Date().getTime();
+            survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+            survey_data['data'] = data;
+            //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+            // survey_data['regId'] = $ionicPush.token;
+            // survey_data['ts'] = new Date().getTime();
+            // survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+
+            updates['/iOS/usage/' + survey_data['username'] + "/" + moment().format('YYYYMMDD-HH:mm:ss:SSS')] = survey_data;//existing_usage_data;
+            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+            firebase.database().ref().update(updates);
         }
+
     };
 
 
