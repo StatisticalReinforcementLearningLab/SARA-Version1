@@ -3,13 +3,14 @@ FishGame.Preloader = function(game) {
     //this.titleText = null;
     this.ready = false;
     this.ionic_scope;
+    this.isStudyParticipant;
 };
 
 FishGame.Preloader.prototype = {
 	
 	preload: function () {
 
-		console.log("Preloader: preload called"); 
+		//console.log("Preloader: preload called"); 
 
 		this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
@@ -21,96 +22,19 @@ FishGame.Preloader.prototype = {
         this.load.bitmapFont('eightbitwonder', 'fonts/eightbitwonder.png', 'fonts/eightbitwonder.fnt');
 		this.load.json('fishpoints', 'js/fishpoints.json');//fish json, points
 
-        //--- sea
-        this.load.image('undersea', 'img/underwaterbr.jpg');
+		//
+		this.load.atlasJSONArray('clownfish', 'sprite/clownfish.png', 'sprite/clownfish.json');
 
-        
-        this.load.image('titlescreen', 'img/TitleBG4.png');
-        //this.load.image('connected', 'img/connected.png');
-        //this.load.image('trivia', 'img/trivia.png');
-        //this.load.image('meme', 'img/laughingfish.png');
-        this.load.image('disconnected', 'img/disconnected.png');
-    	this.load.image('coral', 'img/seabed.png');
-        
-        this.load.image('journal', 'img/fishjournal.png');
-        this.load.image('fish_journal', 'img/fish_journal.png');
-        this.load.atlasJSONArray('clownfish', 'sprite/clownfish.png', 'sprite/clownfish.json');
-
-        
-        this.load.image('fish', 'img/fish.png');
-		this.load.image('treasure', 'img/treasure.png');
-		this.load.atlasXML('octopus', 'sprite/octopus.png', 'sprite/octopus.xml');
-		this.load.atlasXML('seacreatures', 'sprite/seacreatures.png', 'sprite/seacreatures.xml');
-		this.load.atlasJSONArray('greenfish', 'sprite/swimrightgreenfish.png', 'sprite/swimrightgreenfish.json');
-		this.load.atlasJSONArray('seahorseyellow', 'sprite/seahorseyellow.png', 'sprite/seahorseyellow.json');
-		this.load.atlasJSONArray('squid', 'sprite/squid.png', 'sprite/squid.json');
-		this.load.atlasJSONArray('goldfish', 'sprite/goldfish.png', 'sprite/goldfish.json');
-		this.load.atlasJSONArray('angelfish', 'sprite/angelfish.png', 'sprite/angelfish.json');
-		this.load.atlasJSONArray('discusfish', 'sprite/discusfish.png', 'sprite/discusfish.json');
-		this.load.atlasJSONArray('bettafish', 'sprite/betta.png', 'sprite/betta.json');
-		//this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
-		this.load.atlasJSONArray('puffer', 'sprite/pufferfish.png', 'sprite/pufferfish.json');
-		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
-		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
-		
 		//
 		this.load.image('fish_progress', 'sprite/fish_progress_s.png');
-		
-        //this.load.audio('game_audio', 'audio/poop.mp3');
 
-        //second aquarium
-        //-- fish_journal
-        this.load.image('treasuresea', 'img/treasuresea.png');
-        this.load.atlasJSONArray('sharkswim', 'sprite/sharkswimming.png', 'sprite/sharkswimming.json');
-        this.load.atlasJSONArray('nemo', 'sprite/clownfish.png', 'sprite/clownfish.json');
-		this.load.atlasJSONArray('dori', 'sprite/dory2.png', 'sprite/dory2.json');
-		this.load.atlasJSONArray('jellyfish', 'sprite/jellyfish.png', 'sprite/jellyfish.json');
-		this.load.atlasJSONArray('redcrab', 'sprite/redcrab.png', 'sprite/redcrab.json');
-		this.load.atlasJSONArray('greencrab', 'sprite/greencrab.png', 'sprite/greencrab.json');
-		this.load.atlasJSONArray('angryfish', 'sprite/angryfish.png', 'sprite/angryfish.json');
-		this.load.atlasJSONArray('swordfish', 'sprite/swordfish.png', 'sprite/swordfish.json');
-		this.load.atlasJSONArray('salmon', 'sprite/salmon.png', 'sprite/salmon.json');
-		this.load.atlasJSONArray('yellowtang', 'sprite/yellowtang.png', 'sprite/yellowtang.json');
-		this.load.atlasJSONArray('dolphin', 'sprite/dolphin.png', 'sprite/dolphin.json');
-		this.load.atlasJSONArray('kitefish', 'sprite/kitefish.png', 'sprite/kitefish.json');
-		this.load.atlasJSONArray('whale', 'sprite/whale.png', 'sprite/whale.json');
-		this.load.spritesheet('blueanchovy', 'sprite/blueanchovy.png', 512, 125, 4);
-		this.load.spritesheet('greenanchovy', 'sprite/greenanchovy.png', 512, 125, 4);
-		this.load.spritesheet('pinkanchovy', 'sprite/pinkanchovy.png', 512, 125, 4);
-		this.load.spritesheet('greenstarfish', 'sprite/greenstarfish.png', 512, 512, 3);
-		this.load.spritesheet('redstarfish', 'sprite/redstarfish.png', 512, 512, 3);
-		this.load.spritesheet('bluestarfish', 'sprite/bluestarfish.png', 512, 512, 3);
 		
-		//
-		this.load.image('gameover', 'img/Fireworks.png');
-		
-		//
-		this.load.image('gotosea', 'img/gotosea.png');
-
-		//first_aq
-		this.load.image('first_aq', 'img/first_aq.png');
-
 		//progress bar
 		this.load.spritesheet('timer', 'sprite/timer.png', 150, 20);
 
 		//reward
 		this.load.image('ball', 'img/bubble256yay.png');
 		this.load.image('gift', 'img/gift.png');
-
-
-		//divers
-		this.load.atlasJSONArray('purplediver', 'sprite/purple-diver-sprite.png', 'sprite/purple-diver-sprite.json');
-		this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
-		this.load.atlasJSONArray('fatdiver', 'sprite/fat_swimmer.png', 'sprite/fat_swimmer.json');
-
-		//submarine
-		this.load.atlasJSONArray('submarine', 'sprite/submarine.png', 'sprite/submarine.json');
-		this.load.atlasJSONArray('submarine_at', 'sprite/submarine_at.png', 'sprite/submarine_at.json');
-
-		//--- RedBanner.png
-		//this.load.atlasJSONArray('banner', 'sprite/RedBanner.png', 'sprite/RedBanner.json');
-		this.load.image('banner', 'img/RedBanner.png');
-		this.load.image('banner_fish', 'img/banner_fish.png');
 
 
 		//this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
@@ -125,13 +49,31 @@ FishGame.Preloader.prototype = {
 		console.log('img/pirate-' + rand_num + '.png');
 		this.load.image('pirate', 'img/pirate-' + rand_num + '.png');
 
-		//
-		this.load.image('smiley', 'img/smiley.png');
-		this.load.image('diver', 'img/diver-0.png');
-		this.load.image('fatdiver2', 'img/fatdiver2.png');
+		var	username = window.localStorage['username'] || 'unknown';
+        this.isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
+        //this.isStudyParticipant = true;
+        //this.ionic_scope.total_points = 1050;  
+		if((this.ionic_scope.total_days > 30) && this.isStudyParticipant){
+            this.loadGameover();
+        }else{
+        	if(this.ionic_scope.total_points <1060){
+				this.loadFishBowl();
+        	}else{
+        		this.loadSea();
+        	}
+        }
+
+
+		//--- RedBanner.png
+		//this.load.atlasJSONArray('banner', 'sprite/RedBanner.png', 'sprite/RedBanner.json');
+		this.load.image('banner', 'img/RedBanner.png');
+		this.load.image('banner_fish', 'img/banner_fish.png');
+
+
+
 
 		//start loading
-		this.load.start();
+		//this.load.start();
 
 		var progressDisplay = 0;
 		var timerEvt = this.time.events.loop(100, function (){
@@ -175,12 +117,8 @@ FishGame.Preloader.prototype = {
         if(this.ready == true) {
             //this.ionic_scope.total_points = 1650;  	
 
-            var	username = window.localStorage['username'] || 'unknown';
-            var isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
-            //isStudyParticipant = true;
 
-
-            if((this.ionic_scope.total_days > 30) && isStudyParticipant){
+            if((this.ionic_scope.total_days > 30) && this.isStudyParticipant){
             	this.state.start('Gameover');
             }else{
 	            if(this.ionic_scope.total_points <770){
@@ -198,6 +136,9 @@ FishGame.Preloader.prototype = {
 	            if(this.ionic_scope.total_points >=1060 && this.ionic_scope.total_points <1710){
 	            	this.state.start('Level1Small');
 	            	this.ionic_scope.current_level = 'Level1Small';
+	            	console.log("post loading fishbowl");
+	            	this.loadFishBowl();
+	            	this.load.start();
 	            }
 
 	            if(this.ionic_scope.total_points >=1710){
@@ -205,6 +146,9 @@ FishGame.Preloader.prototype = {
 					//this.state.start('Gameover');
 					//this.state.start('Gamelast');
 	            	this.ionic_scope.current_level = 'Level1';
+	            	console.log("post loading fishbowl");
+	            	this.loadFishBowl();
+	            	this.load.start();
 	            }
 	        }
 
@@ -217,5 +161,92 @@ FishGame.Preloader.prototype = {
 	onLoadComplete: function () {
 	    console.log("Load complete");
 	    this.ready = true;
+	},
+
+	loadFishBowl: function () {
+		this.load.image('titlescreen', 'img/TitleBG4.png');    	
+        this.load.image('journal', 'img/fishjournal.png');
+        
+
+        
+        this.load.image('fish', 'img/fish.png');
+		this.load.image('treasure', 'img/treasure.png');
+		this.load.atlasXML('octopus', 'sprite/octopus.png', 'sprite/octopus.xml');
+		this.load.atlasXML('seacreatures', 'sprite/seacreatures.png', 'sprite/seacreatures.xml');
+		this.load.atlasJSONArray('greenfish', 'sprite/swimrightgreenfish.png', 'sprite/swimrightgreenfish.json');
+		this.load.atlasJSONArray('seahorseyellow', 'sprite/seahorseyellow.png', 'sprite/seahorseyellow.json');
+		this.load.atlasJSONArray('squid', 'sprite/squid.png', 'sprite/squid.json');
+		this.load.atlasJSONArray('goldfish', 'sprite/goldfish.png', 'sprite/goldfish.json');
+		this.load.atlasJSONArray('angelfish', 'sprite/angelfish.png', 'sprite/angelfish.json');
+		this.load.atlasJSONArray('discusfish', 'sprite/discusfish.png', 'sprite/discusfish.json');
+		this.load.atlasJSONArray('bettafish', 'sprite/betta.png', 'sprite/betta.json');
+		//this.load.atlasJSONArray('guppy', 'sprite/guppy.png', 'sprite/guppy.json');
+		this.load.atlasJSONArray('puffer', 'sprite/pufferfish.png', 'sprite/pufferfish.json');
+		this.load.atlasJSONArray('tigerbarb', 'sprite/tigerbarb.png', 'sprite/tigerbarb.json');
+		this.load.atlasJSONArray('butterfly', 'sprite/butterfly.png', 'sprite/butterfly.json');
+
+		this.load.spritesheet('greenstarfish', 'sprite/greenstarfish.png', 512, 512, 3);
+		this.load.spritesheet('redstarfish', 'sprite/redstarfish.png', 512, 512, 3);
+		this.load.spritesheet('bluestarfish', 'sprite/bluestarfish.png', 512, 512, 3);
+
+		//divers
+		this.load.atlasJSONArray('purplediver', 'sprite/purple-diver-sprite.png', 'sprite/purple-diver-sprite.json');
+		this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
+		this.load.atlasJSONArray('fatdiver', 'sprite/fat_swimmer.png', 'sprite/fat_swimmer.json');
+		
+		//
+		this.load.image('smiley', 'img/smiley.png');
+		this.load.image('diver', 'img/diver-0.png');
+		this.load.image('fatdiver2', 'img/fatdiver2.png');
+	},
+
+	loadSea: function () {
+		//this.load.audio('game_audio', 'audio/poop.mp3');
+
+        //second aquarium
+        //-- fish_journal
+        this.load.image('fish_journal', 'img/fish_journal.png');
+
+         //--- sea
+        this.load.image('undersea', 'img/underwaterbr.jpg');
+        this.load.image('treasuresea', 'img/treasuresea.png');
+        this.load.image('coral', 'img/seabed.png');
+        this.load.atlasJSONArray('sharkswim', 'sprite/sharkswimming.png', 'sprite/sharkswimming.json');
+        this.load.atlasJSONArray('nemo', 'sprite/clownfish.png', 'sprite/clownfish.json');
+		this.load.atlasJSONArray('dori', 'sprite/dory2.png', 'sprite/dory2.json');
+		this.load.atlasJSONArray('jellyfish', 'sprite/jellyfish.png', 'sprite/jellyfish.json');
+		this.load.atlasJSONArray('redcrab', 'sprite/redcrab.png', 'sprite/redcrab.json');
+		this.load.atlasJSONArray('greencrab', 'sprite/greencrab.png', 'sprite/greencrab.json');
+		this.load.atlasJSONArray('angryfish', 'sprite/angryfish.png', 'sprite/angryfish.json');
+		this.load.atlasJSONArray('swordfish', 'sprite/swordfish.png', 'sprite/swordfish.json');
+		this.load.atlasJSONArray('salmon', 'sprite/salmon.png', 'sprite/salmon.json');
+		this.load.atlasJSONArray('yellowtang', 'sprite/yellowtang.png', 'sprite/yellowtang.json');
+		this.load.atlasJSONArray('dolphin', 'sprite/dolphin.png', 'sprite/dolphin.json');
+		this.load.atlasJSONArray('kitefish', 'sprite/kitefish.png', 'sprite/kitefish.json');
+		this.load.atlasJSONArray('whale', 'sprite/whale.png', 'sprite/whale.json');
+		this.load.spritesheet('blueanchovy', 'sprite/blueanchovy.png', 512, 125, 4);
+		this.load.spritesheet('greenanchovy', 'sprite/greenanchovy.png', 512, 125, 4);
+		this.load.spritesheet('pinkanchovy', 'sprite/pinkanchovy.png', 512, 125, 4);
+
+		
+		//
+		this.load.image('gotosea', 'img/gotosea.png');
+
+		//first_aq
+		this.load.image('first_aq', 'img/first_aq.png');
+
+		
+
+		//submarine
+		this.load.atlasJSONArray('submarine', 'sprite/submarine.png', 'sprite/submarine.json');
+		this.load.atlasJSONArray('submarine_at', 'sprite/submarine_at.png', 'sprite/submarine_at.json');
+
+		//this.preloadBar.destroy();
+
+	},
+
+	loadGameover: function(){
+		//
+		this.load.image('gameover', 'img/Fireworks.png');
 	}
 };

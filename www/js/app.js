@@ -805,6 +805,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     }
                 }
 
+
+
                 //get the first date
                 /*
                 var first_date = moment().format('YYYYMMDD');
@@ -955,6 +957,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
                 //get the first date
+                /*
                 var first_date = moment().format('YYYYMMDD');
                 var first_date_moment_js = moment(first_date,"YYYYMMDD");
                 var key_moment_js;
@@ -967,7 +970,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         first_date_moment_js = moment(first_date,"YYYYMMDD");
                     }
                 }
-
+                */
+                var first_date = $rootScope.first_date_of_study;
 
                 //get all dates
                 var dates = [];
