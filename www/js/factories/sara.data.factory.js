@@ -790,7 +790,15 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             survey_data['username'] = window.localStorage['username'] || "unknwon";
             survey_data['ts'] = new Date().getTime();
             survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
-            survey_data['data'] = data;
+            
+            console.log(JSON.stringify(data));
+
+            //if (("status" in data) && ("$$hashKey" in data["status"]))
+            //    delete data["status"]["$$hashKey"];
+
+            survey_data['data'] = JSON.parse(angular.toJson(data));
+
+            console.log("Modified: " + JSON.stringify(data));
             //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
             // survey_data['regId'] = $ionicPush.token;
             // survey_data['ts'] = new Date().getTime();

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionicframework.sara588581" version="0.0.50" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="edu.umich.srl.sara" version="0.0.50" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>SARA</name>
     <description>
         An Ionic Framework and Cordova project.
@@ -84,6 +84,7 @@
     <plugin name="cordova-plugin-statusbar" spec="~2.2.1" />
     <plugin name="cordova-plugin-whitelist" spec="~1.3.1" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="onesignal-cordova-plugin" spec="^2.1.2" />
     <plugin name="phonegap-plugin-push" spec="^1.10.5">
         <variable name="SENDER_ID" value="831721083674" />
     </plugin>

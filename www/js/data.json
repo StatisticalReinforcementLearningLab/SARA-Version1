@@ -20,7 +20,7 @@
     "type":"radiobutton",
     "type":"range2",
     "extra":{
-      "choices":["0<br>hour","600<br>min",0,1440,30]
+      "choices":["0<br>hour","600<br>min",0,1440,60]
     }
   },
   {

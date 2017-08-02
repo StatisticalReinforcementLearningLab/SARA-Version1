@@ -9,14 +9,25 @@
 
 
   <ion-content class="padding">
-              <center style="font-size: 20px;line-height: 25px;">{{congrats_message}}</center>
+              <center style="font-size: 18px;line-height: 25px;" ng-bind-html="congrats_message"></center>
+
+              <!--
               <center style="font-size: 20px;line-height: 25px;font-weight: bold;padding-top:10px;">{{gift_msg}}</center>
-              
+              -->
+
+              <div class="list">
+                  <div class="card" ng-repeat="card in cards" ng-show="card.show_image" style="border-left: 3px solid #263238;border-top: 0px solid #263238;"> 
+                      <img src="{{card.img}}" style="float:left;width:100px;padding:10px;padding-right:20px;padding-top:15px" />
+                      <p style="padding:25px;font-size:15px;color:#37474F">{{card.name}}</p>
+                  </div>
+              </div>
+
+
               <!--
               <div >
                   <img ng-repeat="card in cards" ng-show="card.show_image" src="{{card.img}}" alt="Paris" style="width:80px; margin-top:10px">
               </div>
-              -->
+              
 
               <div ng-repeat="card in cards">
                     <div class="animation-target" ng-show="card.show" >
@@ -28,7 +39,7 @@
                     </div>
               </div>
 
-              <!--
+              
               <div id="buttons">
                   <a class="w3-btn-floating-large w3-red" ng-click="throwOut(false)" style="margin:10px;margin-top:430px;">X</a>
                   <a class="w3-btn-floating-large w3-teal" ng-click="throwOut(true)" style="margin:10px;margin-top:430px;color:white;">♥</a>
@@ -120,8 +131,13 @@
 
 
   <footer style="position: fixed; bottom: 0px; width: 100%; height:58px; background-color: white;">
+      <!--
       <button class="button button-block button-positive" ng-click="throwOut(true)">
         {{next_message}}
-      </button>  
+      </button>
+      -->
+      <button class="button button-block button-positive" ng-click="goHome()">
+        Go to aquarium
+      </button>
   </footer>    
 </ion-view>

@@ -27,7 +27,7 @@
     "type":"radiobutton",
     "type":"range2",
     "extra":{
-      "choices":["0<br>hours","600<br>min",0,1440,30]
+      "choices":["0<br>hours","600<br>min",0,1440,60]
     }
   },
   {
@@ -129,38 +129,11 @@
     }
   },
   {
-    "name":"Q4",
-    "text":"Did you drink alcohol last week?",
-    "type":"radiobutton",
-    "extra":{
-      "choices":["yes","no"],
-      "orientation": "vertical"
-    }
-  },
-  {
-    "name":"Q41",
-    "text":"Which days did you drink alcohol last week?",
-    "type":"checkbox",
-    "extra":{
-      "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "dependency":{
-        "question": "Q4", 
-        "show": "yes",
-        "hide": "no"
-      }
-    }
-  },
-  {
     "name":"Q41sun",
     "text":"How many drinks did you have on <b>Sunday/today</b>?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O0", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -168,12 +141,7 @@
     "text":"How many drinks did you have on <b>Monday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O1", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -181,12 +149,7 @@
     "text":"How many drinks did you have on <b>Tuesday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O2", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -194,12 +157,7 @@
     "text":"How many drinks did you have on <b>Wednesday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O3", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -207,12 +165,7 @@
     "text":"How many drinks did you have on <b>Thursday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O4", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -220,12 +173,7 @@
     "text":"How many drinks did you have on <b>Friday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O5", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {
@@ -233,12 +181,7 @@
     "text":"How many drinks did you have on <b>Saturday</b> last week?",
     "type":"range3",
     "extra":{
-      "choices":["0","20",0,20,1],
-      "dependency":{
-          "question": "Q41O6", 
-          "show": true,
-          "hide": false
-      }
+      "choices":["0","20",0,20,1]
     }
   },
   {

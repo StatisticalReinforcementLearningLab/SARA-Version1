@@ -693,7 +693,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $scope.badge_img = "img/green_trophy.png";
           $scope.how_many_days = 1;
           $scope.how_much = "25 cents";
-          $scope.cards.push({name: "You earned 25 cents for completing the 1st weekly surveys.", show: false, up:0, class: 'blue', img: "img/green_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 25 cents for completing the 1st weekly surveys.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+          $scope.cards.push({name: "You also earned a badge for completing the 1st weekly surveys.", show: false, up:0, class: 'blue', img: "img/green_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][0] = 1;
         }
 
@@ -703,7 +704,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $scope.badge_img = "img/bronze_trophy.png";
           $scope.how_many_days = 2;
           $scope.how_much = "50 cents";
-          $scope.cards.push({name: "You earned 50 cents for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/bronze_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+          $scope.cards.push({name: "You also earned a badge for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/bronze_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][1] = 1;
         }
 
@@ -713,7 +715,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $scope.badge_img = "img/silver_trophy.png";
           $scope.how_many_days = 3;
           $scope.how_much = "1 dollar";
-          $scope.cards.push({name: "You earned 1 dollar for completing 3rd weekly surveys.", show: false, up:0, class: 'blue', img: "img/silver_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 1 dollar for completing 3rd weekly surveys.", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          $scope.cards.push({name: "You also earned a badge for completing 3rd weekly surveys.", show: false, up:0, class: 'blue', img: "img/silver_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][2] = 1;
         }
 
@@ -723,7 +726,8 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $scope.badge_img = "img/gold_trophy.png";
           $scope.how_many_days = 4;
           $scope.how_much = "1.5 dollar";
-          $scope.cards.push({name: "You earned 1.5 dollar for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/gold_trophy.png", show_image: true});
+          $scope.cards.push({name: "You earned 1.5 dollar for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          $scope.cards.push({name: "You also earned a badge for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/gold_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][3] = 1;
         }
 
@@ -750,7 +754,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
     //show the reward for money
     //////////////////////////////////////////////////////////////////////
 
-    adjust_css();
+    //adjust_css();
 
     var type_of_work = 'survey';
     if(added_points=='29' || $rootScope.rewardIsActiveTask)
@@ -763,12 +767,14 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
       if($scope.cards.length > 0){
         $scope.cards[0].up = 10;
         $scope.cards[0].class = 'blue';
+        $scope.cards[0].name = "1. " + $scope.cards[0].name;
         $scope.cards[0].show = true;
       }
 
       for(var i=1; i < $scope.cards.length; i++){
           $scope.cards[i].up = $scope.cards[i-1].up + increment;
           $scope.cards[i].class = colors[i];
+          $scope.cards[i].name =  "" + (i+1) + ". " + $scope.cards[i].name;
           $scope.cards[i].show = false;
       }
 
@@ -778,7 +784,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
       if($scope.cards.length==1)
             $scope.next_message = "Go to aquarium ";
 
-      $scope.congrats_message = "Thanks for completing the " + type_of_work + ". You have unlocked " + $scope.cards.length + " rewards."
+      $scope.congrats_message = "Thanks for completing the " + type_of_work + ".<br>You have unlocked " + $scope.cards.length + " rewards <i class='em em-tada'></i>" 
       $scope.gift_msg = "Reward 1 of " + $scope.cards.length;
     }
     //$scope.cards[0].up = 10;

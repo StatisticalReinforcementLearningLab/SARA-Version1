@@ -10,7 +10,7 @@
 
 var app = angular.module('starter', ['ionic', 'ngRoute', 'ngProgress', 'ngCordova', 'gajus.swing', 'aws.cognito.identity', 'aws.cognito.sync', 'sara.data.factory', 'ngMessages','nvd3','ngMap','ionic.cloud'])
 
-app.run(function($ionicPlatform,$ionicPush) {
+app.run(function($ionicPlatform,$ionicPush,$rootScope,$location) {
     $ionicPlatform.ready(function() {
         if (window.cordova && window.cordova.plugins.Keyboard) {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -76,18 +76,83 @@ app.run(function($ionicPlatform,$ionicPush) {
         });
         */
         
+        /*
         $ionicPush.register().then(function(t) {
             return $ionicPush.saveToken(t);
         }).then(function(t) {
             console.log('Token saved:', t.token);
             window.localStorage['registrationIdPush'] = str(t.token);
         });
+        */
 
+
+        // Enable to debug issues.
+        //window.plugins.OneSignal.setLogLevel({logLevel: 4, visualLevel: 4});
+          
+        var notificationOpenedCallback = function(jsonData) {
+            console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+
+            //
+            var custom_data = jsonData["notification"]["payload"]["additionalData"];
+            console.log('custom_data: ' + JSON.stringify(custom_data));
+
+
+            $rootScope.insp_message = custom_data;
+            //window.localStorage['insp_message'] = JSON.stringify(custom_data);
+            //---- 
+            if(custom_data.type === "engagement"){
+                    //
+                    var updates = {};
+                    updates[custom_data.url + '/isClicked' ] = 1;
+                    updates[custom_data.url + '/whenClickedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
+                    updates[custom_data.url + '/whenClickedTs' ] = Date.now();
+                    //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+                    
+
+                    var actions = jsonData["action"];
+                    if("type" in actions){
+                        var action_type = actions["actionID"];
+                        if(action_type == 'iLike'){
+                            //updates = {};
+                            updates[custom_data.url + '/isLiked' ] = 2;//means direct change.. 
+                            updates[custom_data.url + '/whenRatedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
+                            updates[custom_data.url + '/whenRatedTs' ] = Date.now();
+                            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+                            firebase.database().ref().update(updates);
+                            //$location.path("/main");
+                        }else{
+                            //updates = {};
+                            updates[custom_data.url + '/isLiked' ] = -2;//means direct change..
+                            updates[custom_data.url + '/whenRatedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
+                            updates[custom_data.url + '/whenRatedTs' ] = Date.now();
+                            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
+                            firebase.database().ref().update(updates);
+                            //$location.path("/main");
+                        }
+                    }else{
+                        firebase.database().ref().update(updates);//save the change so far.
+                        $location.path("/inspirationalquotes");
+                    }
+            }
+        };
+
+        window.plugins.OneSignal
+            .startInit("ae8ddfb9-a504-41e2-bc97-477017bb925f")
+            .handleNotificationOpened(notificationOpenedCallback)
+            .endInit();
+            
+          // Call syncHashedEmail anywhere in your app if you have the user's email.
+          // This improves the effectiveness of OneSignal's "best-time" notification scheduling feature.
+          // window.plugins.OneSignal.syncHashedEmail(userEmail);
+
+        window.plugins.OneSignal.getIds(function(ids) {
+            var did = ids.userId;
+            //window.localStorage.setItem("did",ids.userId);
+            console.log("One signal id: " + did);
+            window.localStorage['oneSignalId'] = did;
+        });
 
     });
-
-
-
 });
 
 
@@ -193,7 +258,7 @@ app.config(function($routeProvider,$ionicCloudProvider) {
             controller: "RedCtrl"
         });
 
-
+        /*
         $ionicCloudProvider.init({
             "core": {
               "app_id": "574bb514"
@@ -210,7 +275,8 @@ app.config(function($routeProvider,$ionicCloudProvider) {
                 }
               }
             }
-        }); 
+        });
+        */ 
 
 });
 
@@ -380,8 +446,6 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //-- rl_data_str is the latest value..
                 //this is the latest value.
                 returnValue = rl_data_str;
-
-
 
                 //Make sure the call for "sdcard" permission happens.
                 //save to "data_ds_ws.txt"
@@ -766,6 +830,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //the total score
                 window.localStorage['fish_aquarium_score'] = "" + scope.total_points;
 
+                //
+                $rootScope.aquarium_score = scope.total_points;
+
                 if ($rootScope.total_score == undefined)
                     $rootScope.total_score = scope.total_points;
                 else
@@ -819,6 +886,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 $rootScope.total_days = 0;
                 //np data on the first day
+                var daily_survey_streaks = 0;
+                var daily_survey_last_date = moment().format('YYYYMMDD');
                 if(first_date === moment().format('YYYYMMDD')){
                     //{name: 'clubs', symbol: '♣', show:true, up:100, class: 'blue', img:'img/blue.png', show_image: true}
                     if(daily_survey.hasOwnProperty(first_date)){
@@ -836,10 +905,15 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     var number_of_days = 1;
                     while(true){
 
-                        if(daily_survey.hasOwnProperty(current_date))
+                        if(daily_survey.hasOwnProperty(current_date)){
                             scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15});
-                        else
+                            daily_survey_streaks = daily_survey_streaks + 1;
+                            daily_survey_last_date = current_date;
+                        }
+                        else{
                             scope.daily_survey_images.push({img: 'img/not_done.png', width: 15});
+                            daily_survey_streaks = 0;
+                        }
 
                         if((scope.daily_survey_images.length+1)%5 == 0){
                             if(current_date === moment().format('YYYYMMDD'))
@@ -883,6 +957,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }
 
                 //np data on the first day
+                var active_task_streaks = 0;
+                var active_task_last_date = moment().format('YYYYMMDD');
                 if(first_date === moment().format('YYYYMMDD')){
                     if(active_tasks_survey.hasOwnProperty(first_date))
                         scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
@@ -897,10 +973,15 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     number_of_days = 1;
                     while(true){
 
-                        if(active_tasks_survey.hasOwnProperty(current_date))
+                        if(active_tasks_survey.hasOwnProperty(current_date)){
                             scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
-                        else
+                            active_task_streaks = active_task_streaks + 1;
+                            active_task_last_date = current_date;
+                        }
+                        else{
                             scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15});
+                            active_task_streaks = 0;
+                        }
 
 
                         if((scope.active_tasks_survey_images.length+1)%5 == 0){
@@ -931,6 +1012,12 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }
                 //console.log(scope.active_tasks_survey_images);
 
+                $rootScope.current_streak = active_task_streaks;
+                $rootScope.last_date = active_task_last_date;
+                if(active_task_streaks < daily_survey_streaks){
+                    $rootScope.current_streak = daily_survey_streaks;
+                    $rootScope.last_date = daily_survey_last_date;
+                }
 
                 //scope.daily_survey_images[0] = 'img/active_task_done.png';
                 //scope.daily_survey_images[1] = 'img/not_done.png';
@@ -1362,11 +1449,11 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         promise = $interval(testResumePause, 1000);
         //console.log("Important stats: " + window.innerWidth + "," + window.innerHeight + "," + window.devicePixelRatio);
 
-        var regid = $ionicPush.token;//window.localStorage['registrationIdPush']; // || 'not found';
+        //var regid = $ionicPush.token;//window.localStorage['registrationIdPush']; // || 'not found';
         //console.log("RegID: " + regid);
         //if(isPaused==false)
         //    readActiveTaskData();
-
+        var regid = window.localStorage['oneSignalId'] || 'unknown';
 
         if (ionic.Platform.isIOS()) {
             if($scope.username === 'unknown')
@@ -1374,19 +1461,21 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
 
             if(regid != undefined){
                 //console.log("RegID: " + regid);
+                //var stored_regid = window.localStorage['registrationIdPush'] || 'unknown'; 
                 var stored_regid = window.localStorage['registrationIdPush'] || 'unknown'; 
                 //console.log('stored_regid ' + stored_regid);
                 //console.log('regid ' + regid);
-                if(stored_regid === regid.token){
+                if(stored_regid === regid){
                 }else{
-                    window.localStorage['registrationIdPush'] = regid.token;
+                    window.localStorage['registrationIdPush'] = regid;//regid.token;
                     var updates = {};
 
                     var newPostKey = firebase.database().ref().child('iOS').child('HistoryRegToken').push().key;
 
                     var data = {};
                     data['username'] = $scope.username;
-                    data['regId'] = $ionicPush.token;
+                    data['regId'] = "decomissioned"; //$ionicPush.token;
+                    data['oneSignalId'] = window.localStorage['oneSignalId'];
                     data['ts'] = new Date().getTime();
                     data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
 
@@ -1745,8 +1834,29 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             console.log('Cloud: updating data');
             current_local_data['readable_ts'] = moment().format("MMMM Do YYYY, h:mm:ss a ZZ");
             saraDatafactory.storedata('rl_data',current_local_data, moment().format('YYYYMMDD'));
+
+            if(ionic.Platform.isIOS()){
+                //store firebase score.
+                var data = {};
+                var updates = {};
+                var username = window.localStorage['username'] || 'unknown';
+                if(username != 'unknown'){
+                    data['score'] = $rootScope.aquarium_score;
+                    data['streak'] = $rootScope.current_streak;
+                    data['username'] = username;
+                    data['lastlogdate'] = $rootScope.last_date;
+                    data['readableTs'] = moment().format("MMMM Do YYYY, h:mm:ss a ZZ");
+                    data['ts'] = Date.now();
+                    var newPostKey = firebase.database().ref().child('iOS').child('HistoryUserData').push().key;
+                    updates['/iOS/userdata/' + username] = data;
+                    updates['/iOS/HistoryUserData/' + newPostKey] = data;
+                    firebase.database().ref().update(updates);
+                }
+            }
         }else
             console.log('Cloud: no update necessary');
+
+
 
 
     }

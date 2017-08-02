@@ -1,7 +1,7 @@
 [
 	{
 	    "name":"Q1",
-	    "text":"<b>Fun question</b>: What do you dislike, for no good reason?",
+	    "text":"What do you dislike, for no good reason?",
 	    "type":"radiobutton",
 	    "extra":{
 	      "choices":["Mayonnaise","Dryer lint","People who brag on Facebook","The word 'moist'","Name brand addicts","Country music","Reality TV","Other"],
@@ -11,7 +11,7 @@
 	},
 	{
 	    "name":"Q2",
-	    "text":"<b>Fun question</b>: If you were stranded on a desert island, what one food, what would you bring?",
+	    "text":"If you were stranded on a desert island, what one food, what would you bring?",
 	    "type":"radiobutton",
 	    "extra":{
 	      "choices":["Ramen Noodles","Cookie dough ice cream","Nacho cheese Dorito’s","Power bars","Pop Rocks","French fries","Forget food, I’m bringing coffee","Other"],
@@ -21,7 +21,7 @@
 	},
 	{
 	    "name":"Q3",
-	    "text":"<b>Fun question</b>: What movie best describes your life?",
+	    "text":"What movie best describes your life?",
 	    "type":"radiobutton",
 	    "extra":{
 	      "choices":["Breakfast Club","A Nightmare on Elm Street","Love Actually","Clueless","Kickass","Diary of a Wimpy Kid","Barely Legal","Other"],
@@ -31,7 +31,7 @@
 	},
 	{
 	    "name":"Q4",
-	    "text":"<b>Fun question</b>: If you were an animal, what would you be?",
+	    "text":"If you were an animal, what would you be?",
 	    "type":"radiobutton",
 	    "extra":{
 	      "choices":["Dinosaur","Alligator","Unicorn","Cockroach","Wallaby","Dragon","Charizard","Other"],
@@ -41,7 +41,7 @@
 	},
 	{
 	    "name":"Q5",
-	    "text":"<b>Fun question</b>: If you could hang out with a movie character for one day, who would you pick?",
+	    "text":"If you could hang out with a movie character for one day, who would you pick?",
 	    "type":"radiobutton",
 	    "extra":{
 	      "choices":["Harry Potter","Ironman","Jack Sparrow from Pirates of the Caribbean","Fat Amy from Pitch Perfect"," Katniss Everdeen from Hunger Games","Napoleon Dynamite","Elle Woods from Legally Blonde","Other"],
