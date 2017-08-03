@@ -430,6 +430,12 @@ input[type=radio]:checked ~ .checkfun::before{
   float:left;
 }
 
+#container3 {
+  width:40px;
+  position: relative;
+  float:left;
+}
+
 #container2 {
   width:22px;
   float:left;

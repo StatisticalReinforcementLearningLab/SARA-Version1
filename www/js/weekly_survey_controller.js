@@ -89,7 +89,9 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
 
       survey_data = data;
       $scope.qs = data;
-      $scope.survey = {};  
+      $scope.survey = {};
+      $scope.survey.Q4 = 'no';
+      $scope.survey.Q7 = 'no';
 
 
         //
@@ -584,6 +586,77 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
 
     }
 
+    $scope.inputchangedRange3 = function(groupId,questions){
+
+      if($scope.groupData == undefined)
+        $scope.groupData = {};
+
+      if(groupId in $scope.groupData){
+      }else
+        $scope.groupData[groupId] = {};
+
+      $scope.groupData[groupId][questions] = parseInt($scope.survey[questions]);
+
+      //
+      //console.log("group data: " + JSON.stringify($scope.groupData));
+      var sum = 0;
+      for (var key in $scope.groupData[groupId]) {
+        if ($scope.groupData[groupId].hasOwnProperty(key)){
+          //console.log(key + " -> " + p[key]);
+          sum = sum + $scope.groupData[groupId][key];
+        }
+      }
+      //console.log("sum: " + sum);
+
+      if(groupId === 'drinks'){
+          if(sum == 0)
+            $scope.survey.Q4 = 'no';
+          else
+            $scope.survey.Q4 = 'yes';
+      }
+
+
+      $scope.inputchanged(questions);
+      
+    }
+
+    $scope.inputchangedVerticalRadiobuttons = function(groupId,questions){
+      //console.log('group id');
+
+      if($scope.groupData == undefined)
+        $scope.groupData = {};
+
+      if(groupId in $scope.groupData){
+      }else
+        $scope.groupData[groupId] = {};
+
+      $scope.groupData[groupId][questions] = $scope.survey[questions];
+
+      //
+      //console.log("group data: " + JSON.stringify($scope.groupData));
+      var sum = 0;
+      for (var key in $scope.groupData[groupId]) {
+        if ($scope.groupData[groupId].hasOwnProperty(key)){
+          //console.log(key + " -> " + p[key]);
+          if($scope.groupData[groupId][key] === '0g')
+            sum = sum + 0;
+          else
+            sum = sum + 1;
+          //sum = sum + $scope.groupData[groupId][key];
+        }
+      }
+      //console.log("sum: " + sum);
+
+      if(groupId === 'weed'){
+          if(sum == 0)
+            $scope.survey.Q7 = 'no';
+          else
+            $scope.survey.Q7 = 'yes';
+      }
+
+      $scope.inputchanged(questions);
+    }
+
     function contains(a, obj) {
         var i = a.length;
         while (i--) {
@@ -593,6 +666,9 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
         }
         return -1;
     }
+
+
+    
 
     // process survey
     function process_survey(obj,survey_string,i){
@@ -838,26 +914,41 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
               //radio button, vertical     
               //------------------------------------------------------   
               if(obj.extra.orientation == "vertical"){
-                survey_string = survey_string + '<div class="radiovertical"><ul>';
+                  survey_string = survey_string + '<div class="radiovertical"><ul>';
 
-                for(var j = 0; j < obj.extra.choices.length; j++){
+                  if(obj.extra.isGroup==undefined || obj.extra.isGroup==false){
+                    for(var j = 0; j < obj.extra.choices.length; j++){
 
-                  /*  
-                  survey_string = survey_string + '<li><input type="radio" id="optionQ' + 
-                    i + "I" + j + '" name="Q' + i + '"><label for="optionQ' + i + "I" + 
-                    j + '">' + obj.extra.choices[j] + 
-                    '</label><div class="check"></div></li>';
-                    */
+                      /*  
+                      survey_string = survey_string + '<li><input type="radio" id="optionQ' + 
+                        i + "I" + j + '" name="Q' + i + '"><label for="optionQ' + i + "I" + 
+                        j + '">' + obj.extra.choices[j] + 
+                        '</label><div class="check"></div></li>';
+                        */
 
 
-                    survey_string = [survey_string, 
-                    '<li><input type="radio" id="option' + i + "I" + j + '" name="' + i + '" ng-model="survey.' + i + '" value="' + obj.extra.choices[j] + '"  ng-change="inputchanged(\'' + i + '\')">',
-                    '<label for="option' + i + "I" + j + '">' + obj.extra.choices[j] + '</label>',
-                    '<div class="'+ rbclass + '"></div></li>'].join(" ");  
+                        survey_string = [survey_string, 
+                        '<li><input type="radio" id="option' + i + "I" + j + '" name="' + i + '" ng-model="survey.' + i + '" value="' + obj.extra.choices[j] + '"  ng-change="inputchanged(\'' + i + '\')">',
+                        '<label for="option' + i + "I" + j + '">' + obj.extra.choices[j] + '</label>',
+                        '<div class="'+ rbclass + '"></div></li>'].join(" ");  
 
+                    }
+
+                    
+                  }else{
+                      for(var j = 0; j < obj.extra.choices.length; j++){
+                          survey_string = [survey_string, 
+                          '<li><input type="radio" id="option' + i + "I" + j + '" name="' + i + '" ng-model="survey.' + i + '" value="' + obj.extra.choices[j] + '" ng-change="inputchangedVerticalRadiobuttons(\'' + obj.extra.groupId + '\',\'' + i + '\')">',
+                          '<label for="option' + i + "I" + j + '">' + obj.extra.choices[j] + '</label>',
+                          '<div class="'+ rbclass + '"></div></li>'].join(" ");  
+                      }
                   }
-
                   survey_string = survey_string + '</ul></div>';
+
+
+
+
+
                 } 
 
               //------------------------------------------------------ 
@@ -934,20 +1025,39 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
                 var max = obj.extra.choices[3];
                 var step = obj.extra.choices[4];
                 $scope.survey[i] = 0;
-                survey_string = [survey_string,
-                    '<div class = "row" style="margin-bottom=0px;">',
-                    '<div class = "col col-10"></div>',
-                    '<div class = "col col-10"></div>',
-                    '<div class = "col col-20 col-offset-20"><p align="center" style="padding-top:2px;padding-bottom:2px;margin:0px;border-radius:25px;background:#303F9F;color:white;"><b>{{survey.' + i + '}}</b></p></div>',
-                    '<div class = "col col-10"></div>',
-                    '<div class = "col col-10 col-offset-20"></div>',
-                    '</div>',
-                    '<div class="item range range-balanced" style="padding:10px;padding-top:1px;border-width:0px;">',
-                    '<p style="text-align: center;color: black;">' + obj.extra.choices[0] + "</p>",
-                    '<input type="range" min="' + min + '" max="' + max + '" value="' + min + '" step="' + step + '" ng-model="survey.' + i + '" name="' + i + '" ng-change="inputchanged(\'' + i + '\')"' + '>',
-                    '<p style="text-align: center;color:black;">' + obj.extra.choices[1] + "</p>",
-                    '</div>',
-                ].join(" ");
+
+                if(obj.extra.isGroup == false){
+                    survey_string = [survey_string,
+                        '<div class = "row" style="margin-bottom=0px;">',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-20 col-offset-20"><p align="center" style="padding-top:2px;padding-bottom:2px;margin:0px;border-radius:25px;background:#303F9F;color:white;"><b>{{survey.' + i + '}}</b></p></div>',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-10 col-offset-20"></div>',
+                        '</div>',
+                        '<div class="item range range-balanced" style="padding:10px;padding-top:1px;border-width:0px;">',
+                        '<p style="text-align: center;color: black;">' + obj.extra.choices[0] + "</p>",
+                        '<input type="range" min="' + min + '" max="' + max + '" value="' + min + '" step="' + step + '" ng-model="survey.' + i + '" name="' + i + '" ng-change="inputchanged(\'' + i + '\')"' + '>',
+                        '<p style="text-align: center;color:black;">' + obj.extra.choices[1] + "</p>",
+                        '</div>',
+                    ].join(" ");
+                }else{
+                    survey_string = [survey_string,
+                        '<div class = "row" style="margin-bottom=0px;">',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-20 col-offset-20"><p align="center" style="padding-top:2px;padding-bottom:2px;margin:0px;border-radius:25px;background:#303F9F;color:white;"><b>{{survey.' + i + '}}</b></p></div>',
+                        '<div class = "col col-10"></div>',
+                        '<div class = "col col-10 col-offset-20"></div>',
+                        '</div>',
+                        '<div class="item range range-balanced" style="padding:10px;padding-top:1px;border-width:0px;">',
+                        '<p style="text-align: center;color: black;">' + obj.extra.choices[0] + "</p>",
+                        '<input type="range" min="' + min + '" max="' + max + '" value="' + min + '" step="' + step + '" ng-model="survey.' + i + '" name="' + i + '" ng-change="inputchangedRange3(\'' + obj.extra.groupId + '\',\'' + i + '\')"' + '>',
+                        '<p style="text-align: center;color:black;">' + obj.extra.choices[1] + "</p>",
+                        '</div>',
+                    ].join(" ");
+                    console.log("holla");
+                }
 
                 /*
                     '<div class = "row">',

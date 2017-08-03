@@ -41,15 +41,19 @@
         <div>
 
         <div style="clear: both;vertical-align: bottom;padding-top:40px;">
-          <p>Badges for completing active tasks</p>
+          <p>Gems earned for completing active tasks</p>
 
-          
-          <div id="container" ng-repeat="x in active_tasks_badges">
-              <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
-              <p id="text" ng-show='x.count>1'>{{x.count}}</p>
-          </div> 
+          <img ng-repeat="x in active_tasks_badges" src={{x.img}}  
+            style="width:{{x.width}}px;margin:5px;">
+
           <!--
+          <div id="container3" ng-repeat="x in active_tasks_badges" style="margin:5px;">
+              <img src={{x.img}} style="width:{{x.width}}px;"/>
+          </div> 
+
+
           <div id="container">
+              <p id="text" ng-show='x.count>1'>{{x.count}}</p>
               <img id="image" src="img/badgeAT-none.png" style="width:39px;"/>
           </div> 
 
@@ -88,12 +92,17 @@
         </div>
 
         <div style="clear: both;vertical-align: bottom;padding-top:10px;">
-          <p>Badges for daily surveys</p>
+          <p>Pearls earned for daily surveys</p>
+
+          <img ng-repeat="x in daily_survey_badges" src={{x.img}}  
+            style="width:{{x.width}}px;margin:5px;">
+
+          <!--  
           <div id="container" ng-repeat="x in daily_survey_badges">
               <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
               <p id="text" ng-show='x.count>1'>{{x.count}}</p>
           </div> 
-          <!--
+          
           <div id="container">
               <img id="image" src="img/backgroud_daily.png"/>
           </div> 
@@ -133,12 +142,15 @@
         </div>
 
         <div style="clear: both;vertical-align: bottom;padding-top:10px;">
-          <p>Badges for Sunday's long surveys</p>
+          <p>Stones earned for Sunday's long surveys</p>
+          <img ng-repeat="x in weekly_survey_badges" src={{x.img}}  
+            style="width:{{x.width}}px;margin:7px;">
+          <!--
           <div id="container" ng-repeat="x in weekly_survey_badges">
               <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
               <p id="text" ng-show='x.count>1'>{{x.count}}</p>
           </div> 
-          <!--
+
           <div id="container">
               <img id="image" src="img/trophy_background.png"/>
           </div> 
@@ -162,7 +174,7 @@
         </div>
 
 
-        <div style="clear: both;vertical-align: bottom;padding-top:40px;">
+        <div style="clear: both;vertical-align: bottom;padding-top:35px;">
           <p style="padding-bottom:-30px;">Fishes for the aquarium</p>
           <img ng-repeat="x in pointsdata" class={{x.class}} src={{x.img}}  
             style="width:auto;height:75px;margin:5px;max-width:200px">
