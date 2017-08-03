@@ -150,12 +150,12 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
 
     //-------------- Active tasks
     //--------------
-    //var active_tasks = [5,2,2,2,5,2];
+    //var active_tasks = [5,2,0,2,5,2];
     //var active_tasks = [0,0,0,0,0];
     var active_tasks = badges['active_tasks'];
     var active_tasks_badges_img = ['img/badgeAT-none.png','img/badgeAT1.png','img/badgeAT2.png','img/badgeAT3.png','img/badgeAT4.png','img/badgeAT5.png','img/badgeAT6.png'];
     //we are doing this because the trophies do have the right size.
-    var at_width = [50,30,42,30,42,40,46];
+    var at_width = [45,45,48,45,45,45,45];
 
     $scope.active_tasks_badges = [];
     if(sum(active_tasks)  == 0){
@@ -166,7 +166,7 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
           if(active_tasks[i-1] > 0){
 
             for(var q = 0; q < active_tasks[i-1]; q++)
-              $scope.active_tasks_badges.push({"img": active_tasks_badges_img[i], "count": active_tasks[i-1], "width": at_width[i]*3/2});
+              $scope.active_tasks_badges.push({"img": active_tasks_badges_img[i], "count": active_tasks[i-1], "width": at_width[i]});
           }
         }
 
@@ -175,32 +175,32 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
 
 
     var daily_survey_tasks = badges['daily_survey']; 
-    //var daily_survey_tasks = [3,2,0,2,2,1]; 
+    //daily_survey_tasks = [3,2,0,2,2,1]; 
     //var daily_survey_tasks = [0,0,0,0,0];
+    var daily_width = [50,30,42,30,42,40,46];
     var ds_tasks_badges = ['img/backgroud_daily.png','img/green.png','img/blue.png','img/red.png','img/bronze.png','img/silver.png','img/gold.png'];
     $scope.daily_survey_badges = [];
     if(sum(daily_survey_tasks)  == 0){
-        $scope.daily_survey_badges.push({"img": ds_tasks_badges[0], "count": 0, "width": 45});
+        $scope.daily_survey_badges.push({"img": ds_tasks_badges[0], "count": 0, "width": daily_width[0]});
     }else{
 
         for(var i = 1; i < ds_tasks_badges.length; i++){
           if(daily_survey_tasks[i-1] > 0){
             for(var q = 0; q < daily_survey_tasks[i-1]; q++)
-              $scope.daily_survey_badges.push({"img": ds_tasks_badges[i], "count": daily_survey_tasks[i-1], "width": 45});
+              $scope.daily_survey_badges.push({"img": ds_tasks_badges[i], "count": daily_survey_tasks[i-1], "width": daily_width[i]*3/2});
           }
         }
-
     }
 
     //badges['weekly_survey'] = [0,0,0,0];
-    var weekly_survey_tasks_count = sum(badges['weekly_survey']);  
     //badges['weekly_survey'] = [1,1,1,1];
+    var weekly_survey_tasks_count = sum(badges['weekly_survey']);  
     var ws_tasks_badges = ['img/trophy_background.png','img/green_trophy.png','img/bronze_trophy.png','img/silver_trophy.png','img/gold_trophy.png'];
     
     //
     $scope.weekly_survey_badges = [];
     if(weekly_survey_tasks_count == 0){
-        $scope.weekly_survey_badges.push({"img": ws_tasks_badges[0], "count": 0, "width": 40*10/9});
+        //$scope.weekly_survey_badges.push({"img": ws_tasks_badges[0], "count": 0, "width": 40*10/9});
     }
     if(badges['weekly_survey'][0]==1){
         $scope.weekly_survey_badges.push({"img": ws_tasks_badges[1], "count": 0, "width": 45*10/9});

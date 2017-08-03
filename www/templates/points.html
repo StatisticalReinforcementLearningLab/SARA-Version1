@@ -40,8 +40,8 @@
           <p style="font-size:34px;">{{amount_earned}}</p>
         <div>
 
-        <div style="clear: both;vertical-align: bottom;padding-top:40px;">
-          <p>Gems earned for completing active tasks</p>
+        <div style="clear: both;vertical-align: bottom;padding-top:30px;">
+          <p>Pearls earned for completing active tasks</p>
 
           <img ng-repeat="x in active_tasks_badges" src={{x.img}}  
             style="width:{{x.width}}px;margin:5px;">
@@ -91,12 +91,14 @@
 
         </div>
 
-        <div style="clear: both;vertical-align: bottom;padding-top:10px;">
-          <p>Pearls earned for daily surveys</p>
+        <div style="clear: both;vertical-align: bottom;padding-top:30px;">
+          <p>Gemstones earned for completing surveys</p>
 
           <img ng-repeat="x in daily_survey_badges" src={{x.img}}  
             style="width:{{x.width}}px;margin:5px;">
 
+          <img ng-repeat="x in weekly_survey_badges" src={{x.img}}  
+            style="width:{{x.width}}px;margin:7px;">
           <!--  
           <div id="container" ng-repeat="x in daily_survey_badges">
               <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
@@ -141,11 +143,15 @@
 
         </div>
 
+        <!--
         <div style="clear: both;vertical-align: bottom;padding-top:10px;">
+          
           <p>Stones earned for Sunday's long surveys</p>
           <img ng-repeat="x in weekly_survey_badges" src={{x.img}}  
             style="width:{{x.width}}px;margin:7px;">
-          <!--
+
+
+
           <div id="container" ng-repeat="x in weekly_survey_badges">
               <img id="image" src={{x.img}} style="width:{{x.width}}px;"/>
               <p id="text" ng-show='x.count>1'>{{x.count}}</p>
@@ -170,11 +176,11 @@
           <div id="container">
               <img id="image" src="img/gold_trophy.png"/>
           </div>
-          -->
+          
         </div>
+        -->
 
-
-        <div style="clear: both;vertical-align: bottom;padding-top:35px;">
+        <div style="clear: both;vertical-align: bottom;padding-top:30px;">
           <p style="padding-bottom:-30px;">Fishes for the aquarium</p>
           <img ng-repeat="x in pointsdata" class={{x.class}} src={{x.img}}  
             style="width:auto;height:75px;margin:5px;max-width:200px">
