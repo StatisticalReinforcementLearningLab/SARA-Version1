@@ -157,18 +157,31 @@
 
   </ion-content>
 
-  <div class="bar bar-footer bar-dark" style="background:#2e6b67;">
-    <div class="title" ng-click="goHome()">Back to aquarium</div>
+  <div class="bar bar-footer bar-dark" style="background:#fff;border: 0px solid #fff;height:80px;">
     <!--
-    <p style="font-size: 18px;padding-top:8px;">Rate this meme</p>
+    <div class="title" ng-click="goHome()">Back to aquarium</div>
+    
+    <p style="font-size: 18px;padding-top:8px;">Rate this insight</p>
     <div class="rating">
       <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
-      <input type="radio" id="star4" ng-model="s.rating"name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
-      <input type="radio" id="star3" ng-model="s.rating"name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
-      <input type="radio" id="star2" ng-model="s.rating"name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating" name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating" name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating" name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
       <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
     </div>
     -->
+    
+    <center style="width:50%;"></center>
+
+    <center style="width:25%;">
+      <button style="height: 70px;width: 70px;border-radius:70px;border: 1px solid #fff;margin-right:10px;font-size:24px;color:#fff;background:#D32F2F;" 
+      class="button button-icon ion-thumbsdown" ng-click="ratingChanged(0)"></button>
+    </center>
+    <center style="width:25%;">
+      <button style="height: 70px;width: 70px;border-radius:70px;border: 1px solid #fff;margin-right:0px;font-size:24px;color:#fff;background:#33691E;" 
+      class="button button-icon ion-thumbsup" ng-click="ratingChanged(1)"></button>
+    </center>
+    
   </div>
     <!--
     <p style="font-size: 18px;padding-top:8px;">Rate this insight</p>

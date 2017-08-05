@@ -112,6 +112,14 @@
     "img" : "img/seahorseyellow.png"
   },
   {
+    "name" : "Sea environment",
+    "level" : 2,
+    "text" : "Story 1",
+    "points" : 1060,
+    "trivia" : "Sea is a new level. You can unlock new fishes for the sea.",
+    "img" : "img/sea.png"
+  },
+  {
     "name" : "Blue tang",
     "level" : 2,
     "text" : "Story 1",

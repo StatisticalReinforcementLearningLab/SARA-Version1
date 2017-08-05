@@ -61,8 +61,8 @@ FishGame.GameSmall.prototype = {
         this.add.image(0, this.height-210, 'titlescreen');
 
         //
-        this.add.sprite(40, 40, 'timer', 1);
-
+        var timer = this.add.sprite(40, 40, 'timer', 1);
+        timer.scale.setTo(0.6, 0.6);
 
         //
         var fish_progress = this.add.image(20, 50, 'fish_progress');
@@ -105,7 +105,7 @@ FishGame.GameSmall.prototype = {
 
         //
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
-        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
+        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 16);
 
         //
         //this.showBubbles();
@@ -173,6 +173,7 @@ FishGame.GameSmall.prototype = {
         this.banner_object.add(text);
         text.events.onInputDown.add(this.hideBanner, this);
 
+        //
         var style = { font: "13px Arial", fill: "#f1c40f", align: "left", fontStyle: 'italic', fontWeights: 'lighter'};
         var text2 = this.add.text(215, this.height-105, "Tap to hide", style);
         text2.strokeThickness = 0;

@@ -176,14 +176,15 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
 
     var daily_survey_tasks = badges['daily_survey']; 
     //daily_survey_tasks = [3,2,0,2,2,1]; 
-    //var daily_survey_tasks = [0,0,0,0,0];
+    //daily_survey_tasks = [0,0,0,0,0];
+    //badges['weekly_survey'] = [0,0,0,0];
     var daily_width = [50,30,42,30,42,40,46];
     var ds_tasks_badges = ['img/backgroud_daily.png','img/green.png','img/blue.png','img/red.png','img/bronze.png','img/silver.png','img/gold.png'];
     $scope.daily_survey_badges = [];
     if(sum(daily_survey_tasks)  == 0){
+      if(sum(badges['weekly_survey'])==0)
         $scope.daily_survey_badges.push({"img": ds_tasks_badges[0], "count": 0, "width": daily_width[0]});
     }else{
-
         for(var i = 1; i < ds_tasks_badges.length; i++){
           if(daily_survey_tasks[i-1] > 0){
             for(var q = 0; q < daily_survey_tasks[i-1]; q++)

@@ -9,6 +9,7 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
     var isFinished = false;
     var counter = 0;
 
+    $scope.gifimage = "img/Tap1.gif";
     $scope.goHome = function() {
         $location.path("/");
     };
@@ -34,6 +35,7 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
         if(isFinished == false){
             $scope.tapcount = $scope.tapcount + 1;
             tap_data_left.push(new Date().getTime());
+            change_image($scope.tapcount);
         }
     };
 
@@ -41,8 +43,23 @@ app.controller("TappingTaskCtrl", function($scope, $http, $ionicPlatform, $locat
         if(isFinished == false){
             $scope.tapcount = $scope.tapcount + 1;
             tap_data_right.push(new Date().getTime());
+            change_image($scope.tapcount);
         }
     };
+
+    function change_image(tapcount){
+        if(tapcount>=20 && tapcount<40)
+            $scope.gifimage = "img/Tap2.gif";
+        if(tapcount>=40 && tapcount<60)
+            $scope.gifimage = "img/Tap3.gif";
+        if(tapcount>=60 && tapcount<80)
+            $scope.gifimage = "img/Tap4.gif";
+        if(tapcount>=80 && tapcount<100)
+            $scope.gifimage = "img/Tap5.gif";
+        if(tapcount>=100)
+            $scope.gifimage = "img/Tap6.gif";
+
+    }
 
     $scope.addAT = function() {
 
