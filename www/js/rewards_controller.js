@@ -148,7 +148,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                 //console.log("" + data[i].points + "," + $rootScope.total_score + "," + added_points + "," + (data[i].points > $rootScope.total_score) + "," + ($rootScope.total_score + added_points));
                 $scope.next_fish[0] = data[i].img.substring(0, data[i].img.length-4) + '-grey_tn.jpg'; //data[i].img = data[i].img.substring(0, data[i].img.length-4) + '-grey.png';
                 $scope.next_fish_names = "You are close to unlocking the next fish. Can you guess what kind of fish is it?";
-
+                window.localStorage['next_fish'] = 'img/aquarium_grey/' + data[i].img.substring(4, data[i].img.length);
                 $scope.cards.push({name: $scope.next_fish_names, show: true, up:0, class: 'blue', img: $scope.next_fish[0], show_image: true});
                 break;
           }
@@ -295,52 +295,65 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //rewards: 4,3,2,1,0.5
         $scope.showBadge = false;
         if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,30,isreal)){
-          monetary_reward += 2.5;
+          //monetary_reward += 2.5;
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/gold.png";
           $scope.how_many_days = 30;
-          $scope.how_much = "2.5 dollars";
-          $scope.cards.push({name: "You earned 2.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          //$scope.how_much = "2.5 dollars";
+          $scope.how_much = "50 cents";
+          //$scope.cards.push({name: "You earned 2.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
           $scope.cards.push({name: "You earned a shell stone for completing surveys 30 days in a row.", show: false, up:0, class: 'blue', img: "img/gold.png", show_image: true});
           $rootScope.badges['daily_survey'][5] += 1;
         }else{
            if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,18,isreal)){
-              monetary_reward += 1.5;
+              //monetary_reward += 1.5;
+              monetary_reward += 0.5;
               $scope.showBadge = true;
               $scope.badge_img = "img/silver.png";
               $scope.how_many_days = 18;
-              $scope.how_much = "1.5 dollars";
-              $scope.cards.push({name: "You earned 1.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+              //$scope.how_much = "1.5 dollars";
+              $scope.how_much = "50 cents";
+              //$scope.cards.push({name: "You earned 1.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+              $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
               $scope.cards.push({name: "You earned an agronite stone for completing surveys 18 days in a row.", show: false, up:0, class: 'blue', img: "img/silver.png", show_image: true});
               $rootScope.badges['daily_survey'][4] += 1;
            }else{
               if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,12,isreal)){
-                monetary_reward += 1;
+                //monetary_reward += 1;
+                monetary_reward += 0.5;
                 $scope.showBadge = true;
                 $scope.badge_img = "img/bronze.png";
                 $scope.how_many_days = 12;
-                $scope.how_much = "1 dollar";
-                $scope.cards.push({name: "You earned 1 dollar for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+                //$scope.how_much = "1 dollar";
+                $scope.how_much = "50 cents";
+                //$scope.cards.push({name: "You earned 1 dollar for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+                $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
                 $scope.cards.push({name: "You earned of a bloodstone for completing surveys 12 days in a row.", show: false, up:0, class: 'blue', img: "img/bronze.png", show_image: true});
                 $rootScope.badges['daily_survey'][3] += 1;
               }else{
                   if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,6,isreal)){
+                    //monetary_reward += 0.5;
                     monetary_reward += 0.5;
                     $scope.showBadge = true;
                     $scope.badge_img = "img/blue.png";
                     $scope.how_many_days = 6;
                     $scope.how_much = "50 cents";
-                    $scope.cards.push({name: "You earned 50 cents for completing the survey", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+                    $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
                     $scope.cards.push({name: "You earned an aquamarine stone for completing surveys 6 days in a row.", show: false, up:0, class: 'blue', img: "img/blue.png", show_image: true});
                     $rootScope.badges['daily_survey'][1] += 1;
                   }else{
                       if(isNDayStreak(daily_survey_day_by_day,reward_awarded_daily,3,isreal)){
-                        monetary_reward += 0.25;
+                        //monetary_reward += 0.25;
+                        monetary_reward += 0.5;
                         $scope.showBadge = true;
                         $scope.badge_img = "img/green.png";
                         $scope.how_many_days = 3;
-                        $scope.how_much = "25 cents";
-                        $scope.cards.push({name: "You earned 25 cents for completing the survey", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+                        //$scope.how_much = "25 cents";
+                        $scope.how_much = "50 cents";
+                        //$scope.cards.push({name: "You earned 25 cents for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+                        $scope.cards.push({name: "You earned 50 cents for completing surveys 3 days in a row", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
                         $scope.cards.push({name: "You earned a ruby stone completing surveys 3 days in a row.", show: false, up:0, class: 'blue', img: "img/green.png", show_image: true});
                         $rootScope.badges['daily_survey'][0] += 1;
                       }
@@ -360,15 +373,22 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
 
     function isNDayStreak(adherence_array,reward_awarded_daily,N,isreal){
-      var total_days = 0;
-      var isPaidInLastNDays = 0;
+        var total_days = 0;
+        var isPaidInLastNDays = 0; 
+
+        //1. Check if total surveys are >= N. If we are looking for a 30 day streak and we have 10 days of data, we are automatically false.
         if(daily_survey_day_by_day.length >= N){
 
+            //
+            //2. start from the last day to "last_day-N" to see how many surveys were completed
             //
             for(var i = daily_survey_day_by_day.length-1; i>=daily_survey_day_by_day.length-N ; i--){
               total_days += adherence_array[i];
             }
 
+            //
+            //3. start from the last day to "last_day-N" to see how many times N-streaks surveys were paid
+            //--- It could be the case that we paid a 3-day streak yesterday, so we won't pay today.
             //
             for(var i = daily_survey_day_by_day.length-1; i>=daily_survey_day_by_day.length-N ; i--){
               isPaidInLastNDays += reward_awarded_daily[""+N][i];
@@ -381,10 +401,13 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         //console.log(JSON.stringify(reward_awarded_daily));
         //console.log(adherence_array);
 
+        //
+        //4. Check if total_day is same as Streak and we haven't paid anything last 3 days.
+        //
         if(total_days == N && isPaidInLastNDays == 0){
             reward_awarded_daily[""+N][daily_survey_day_by_day.length-1] = 1;
 
-            //
+            //I am pretending, I have given a rewards for other smaller ones also
             if(N%3 == 0)
               reward_awarded_daily["3"][daily_survey_day_by_day.length-1] = 1;
             if(N%6 == 0)
@@ -520,32 +543,38 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         $scope.showBadge = false;
         //var monetary_reward = 0;
         if(isNAtStreak(at_day_by_day,reward_awarded_at,30,isreal)){
-          monetary_reward += 2.5;
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/badgeAT6.png";
           $scope.how_many_days = 30;
-          $scope.how_much = "2.5 dollars";
-          $scope.cards.push({name: "You earned 2.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          //$scope.how_much = "2.5 dollars";
+          $scope.how_much = "50 cents";
+          //$scope.cards.push({name: "You earned 2.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing active tasks 3 days in a row", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});           
           $scope.cards.push({name: "You earned a Taihitian black pearl for completing actitve tasks 30 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
           $rootScope.badges['active_tasks'][5] += 1;
         }else{
            if(isNAtStreak(at_day_by_day,reward_awarded_at,18,isreal)){
-              monetary_reward += 1.5;
+              monetary_reward += 0.5;
               $scope.showBadge = true;
               $scope.badge_img = "img/badgeAT5.png";
               $scope.how_many_days = 18;
-              $scope.how_much = "1.5 dollars";
-              $scope.cards.push({name: "You earned 1.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+              //$scope.how_much = "1.5 dollars";
+              $scope.how_much = "50 cents";
+              //$scope.cards.push({name: "You earned 1.5 dollars for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+              $scope.cards.push({name: "You earned 50 cents for completing active tasks 3 days in a row", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});      
               $scope.cards.push({name: "You earned an orange pearl for completing actitve tasks 18 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
               $rootScope.badges['active_tasks'][4] += 1;
            }else{
               if(isNAtStreak(at_day_by_day,reward_awarded_at,12,isreal)){
-                monetary_reward += 1;
+                monetary_reward += 0.5;
                 $scope.showBadge = true;
                 $scope.badge_img = "img/badgeAT4.png";
                 $scope.how_many_days = 12;
-                $scope.how_much = "1 dollar";
-                $scope.cards.push({name: "You earned 1 dollar for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+                //$scope.how_much = "1 dollar";
+                $scope.how_much = "50 cents";
+                //$scope.cards.push({name: "You earned 1 dollar for completing the survey", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+                $scope.cards.push({name: "You earned 50 cents for completing active tasks 3 days in a row", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
                 $scope.cards.push({name: "You earned a Southsea golden pearl for completing actitve tasks 12 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
                 $rootScope.badges['active_tasks'][3] += 1;
               }else{
@@ -555,17 +584,19 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
                     $scope.badge_img = "img/badgeAT2.png";
                     $scope.how_many_days = 6;
                     $scope.how_much = "50 cents";
-                    $scope.cards.push({name: "You earned 50 cents for completing the active task", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+                    $scope.cards.push({name: "You earned 50 cents for completing active tasks 3 days in a row", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
                     $scope.cards.push({name: "You earned a pink pearl for completing actitve tasks 6 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
                     $rootScope.badges['active_tasks'][1] += 1;
                   }else{
                       if(isNAtStreak(at_day_by_day,reward_awarded_at,3,isreal)){
-                        monetary_reward += 0.25;
+                        monetary_reward += 0.5;
                         $scope.showBadge = true;
                         $scope.badge_img = "img/badgeAT1.png";
                         $scope.how_many_days = 3;
-                        $scope.how_much = "25 cents";
-                        $scope.cards.push({name: "You earned 25 cents for completing the active task", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+                        //$scope.how_much = "25 cents";
+                        $scope.how_much = "50 cents";
+                        //$scope.cards.push({name: "You earned 25 cents for completing the active task", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+                        $scope.cards.push({name: "You earned 50 cents for completing active tasks 3 days in a row", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
                         $scope.cards.push({name: "You earned a Japanese Akaya white pearl for completing actitve tasks 3 days in a row.", show: false, up:0, class: 'blue', img: $scope.badge_img, show_image: true});
                         $rootScope.badges['active_tasks'][0] += 1;
                       }
@@ -623,6 +654,9 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
           if(isreal==true)//save if it is the real one.
             window.localStorage['reward_awarded_at'] = JSON.stringify(reward_awarded_at);
+
+          //
+          window
           return true;
         }
         else
@@ -712,12 +746,13 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
         
         //
         if(total_weekly_surveys%4 == 1){
-          monetary_reward += 0.25;
+          //monetary_reward += 0.25;
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/green_trophy.png";
           $scope.how_many_days = 1;
-          $scope.how_much = "25 cents";
-          $scope.cards.push({name: "You earned 25 cents for completing the 1st weekly surveys.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+          $scope.how_much = "50 cents";
+          $scope.cards.push({name: "You earned 50 cents for completing the weekly portion of the survey.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
           $scope.cards.push({name: "You also earned a saphire stone for completing the 1st weekly surveys.", show: false, up:0, class: 'blue', img: "img/green_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][0] = 1;
         }
@@ -728,29 +763,34 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           $scope.badge_img = "img/bronze_trophy.png";
           $scope.how_many_days = 2;
           $scope.how_much = "50 cents";
-          $scope.cards.push({name: "You earned 50 cents for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+          //$scope.cards.push({name: "You earned 50 cents for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing the weekly portion of the survey.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
           $scope.cards.push({name: "You also earned a jade stone for completing 2nd weekly surveys.", show: false, up:0, class: 'blue', img: "img/bronze_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][1] = 1;
         }
 
         if(total_weekly_surveys%4 == 3){
-          monetary_reward += 1;
+          //monetary_reward += 1;
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/silver_trophy.png";
           $scope.how_many_days = 3;
-          $scope.how_much = "1 dollar";
+          //$scope.how_much = "1 dollar";
+          $scope.how_much = "50 cents";
           $scope.cards.push({name: "You earned 1 dollar for completing 3rd weekly surveys.", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
           $scope.cards.push({name: "You also earned an emrald stone for completing 3rd weekly surveys.", show: false, up:0, class: 'blue', img: "img/silver_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][2] = 1;
         }
 
         if(total_weekly_surveys%4 == 0){
-          monetary_reward += 1.5;
+          monetary_reward += 0.5;
           $scope.showBadge = true;
           $scope.badge_img = "img/gold_trophy.png";
           $scope.how_many_days = 4;
-          $scope.how_much = "1.5 dollar";
-          $scope.cards.push({name: "You earned 1.5 dollar for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          //$scope.how_much = "1.5 dollar";
+          $scope.how_much = "50 cents";
+          //$scope.cards.push({name: "You earned 1.5 dollar for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/18_Rev.jpg", show_image: true});
+          $scope.cards.push({name: "You earned 50 cents for completing the weekly portion of the survey.", show: false, up:0, class: 'blue', img: "img/50cent.jpg", show_image: true});
           $scope.cards.push({name: "You also earned a red beryl stone for completing 4th weekly surveys.", show: false, up:0, class: 'blue', img: "img/gold_trophy.png", show_image: true});
           $rootScope.badges['weekly_survey'][3] = 1;
         }

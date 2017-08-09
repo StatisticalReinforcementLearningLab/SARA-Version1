@@ -23,6 +23,8 @@ FishGame.Game = function(game) {
     this.progress_sprite;
     this.prgress_bar_width;
 
+    this.badgecount;
+
     this.CANVAS_WIDTH;
 };
 
@@ -66,12 +68,18 @@ FishGame.Game.prototype = {
         titlescreen.scale.setTo(0.85, 0.85);
 
         //
-        this.add.sprite(40, 40, 'timer', 1);
+        this.add.sprite(5, 40, 'timer', 1);
 
         //
-        var fish_progress = this.add.image(20, 50, 'fish_progress');
-        fish_progress.scale.setTo(-0.15, 0.15);
+        var fish_progress = this.add.image(175,50, 'clownfish_grey');
+        fish_progress.scale.setTo(-0.3, 0.3);
         fish_progress.anchor.setTo(.5,.5);
+
+
+        var pouch = this.add.image(15,80, 'diamond');
+        pouch.scale.setTo(0.4, 0.4);
+        pouch.anchor.setTo(.5,.5);
+        this.badgecount = this.add.bitmapText(30, 73, 'eightbitwonder', "" + 2, 12);
 
 
         this.buildFish();
@@ -139,6 +147,11 @@ FishGame.Game.prototype = {
         //this.addWater();
         //this.isPaused = false;
         this.game.lockRender = false;
+    },
+
+    changebadgecount: function(badge_count){
+        console.log("Game resumed");
+        this.badgecount.setText('' + badge_count);
     },
 
     //show the reward
@@ -457,7 +470,7 @@ FishGame.Game.prototype = {
               }
           }
           //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
@@ -547,7 +560,7 @@ FishGame.Game.prototype = {
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           rect.width = 1 * percent * this.progress_sprite.width;
           this.progress_sprite.crop(rect);
 

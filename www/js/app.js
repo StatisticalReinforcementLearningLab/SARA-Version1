@@ -452,7 +452,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 var rl_data = JSON.parse(returnValue);
                 
                 //console.log(returnValue);
-                updateTheScore(returnValue);
+                $rootScope.scoreValue=updateTheScore(returnValue);
 
                 scope.total_days = $rootScope.total_days;
 
@@ -469,6 +469,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //save now in the disk
                 saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
+
+                //showstartatthebottom($rootScope.scoreValue);
 
                 //console.log("json content: " + "came here");
                 //
@@ -714,6 +716,16 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //
                 console.log("Cloud update initiated");
                 scope.$emit('update:cloud');
+
+                //get the badges
+                scope.$emit('update:badge');
+
+                //
+                scope.$emit('update:streak');
+
+                //
+                showstartatthebottom($rootScope.scoreValue);
+
             }
             //saraDatafactory.storedata('game_score',json_data, moment().format('YYYYMMDD'));
 
@@ -724,6 +736,19 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             scope.$on('show:checkReinforcement', function() {
                 //console.log("show:checkReinforcement");
                 checkReinforcement();
+            });
+
+            scope.$on('game:updatebadge', function() {
+                //console.log("show:checkReinforcement");
+                if (scope.current_level === "GameSmall")
+                    game.state.states["GameSmall"].changebadgecount($rootScope.number_of_badges);
+                if (scope.current_level === "Game")
+                    game.state.states["Game"].changebadgecount($rootScope.number_of_badges);
+                if (scope.current_level === "Level1Small")
+                    game.state.states["Level1Small"].changebadgecount($rootScope.number_of_badges);
+                if (scope.current_level === "Level1")
+                    game.state.states["Level1"].changebadgecount($rootScope.number_of_badges);
+
             });
 
             scope.$on('game:resumed', function() {
@@ -847,10 +872,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //  End: calculate all the points
                 /////////////////////////////////////////////////////////////////////////////
 
-                //prepare data for the stars
-                showstartatthebottom(scoreValue);
-
-                return score_data;
+                return scoreValue;
             }
 
             function showstartatthebottom(scoreValue){
@@ -1802,6 +1824,48 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         //$scope.$apply();
     });
 
+    $scope.$on('update:streak', function(event, args) {
+        
+    });
+
+    $scope.$on('update:badge', function(event, args) {
+        //update the cloud
+        //updateCloudData();
+        //var rl_data = JSON.parse(window.localStorage['cognito_data'] || '{}');
+        $rootScope.number_of_badges = 0;
+        var badges;
+        if($rootScope.badges == undefined){
+            //badges = JSON.parse(window.localStorage['badges'] || "{}");
+           var cognito_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+           badges = cognito_data['badges'];
+           if('money' in badges){ //means things are empty.
+           }else{
+               badges['daily_survey'] = [0,0,0,0,0,0];
+               badges['weekly_survey'] = [0,0,0,0];
+               badges['active_tasks'] = [0,0,0,0,0,0];
+               badges['money'] = 0;
+           }
+           $rootScope.badges = badges;
+        }else{
+           badges = $rootScope.badges;
+        }
+
+        //
+        for(var i=0; i < badges['daily_survey'].length; i++)
+            $rootScope.number_of_badges += badges['daily_survey'][i];
+
+        for(var i=0; i < badges['weekly_survey'].length; i++)
+            $rootScope.number_of_badges += badges['weekly_survey'][i];
+
+        for(var i=0; i < badges['active_tasks'].length; i++)
+            $rootScope.number_of_badges += badges['active_tasks'][i];
+
+        console.log("number_of_badges: " + $rootScope.number_of_badges);
+
+        //
+        $scope.$broadcast('game:updatebadge');
+
+    });
 
     //
     //
@@ -1870,7 +1934,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
 
         //only available after 6PM.
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         //
@@ -2005,7 +2069,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         $scope.myPopup.close();
 
         var today_date_string = moment().format('YYYY-MM-DD');
-        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " am", "YYYY-MM-DD hh:mm a");
+        var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         var isFirstDay = false;

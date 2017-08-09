@@ -22,6 +22,7 @@ FishGame.GameSmall = function(game) {
     this.progress_sprite;
     this.prgress_bar_width;
 
+    this.badgecount;
 
     this.CANVAS_WIDTH;
     //this.CANVAS_HEIGHT;
@@ -61,14 +62,47 @@ FishGame.GameSmall.prototype = {
         this.add.image(0, this.height-210, 'titlescreen');
 
         //
-        var timer = this.add.sprite(40, 40, 'timer', 1);
-        timer.scale.setTo(0.6, 0.6);
+        var timer = this.add.sprite(5, 40, 'timer', 1);
+        //timer.scale.setTo(0.75, 0.75);
 
         //
-        var fish_progress = this.add.image(20, 50, 'fish_progress');
-        fish_progress.scale.setTo(-0.15, 0.15);
+        //var fish_progress = this.add.image(20, 50, 'fish_progress');
+        var fish_progress = this.add.image(175,50, 'clownfish_grey');
+        fish_progress.scale.setTo(-0.3, 0.3);
         fish_progress.anchor.setTo(.5,.5);
 
+        //
+        //
+        /*
+        pouch = this.add.image(this.CANVAS_WIDTH-30,95, 'full_money');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+        pouch = this.add.image(this.CANVAS_WIDTH-50,95, 'empty_money');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+
+
+        var pouch = this.add.image(73,80, 'pouch');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+
+        pouch = this.add.image(15,80, 'full_money');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+        pouch = this.add.image(35,80, 'empty_money');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+        pouch = this.add.image(55,80, 'empty_money');
+        pouch.scale.setTo(0.25, 0.25);
+        pouch.anchor.setTo(.5,.5);
+        */
+
+        //
+        var pouch = this.add.image(15,80, 'diamond');
+        pouch.scale.setTo(0.4, 0.4);
+        pouch.anchor.setTo(.5,.5);
+
+        this.badgecount = this.add.bitmapText(30, 73, 'eightbitwonder', "" + 2, 12);
 
         //
         this.buildFish();
@@ -105,7 +139,7 @@ FishGame.GameSmall.prototype = {
 
         //
         //this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Fishes Fed: ' + this.totalClicks, 20);
-        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 16);
+        this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
 
         //
         //this.showBubbles();
@@ -140,6 +174,11 @@ FishGame.GameSmall.prototype = {
         //this.addWater();
         //this.isPaused = false;
         this.game.lockRender = false;
+    },
+
+    changebadgecount: function(badge_count){
+        console.log("Game resumed");
+        this.badgecount.setText('' + badge_count);
     },
 
     //show the reward
@@ -496,7 +535,8 @@ FishGame.GameSmall.prototype = {
               }
           }
           //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          //5, 40
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
@@ -504,7 +544,7 @@ FishGame.GameSmall.prototype = {
 
           console.log("Width, " + rect.width  + "," + this.progress_sprite.width);
           this.progress_sprite.crop(rect);
-
+          //this.progress_sprite.scale.setTo(0.75, 0.75);
 
     },      
 
@@ -572,9 +612,10 @@ FishGame.GameSmall.prototype = {
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           rect.width = 1 * percent * this.progress_sprite.width;
           this.progress_sprite.crop(rect);
+          //this.progress_sprite.scale.setTo(0.75, 0.75);
     },  
 
 

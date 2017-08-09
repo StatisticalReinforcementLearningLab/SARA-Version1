@@ -131,7 +131,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
 
         
         if(visible_lifeinsights.hasOwnProperty('Q1d')){
-            console.log(JSON.stringify(visible_lifeinsights));
+            //console.log(JSON.stringify(visible_lifeinsights));
         }else{
             //means we have nothing.
             visible_lifeinsights['Q1d'] = 0;
@@ -140,7 +140,8 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
             visible_lifeinsights['Q5d'] = 0;
             visible_lifeinsights['Q6d'] = 0;
             visible_lifeinsights['steps'] = 0;
-            visible_lifeinsights['maps'] = 1;
+            visible_lifeinsights['maps'] = 0;
+            
             window.localStorage['visible_lifeinsights'] = JSON.stringify(visible_lifeinsights);
         }
 
@@ -226,7 +227,7 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
         //console.log("" + x);
 
         if($rootScope.isRealReinforcement == true){
-            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            //rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
             rl_data['lastupdate'] = new Date().getTime();
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);    

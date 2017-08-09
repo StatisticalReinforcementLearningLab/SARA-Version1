@@ -52,7 +52,7 @@ FishGame.Preloader.prototype = {
 		var	username = window.localStorage['username'] || 'unknown';
         this.isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
         //this.isStudyParticipant = true;
-        //this.ionic_scope.total_points = 1050;  
+        //this.ionic_scope.total_points = 1650;  
 		if((this.ionic_scope.total_days > 30) && this.isStudyParticipant){
             this.loadGameover();
         }else{
@@ -70,6 +70,18 @@ FishGame.Preloader.prototype = {
 		this.load.image('banner_fish', 'img/banner_fish.png');
 
 
+		//----
+		var next_fish = window.localStorage['next_fish'] || 'img/aquarium_grey/clownfish.png';
+		//next_fish = 'img/aquarium_grey/clownfish.png';
+		console.log("Next fish: " + next_fish);
+		this.load.image('clownfish_grey', next_fish);
+
+		/*
+		this.load.image('pouch', 'img/pouch.png');
+		this.load.image('full_money', 'img/full_money.png');
+		this.load.image('empty_money', 'img/empty_money.png');
+		*/
+		this.load.image('diamond', 'img/diamond.png');
 
 
 		//start loading
@@ -124,12 +136,18 @@ FishGame.Preloader.prototype = {
 	            if(this.ionic_scope.total_points <770){
 	            	this.state.start('GameSmall');
 	            	this.ionic_scope.current_level = 'GameSmall';
+	            	console.log("post loading sea");
+	            	this.loadSea();
+	            	this.load.start();
 	            }
 
 
 	            if(this.ionic_scope.total_points >=770 && this.ionic_scope.total_points <1060){
 	            	this.state.start('Game');
 	            	this.ionic_scope.current_level = 'Game';
+	            	console.log("post loading sea");
+	            	this.loadSea();
+	            	this.load.start();
 	            }
 
 
@@ -198,6 +216,9 @@ FishGame.Preloader.prototype = {
 		this.load.image('smiley', 'img/smiley.png');
 		this.load.image('diver', 'img/diver-0.png');
 		this.load.image('fatdiver2', 'img/fatdiver2.png');
+
+		
+
 	},
 
 	loadSea: function () {

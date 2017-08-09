@@ -13,6 +13,7 @@ FishGame.Level1Small = function(game) {
     this.sprite;
     this.isPaused;
     this.CANVAS_WIDTH;
+    this.badgecount;
 };
 
 FishGame.Level1Small.prototype = {
@@ -55,12 +56,12 @@ FishGame.Level1Small.prototype = {
         //this.addWater();
         
         //
-        this.add.sprite(40, 40, 'timer', 1);
+        this.add.sprite(5, 40, 'timer', 1);
 
 
         //
-        var fish_progress = this.add.image(20, 50, 'fish_progress');
-        fish_progress.scale.setTo(-0.15, 0.15);
+        var fish_progress = this.add.image(175,50, 'clownfish_grey');
+        fish_progress.scale.setTo(-0.3, 0.3);
         fish_progress.anchor.setTo(.5,.5);
 
 
@@ -86,10 +87,16 @@ FishGame.Level1Small.prototype = {
         this.countdown = this.add.bitmapText(10, 10, 'eightbitwonder', 'Points: ' + this.totalPoints, 20);
 
         //
-        var fishtank = this.add.image(5, 75, 'first_aq');
-        fishtank.scale.setTo(0.25, 0.25);
+        var fishtank = this.add.image(5, 100, 'first_aq');
+        fishtank.scale.setTo(0.2, 0.2);
         fishtank.inputEnabled = true;
         fishtank.events.onInputDown.add(this.earlyaquarium, this);
+
+        var pouch = this.add.image(15,80, 'diamond');
+        pouch.scale.setTo(0.4, 0.4);
+        pouch.anchor.setTo(.5,.5);
+
+        this.badgecount = this.add.bitmapText(30, 73, 'eightbitwonder', "" + 2, 12);
 
         //this.buildFish();
         this.buildAquarium();
@@ -117,6 +124,11 @@ FishGame.Level1Small.prototype = {
         this.game.onResume.add(this.yourGameResumedFunc, this);
         //this.game.onResume.add(yourGameResumedFunc, this);
 
+        //
+        var banner_shown = window.localStorage['banner_shown_2'] || "0";// = 1;
+        if(banner_shown==="0")
+            this.showBanner();
+
         this.isPaused = false;
 
         this.checkReinforcement();
@@ -125,6 +137,53 @@ FishGame.Level1Small.prototype = {
     //show the reward
     checkReinforcement: function(){
         this.ionic_scope.$emit('show:checkReinforcement',this.ionic_scope);
+    },
+
+    showBanner: function(){
+        this.banner_object = this.add.group();
+        //--- banner
+        var banner = this.add.image(00, this.height-180, 'banner');
+        banner.scale.setTo(.6, .75);
+        banner.inputEnabled = true;
+        //banner.events.onInputDown.add(this.hideBanner, this);
+        this.banner_object.add(banner);
+        banner.events.onInputDown.add(this.hideBanner, this);
+
+        var banner_fish = this.add.image(260, this.height-190, 'banner_fish');
+        banner_fish.scale.setTo(.55, .55);
+        banner_fish.inputEnabled = true;
+        //banner_fish.events.onInputDown.add(this.hideBanner, this);
+        this.banner_object.add(banner_fish);
+        banner_fish.events.onInputDown.add(this.hideBanner, this);
+
+        //
+        var style = { font: "18px Arial", fill: "#f1c40f", align: "left", fontWeights: 'lighter' };
+        var text = this.add.text(10, this.height-165, "New sea level is unlocked.\nClick the fish bowl\nto go to earlier level.", style);
+        text.strokeThickness = 0;
+        text.inputEnabled = true;
+        //text.events.onInputDown.add(this.hideBanner, this);
+        this.banner_object.add(text);
+        text.events.onInputDown.add(this.hideBanner, this);
+
+        //
+        var style = { font: "13px Arial", fill: "#f1c40f", align: "left", fontStyle: 'italic', fontWeights: 'lighter'};
+        var text2 = this.add.text(215, this.height-105, "Tap to hide", style);
+        text2.strokeThickness = 0;
+        text2.inputEnabled = true;
+        //text2.events.onInputDown.add(this.hideBanner, this);
+        this.banner_object.add(text2);
+        text2.events.onInputDown.add(this.hideBanner, this);
+
+        //make a left ot right animation.
+
+
+    },
+
+    hideBanner:function(elem){
+        console.log("clicked");
+        this.banner_object.destroy(true);
+        window.localStorage['banner_shown_2'] = "1";
+        //deleted all the elements
     },
 
 
@@ -141,6 +200,11 @@ FishGame.Level1Small.prototype = {
         //this.addWater();
         //this.isPaused = false;
         this.game.lockRender = false;
+    },
+
+    changebadgecount: function(badge_count){
+        //console.log("Game resumed");
+        this.badgecount.setText('' + badge_count);
     },
 
     addWater: function(){
@@ -519,7 +583,7 @@ FishGame.Level1Small.prototype = {
               }
           }
           //console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
@@ -594,7 +658,7 @@ FishGame.Level1Small.prototype = {
           var rect = new Phaser.Rectangle(0, 0, 0, this.progress_sprite.height);
           var percent = (current_points-previoous_fish_point)/(next_fish_point-previoous_fish_point);
           console.log("" + current_points + "," + previoous_fish_point + "," + next_fish_point + "," + percent);
-          this.progress_sprite = this.game.add.sprite(40, 40, 'timer', 0);
+          this.progress_sprite = this.game.add.sprite(5, 40, 'timer', 0);
           rect.width = 1 * percent * this.progress_sprite.width;
           this.progress_sprite.crop(rect);
 
