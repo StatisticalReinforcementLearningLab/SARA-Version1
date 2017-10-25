@@ -36,6 +36,9 @@ FishGame.Preloader.prototype = {
 		this.load.image('ball', 'img/bubble256yay.png');
 		this.load.image('gift', 'img/gift.png');
 
+		//
+		this.load.image('gameover', 'img/Fireworks.png');
+
 
 		//this.load.atlasJSONArray('blackdiver', 'sprite/black-diver-sprite.png', 'sprite/black-diver-sprite.json');
 
@@ -51,8 +54,9 @@ FishGame.Preloader.prototype = {
 
 		var	username = window.localStorage['username'] || 'unknown';
         this.isStudyParticipant = username.indexOf('-study-') !== -1; // !== -1;
-        //this.isStudyParticipant = true;
-        //this.ionic_scope.total_points = 1650;  
+        //-- this.isStudyParticipant = true;
+        //-- 
+        //this.ionic_scope.total_points = 900;  
 		if((this.ionic_scope.total_days > 30) && this.isStudyParticipant){
             this.loadGameover();
         }else{
@@ -129,7 +133,7 @@ FishGame.Preloader.prototype = {
         if(this.ready == true) {
             //this.ionic_scope.total_points = 1650;  	
 
-
+            console.log("Days: " + this.ionic_scope.total_days + ", isStudyParticipant: " + this.isStudyParticipant);
             if((this.ionic_scope.total_days > 30) && this.isStudyParticipant){
             	this.state.start('Gameover');
             }else{
@@ -137,8 +141,8 @@ FishGame.Preloader.prototype = {
 	            	this.state.start('GameSmall');
 	            	this.ionic_scope.current_level = 'GameSmall';
 	            	console.log("post loading sea");
-	            	this.loadSea();
-	            	this.load.start();
+	            	//this.loadSea();
+	            	//this.load.start();
 	            }
 
 
@@ -146,8 +150,8 @@ FishGame.Preloader.prototype = {
 	            	this.state.start('Game');
 	            	this.ionic_scope.current_level = 'Game';
 	            	console.log("post loading sea");
-	            	this.loadSea();
-	            	this.load.start();
+	            	//this.loadSea();
+	            	//this.load.start();
 	            }
 
 
@@ -268,6 +272,6 @@ FishGame.Preloader.prototype = {
 
 	loadGameover: function(){
 		//
-		this.load.image('gameover', 'img/Fireworks.png');
+		//this.load.image('gameover', 'img/Fireworks.png');
 	}
 };

@@ -84,7 +84,7 @@ for i in range(len(all_identities)):
                         IdentityPoolId='us-east-1:1c7436a4-e3fb-417b-945a-f3a4cc413d9a',
                         IdentityId=identityId,
                         DatasetName='rl_data',
-                        MaxResults=223
+                        MaxResults=523
                     )
             #print response
             #if True:
@@ -94,6 +94,13 @@ for i in range(len(all_identities)):
                 #print response
                 #print len(response[u'Records'])
                 last_day_response = response[u'Records'][-1]
+                if u'Value' not in last_day_response:
+                    # print identityId
+                    # pdb.set_trace()
+                    last_day_response = response[u'Records'][-2]
+                    #continue
+
+
                 last_day_response = json.loads(last_day_response[u'Value'])
                 last_day_daily_survey = last_day_response[u'survey_data'][u'daily_survey']
                 last_day_active_tasks = last_day_response[u'survey_data'][u'active_tasks_survey']

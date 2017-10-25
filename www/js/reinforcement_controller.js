@@ -141,8 +141,19 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
             visible_lifeinsights['Q6d'] = 0;
             visible_lifeinsights['steps'] = 0;
             visible_lifeinsights['maps'] = 0;
-            
+            visible_lifeinsights['tapcount'] = 0;
+            visible_lifeinsights['spatialspeed'] = 0;
             window.localStorage['visible_lifeinsights'] = JSON.stringify(visible_lifeinsights);
+        }
+
+        //add the tap-count and spatial task
+        if('tapcount' in visible_lifeinsights){
+        }else{
+            visible_lifeinsights['tapcount'] = 0;
+            visible_lifeinsights['spatialspeed'] = 0;
+            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            rl_data['lastupdate'] = new Date().getTime();
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);
         }
 
 
@@ -150,12 +161,12 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
         //console.log('' + visible_lifeinsights.length);
 
         //we have 7 life insights.
-        var life_insight_keys = ['Q1d','Q3d','Q4d','Q5d','Q6d','steps','maps'];
+        var life_insight_keys = ['Q1d','Q3d','Q4d','Q5d','Q6d','tapcount','spatialspeed'];//,'steps','maps'];
 
         //pick a life insight index 
         var rand_index = -1;
         while(true){
-             rand_index = getRandomInt(0, 5);
+             rand_index = getRandomInt(0, 6);//so we will only pick two
              if(visible_lifeinsights[life_insight_keys[rand_index]] == 0){
                 visible_lifeinsights[life_insight_keys[rand_index]] = 1;
                 window.localStorage['visible_lifeinsights'] = JSON.stringify(visible_lifeinsights);

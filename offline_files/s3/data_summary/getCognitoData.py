@@ -32,6 +32,8 @@ import datetime
 from datetime import datetime, timedelta
 import prettytable
 import pdb
+import os.path
+import os
 
 client = boto3.client("cognito-identity", region_name = "us-east-1")
 
@@ -61,8 +63,19 @@ body3 = '<h2 style="padding:0; margin: 0;">SARA study daily update: </h2>'
 body3 = body3 + '<h3 style="padding:0; margin: 0;">' + date_str + '</h3>'
 body3 = body3 + '<p style="padding:0; margin: 0;"> Last updated at ' + ts_str + ' today</p>'
 body3 = body3 + '<br><a href="./indexAll.html">Link for all participants</a>'
+body3 = body3 + '<br><a href="./log.txt">Link to log file</a>'
 body = "<br><br>==============================================================" +  "<br><br><br>"
 first_table_body = ""
+second_table_body = ""
+
+
+# get directory to save data
+CERT_FILE = '/home/ubuntu/SARA/apns/apns-dev-cert.pem'
+# CERT_FILE = 'apns-dev-cert.pem';
+if os.path.isfile(CERT_FILE): # if file exist then we are on server
+    COG_BACKUP_DIRECTORY = "/home/ubuntu/SARA/cog_data/"
+else:
+    COG_BACKUP_DIRECTORY = "./cog_data/"
 
 for i in range(len(all_identities)):
     identityId = all_identities[i]['IdentityId']
@@ -81,12 +94,16 @@ for i in range(len(all_identities)):
         # print all_datasets[j][u'DatasetName']
         if all_datasets[j][u'DatasetName'] == 'rl_data':
             # print all_datasets[j][u'DatasetName']
+
+
             response = sync_client.list_records(
-                        IdentityPoolId='us-east-1:1c7436a4-e3fb-417b-945a-f3a4cc413d9a',
-                        IdentityId=identityId,
-                        DatasetName='rl_data',
-                        MaxResults=223
-                    )
+                IdentityPoolId='us-east-1:1c7436a4-e3fb-417b-945a-f3a4cc413d9a',
+                IdentityId=identityId,
+                DatasetName='rl_data',
+                MaxResults=323
+            )
+
+            #pdb.set_trace()
             #print response
             #if True:
             #if identityId == 'us-east-1:432c0f2b-12ba-46fc-95f8-28e116d12971':
@@ -95,6 +112,12 @@ for i in range(len(all_identities)):
                 #print response
                 #print len(response[u'Records'])
                 last_day_response = response[u'Records'][-1]
+                # print username
+                if u'Value' not in last_day_response:
+                    # print identityId
+                    # pdb.set_trace()
+                    last_day_response = response[u'Records'][-2]
+
                 last_day_response = json.loads(last_day_response[u'Value'])
                 last_day_daily_survey = last_day_response[u'survey_data'][u'daily_survey']
                 last_day_active_tasks = last_day_response[u'survey_data'][u'active_tasks_survey']
@@ -105,10 +128,31 @@ for i in range(len(all_identities)):
                 #
                 username = last_day_response[u'username'];
                 print identityId
-                print username
+                # print username
+
+
+                #create directory if exist
+                directory_name = username + "----" + identityId.replace(":", "-")
+                if not os.path.exists(COG_BACKUP_DIRECTORY + '/' + directory_name):
+                    os.makedirs(COG_BACKUP_DIRECTORY + '/' + directory_name)
 
                 #
-                if "focus-group" in username: 
+                d = datetime.today()
+                date_str = d.strftime ("%Y%m%d")
+                json_file = open(COG_BACKUP_DIRECTORY + '/' + directory_name + "/" + date_str + ".txt","w")
+                json_file.write(json.dumps(last_day_response, indent=4, sort_keys=True)) 
+                json_file.close()
+
+                # pdb.set_trace()    
+
+                #
+                if "focus-group" in username:
+                    response = client.delete_identities(
+                        IdentityIdsToDelete=[
+                            identityId
+                        ]
+                    )
+                    #pdb.set_trace()
                     continue
                 if "mash-N5" in username: 
                     continue                    
@@ -123,7 +167,7 @@ for i in range(len(all_identities)):
                 if "test-0" in username: 
                     continue   
 
-                #start_date = last_day_daily_survey[0]
+                # start_date = last_day_daily_survey[0]
                 # pdb.set_trace()
 
                 #
@@ -133,7 +177,9 @@ for i in range(len(all_identities)):
                     money = "0"
                 # pdb.set_trace()
 
-
+                d = datetime.today()# - timedelta(days=k)
+                start_date = d.strftime ("%Y%m%d")
+                
                 start_date_dt = datetime.strptime("20200101", "%Y%m%d")
                 # start_date = "20200101"
                 for key in last_day_response[u'survey_data'][u'daily_survey']:
@@ -160,10 +206,11 @@ for i in range(len(all_identities)):
                 #create the html
                 #write email content
                 #header
-                body = body + "<b>User Name</b>: " + username + "<br>"
+                body = body + "<b>User Name</b>:<span id='" + username + "'> " + username + "</span><br>"
                 body = body + "<b>Id</b>: " + identityId + "<br>"
-                
-                body = body + "<b>Start date: </b>: " + start_date2 + "<br><br><br>"
+                body = body + "<b>Start date: </b>: " + start_date2 + "<br><br>"
+                body = body + "<a href='#top'>" + "^ Go to top ^" + "</a><br><br>"
+
 
                 #create the table
                 body = body + '<table style="width:400px; border-collapse: collapse;">'
@@ -180,7 +227,7 @@ for i in range(len(all_identities)):
 
                 last_logged_date = ''
                 logging_string = ''
-                for k in range(30):
+                for k in range(500):
                     d = datetime.today() - timedelta(days=k)
                     date_str = d.strftime ("%Y%m%d")
                     day_str = d.strftime ("%A")
@@ -211,11 +258,14 @@ for i in range(len(all_identities)):
                     if last_logged_date == '': 
                         if logged_count > 0:
                             last_logged_date = d.strftime("%b %d %Y")
+                            if u'readable_ts' in last_day_response:
+                                last_logged_date = last_day_response[u'readable_ts']
 
-                    if logged_count > 0:        
-                        logging_string = logging_string + '|'      
-                    else:
-                        logging_string = logging_string + '-'  
+                    if k < 31:
+                        if logged_count > 0:        
+                            logging_string = logging_string + '|'      
+                        else:
+                            logging_string = logging_string + '-'  
 
                     #
                     data_per_day.append(temp_data_per_day)
@@ -234,12 +284,12 @@ for i in range(len(all_identities)):
                         reinforcement_intervention_reward = last_day_response[u'reinfrocement_data']
                         if date_str in reinforcement_intervention_reward:
                             if u'reward_ds' in reinforcement_intervention_reward[date_str]:
-                                reward_ds_rand = str(reinforcement_intervention_reward[date_str][u'reward_ds'])
+                                reward_ds_rand = '-' #str(reinforcement_intervention_reward[date_str][u'reward_ds'])
                             else:
                                 reward_ds_rand = '-'
 
                             if u'reward_at' in reinforcement_intervention_reward[date_str]:    
-                                reward_at_rand = str(reinforcement_intervention_reward[date_str][u'reward_at'])
+                                reward_at_rand = '-' #str(reinforcement_intervention_reward[date_str][u'reward_at'])
                             else:
                                 reward_at_rand = '-'
                         else:
@@ -266,6 +316,7 @@ for i in range(len(all_identities)):
                 #body = body + "===========================================" + ""
                 body = body + "Survey completed: " + str(total_ds) +  "<br>"
                 body = body + "Active tasks completed: " + str(total_at) +  "<br>"
+                body = body + "<br><a href='#top'>" + "^ Go to top ^" + "</a><br><br>"
                 body = body + "<br><br>==============================================================" +  "<br><br><br>"
 
                 
@@ -315,25 +366,62 @@ for i in range(len(all_identities)):
     logging_string = logging_string[::-1]    
     #if round(100*(total_ds_7+total_at_7)/14.0,2) < 50:
     if "-study-" in username:
-        first_table_body = first_table_body + '<tr><td style="padding:8px; text-align: left;">' + username  + '</td><td style="padding:8px; text-align: left;">' + str(total_days) + '</td><td style="padding:8px; text-align: left;">' + data_today + '</td><td style="padding:8px; text-align: left;">' + data_7 + '</td><td style="padding:8px; text-align: left;">' + data_30 + '</td><td style="padding:8px; text-align: left;">' + last_logged_date + '</td><td style="padding:8px; text-align: left;">' + logging_string + '</td><td style="padding:8px; text-align: left;">' + money + '</td></tr>' 
+        if total_days <=30:
+            first_table_body = first_table_body + '<tr><td style="padding:8px; text-align: left;"><a href="#'+username+'">' + username  + '</a></td><td style="padding:8px; text-align: left;">' + str(total_days) + '</td><td style="padding:8px; text-align: left;">' + data_today + '</td><td style="padding:8px; text-align: left;">' + data_7 + '</td><td style="padding:8px; text-align: left;">' + data_30 + '</td><td style="padding:8px; text-align: left;">' + last_logged_date + '</td><td style="padding:8px; text-align: left;">' + logging_string + '</td><td style="padding:8px; text-align: left;">' + money + '</td></tr>' 
+        else:
+            second_table_body = second_table_body + '<tr><td style="padding:8px; text-align: left;"><a href="#'+username+'">' + username  + '</a></td><td style="padding:8px; text-align: left;">' + str(total_days) + '</td><td style="padding:8px; text-align: left;">' + data_today + '</td><td style="padding:8px; text-align: left;">' + data_7 + '</td><td style="padding:8px; text-align: left;">' + data_30 + '</td><td style="padding:8px; text-align: left;">' + last_logged_date + '</td><td style="padding:8px; text-align: left;">' + logging_string + '</td><td style="padding:8px; text-align: left;">' + money + '</td></tr>'  
     else:
         first_table_body = first_table_body + '<tr style="color: #82B1FF;"><td style="padding:8px; text-align: left;"><b>' + username + '</b></td><td style="padding:8px; text-align: left;"><b>' + str(total_days) + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_today + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_7 + '</b></td><td style="padding:8px; text-align: left;"><b>' + data_30 + '</b></td><td style="padding:8px; text-align: left;"><b>' + last_logged_date + '</b></td><td style="padding:8px; text-align: left;"><b>' + logging_string+ '</b></td><td style="padding:8px; text-align: left;"><b>' + money + '</b></td></tr>'
     i = i + 1
 
 
 
-body2 = '<br><br><h3>Summary</h3><b>Stored as: </b> (no_of_survey/no_of_active_tasks)'
+body2 = '<br><br><h3 id="top">Summary (participants currently in the study)</h3><b>Stored as: </b> (no_of_survey/no_of_active_tasks)'
 body2 = body2 + '<table style="width:1100px; border-collapse: collapse;">'
 body2 = body2 + '<tr><th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">id</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Total<br>days</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Today</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>7 days</th>'
-body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>30 days</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">All<br>days</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Last<br>seen</th>'
-body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Logging over days<br> "|" is yes, "-" is no, (first day to today)</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Logging over last 30 days<br> "|" is yes, "-" is no, (first day to today)</th>'
 body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #D32F2F;color: white;">Money</th></tr>'
 body2 = body2 + first_table_body
 body2 = body2 + '</table><br><br>'
+
+body2 = body2 + '<h3 id="top">Summary from past days</h3><b>By day: </b>'
+
+body2 = body2 + '<a href="./' + 'index.html">' + 'Today' + '   </a><br>'
+total_days = 0    
+while True:
+    d = datetime.today() - timedelta(days=total_days)
+    date_str = d.strftime ("%Y%m%d")
+    date_str2 = d.strftime ("%b %d")
+    body2 = body2 + '<a href="./' + date_str + '.html">' + date_str2 + '</a>, '
+    total_days = total_days + 1
+
+    if total_days%14 == 0:
+        body2 = body2 + '<br>'
+
+    if total_days == 30:
+        break
+#data_str2 = '20171021'
+
+
+
+body2 = body2 + '<br><br><h3 id="top">Summary (following participants already finished the study)</h3><b>Stored as: </b> (no_of_survey/no_of_active_tasks)'
+body2 = body2 + '<table style="width:1100px; border-collapse: collapse;">'
+body2 = body2 + '<tr><th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">id</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Total<br>days</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Today</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Last<br>7 days</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">All<br>days</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Last<br>seen</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Logging over last 30 days<br> "|" is yes, "-" is no, (first day to today)</th>'
+body2 = body2 + '<th style="padding:8px; text-align: left;background-color: #AD1457;color: white;">Money</th></tr>'
+body2 = body2 + second_table_body
+body2 = body2 + '</table><br><br>'
+
 
 body = header + "<body>" + body3 + body2 + body + "</body></html>"
 

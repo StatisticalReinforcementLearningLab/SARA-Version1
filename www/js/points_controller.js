@@ -1,5 +1,5 @@
 
-app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,$rootScope,saraDatafactory,$ionicPlatform) {
+app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,$rootScope,saraDatafactory,$ionicPlatform, $ionicPopup) {
     console.log($location.path() + ", " + $rootScope.total_points);
 
     
@@ -112,16 +112,20 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
 
     //var current_points = 1000;
     var current_points = $rootScope.total_score;
+    var fish_data = [];
 
     $http.get('js/fishpoints.json').success(function(data) {
       //console.log("Fishes: " + data);
 
+      fish_data = data;
 
       var survey_string = "";
       var isNextAvailableStillMasked = false;
       for(var i = 0; i < data.length; i++) {
           data[i].class = 'nonshade';
           data[i].img = data[i].img.substring(0, data[i].img.length-4) + '_tn.jpg';
+          data[i].fish_index = i; 
+          data[i].show_trivia = 1; 
           if(current_points < data[i].points){
             if(isNextAvailableStillMasked == false){
                //
@@ -132,6 +136,12 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
             else{
               data[i].img = 'img/cryptocoin_tn.jpg';
             }
+
+            data[i].show_trivia = 0; 
+          }
+
+          if(data[i].name === 'Sea environment'){
+            data[i].show_trivia = 0; 
           }
       }
        
@@ -141,6 +151,32 @@ app.controller("PointsCtrl", function($scope, $location,$cordovaStatusbar,$http,
       //console.log("Fishes: " + JSON.stringify($scope.pointsdata));
       //$scope.$apply();
     });
+
+
+    $scope.showTrivia = function(index,show_trivia){
+
+
+        //console.log('holla');
+          
+        if(show_trivia==1){
+          // Custom popup
+          var img = fish_data[index].img;//.substring(0, fish_data[index].img.length-4) + '_tn.jpg';
+          var myPopup = $ionicPopup.show({
+                template: '<div style="background-color:#ffffff;padding:20px;"><center><img src=' + img + ' style="width:auto;height:75px;margin:5px;max-width:200px"></center><center><p>' + fish_data[index].trivia + '</p></center></div>',
+                title: fish_data[index].name,
+                subTitle: 'Triva',
+                scope: $scope,
+              
+                buttons: [
+                    { text: 'Back',type: 'button-positive' }
+                ]
+          });
+
+          myPopup.then(function(res) {
+                 console.log('Tapped!', res);
+          }); 
+        }   
+    };
 
 
 

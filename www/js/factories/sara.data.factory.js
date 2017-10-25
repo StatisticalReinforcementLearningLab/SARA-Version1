@@ -25,7 +25,16 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
                 data_temp['imei'] = window.localStorage['imei'] || "";
             data_temp['username'] = window.localStorage['username'] || "";
             window.localStorage['cognito_data'] = JSON.stringify(data_temp);//save the imei now.
+            //window.localStorage['last_stored_date'] = key_temp;
         }
+
+        /*
+        if(datasetname === 'rl_data'){
+            datasetname = 'rl_data_v2';
+            key_temp = "data_key";
+        }
+        */
+
 
         data = data_temp;
         key2 = key_temp;
@@ -66,18 +75,74 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
     put = function() {
         //var data_id = moment().format('YYYYMMDD-HH:mm:ss')
-        console.log("kola " + key2);
-        dataset.put(key2, JSON.stringify(data), function(err, record) {
-            if (err) {
-                //$scope.error.message = err.message;
-                console.log("error: " + err.message);
-                return false;
+        console.log("kola " + datasetName + ", " + last_date);
+
+
+        if (datasetName === 'rl_data') {
+            var last_date = window.localStorage['last_stored_date'] || moment().format('YYYYMMDD');
+            //
+            // if today's date then don't do anything...
+            //last_date = '20170905';
+
+            //
+            // new participants: no data, so "last_date" will be today, so no removing
+            //
+            // reinstall participants: no data for "last_date", so "last_date" will be today, so no removing. Keep past data.
+            //
+            // retaining participants: we have a "last_date", we delete that. Most days it will happen.
+            //
+            if(last_date === moment().format('YYYYMMDD')){
+                dataset.put(key2, JSON.stringify(data), function(err, record) {
+                    if (err) {
+                        //$scope.error.message = err.message;
+                        console.log("error: " + err.message);
+                        return false;
+                    }
+                    //$scope.tasks[task_id] = $scope.task;
+                    //console.log("no error: " + $scope.error.message);
+                    //$scope.task = {};
+
+                    sync();
+                    //remove earlier record
+                });
+            }else{
+                dataset.remove(last_date, function(err, record) {
+                    dataset.put(key2, JSON.stringify(data), function(err, record) {
+                        if (err) {
+                            //$scope.error.message = err.message;
+                            console.log("error: " + err.message);
+                            return false;
+                        }
+                        //$scope.tasks[task_id] = $scope.task;
+                        //console.log("no error: " + $scope.error.message);
+                        //$scope.task = {};
+
+                        sync();
+                        //remove earlier record
+                    });
+                    //-- console.log(success);
+                });
             }
-            //$scope.tasks[task_id] = $scope.task;
-            //console.log("no error: " + $scope.error.message);
-            //$scope.task = {};
-            sync();
-        });
+
+            //
+            window.localStorage['last_stored_date'] = key2;      
+
+        }else{
+            dataset.put(key2, JSON.stringify(data), function(err, record) {
+                if (err) {
+                    //$scope.error.message = err.message;
+                    console.log("error: " + err.message);
+                    return false;
+                }
+                //$scope.tasks[task_id] = $scope.task;
+                //console.log("no error: " + $scope.error.message);
+                //$scope.task = {};
+
+                sync();
+                //remove earlier record
+            });
+        }
+
     };
 
 
@@ -113,6 +178,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     sara.pullRLData = function(callback2) {
         //sync(function() {
         sara.pullData('rl_data', "", callback2);
+        //sara.pullData('rl_data_v2', "", callback2);
         //});
     }
 
@@ -177,13 +243,14 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
     //
     sara.pullData = function(datasetname, key_temp, callback2) {
+        //console.log("datasetname: " + datasetname);
         datasetName = datasetname;
         key2 = key_temp;
         //connect();
         awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
             if (err) {
                 //$scope.error.message = err.message;
-                console.log(err.message);
+                
                 if (isValid == false) { //means there is no user data in local storage.
                     $location.path("/");
                     return;
@@ -193,17 +260,21 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             if (isValid) {
                 awsCognitoSyncFactory.connect(datasetName, function(err, dataset_temp) {
                     if (err) {
+                        //console.log("rl_data_v2: ERROR " + err.message);
                         //$scope.error.message = err.message;
                         callback2(null);
                     } else {
+                        //console.log("rl_data_v2: No ERROR " + JSON.stringify(dataset_temp));
+
                         dataset = dataset_temp;
                         //sync();
 
+                        //-- console.log("Holla");
                         sync(function() {
-                            //sara.pullData('game_score',"",callback2);
+                        //    sara.pullData('game_score',"",callback2);
                             get(callback2);
                         });
-
+                        //get(callback2);
                     }
                 });
             } else
@@ -234,36 +305,118 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         //I will keep the streaks empty since it will be initialized to the right value of nothing is defined.
         //badges will be initialized also if they are not available
 
-        dataset.getAllRecords(function(err, records) {
-            //$scope.tasks = {};
-            //console.log("Error message: " + err);
-            var cognito_data2;
-            for (i = 0; i < records.length; i++) {
-                if (records[i].value.length > 0) {
-                    //console.log("" + i + ", " + records[i].value + ", " + records[i].key);
-                    cognito_data2 = records[i].value; //write the last value
-                }
-            }
-            //sync();
-            //console.log(JSON.stringify(cognito_data));
-            if(cognito_data2 == undefined)
-                cognito_data2 = cognito_data;
+
+        var last_date = window.localStorage['last_stored_date'] || 'unknown';
+        console.log("last date: " + last_date);
+        //if(last_date === "unknown"){
+            dataset.getAllRecords(function(err, records) {
+                //$scope.tasks = {};
+                //console.log("Error message: " + err);
+                var cognito_data2;
+
+                //this is where I am getting the last data point.
+                //--- Unnecessary
+                //--- 
+
+                //
+                //i need to delete the useless ones
+                //
+                var all_dates = [];
+
                 
-            
+                for (i = 0; i < records.length; i++) {
+                    if (records[i].value.length > 0) {
+                        console.log("" + i + ", " + records[i].value + ", " + records[i].key);
+                        last_date = records[i].key;
+                        window.localStorage['last_stored_date'] = last_date;
+                        cognito_data2 = records[i].value; //write the last value
 
-            //
-            callback2(cognito_data2);
+                        //
+                        all_dates.push(last_date);
+                    }
+                }
+
+                //sync();
+                //console.log(JSON.stringify(cognito_data));
+                if(cognito_data2 == undefined)
+                    cognito_data2 = cognito_data;
+                    
+                
+
+                //
+                callback2(cognito_data2);
 
 
-            //if records length is zero then, we initializing
-            if(records.length==0){
-                window.localStorage['cognito_data'] = cognito_data;
-                sara.storedata('rl_data',JSON.parse(cognito_data), moment().format('YYYYMMDD'));
-            }
+                //remove bad dates. This may happen because of syncing 
+                if(all_dates.length > 0){
+                    //
+                    all_dates.pop();//remove the last date, because this is our latest data
+                    remove_data_point(all_dates);
+                }
+                
 
-        });
+
+                //if records length is zero then, we initializing
+                if(records.length==0){
+                    window.localStorage['cognito_data'] = cognito_data;
+                    sara.storedata('rl_data',JSON.parse(cognito_data), moment().format('YYYYMMDD'));
+                }
+
+            });
+        
+        /*}else{
+            console.log('last_date: ' + last_date);
+            dataset.get(last_date, function(err, value) {
+                var cognito_data2 = value;
+                console.log('myRecord: ' + value);
+                if(cognito_data2 == undefined)
+                    cognito_data2 = cognito_data;
+
+                //
+                callback2(cognito_data2);
+
+
+                //if records length is zero then, we initializing
+                if(records.length==0){
+                    window.localStorage['cognito_data'] = cognito_data;
+                    sara.storedata('rl_data',JSON.parse(cognito_data), moment().format('YYYYMMDD'));
+                }
+            });
+        }*/
 
     };
+
+    remove_data_point = function(all_dates) {
+        //
+        //dataset.remove(last_date, function(err, record) {
+        //});
+
+        //
+
+        //
+        var date_to_remove = all_dates.pop();
+        if(date_to_remove == undefined){
+
+        }else{
+            dataset.remove(date_to_remove, function(err, record) {
+
+                //
+                console.log("removed last date: " + date_to_remove);
+
+                //
+                if(all_dates.length>0)
+                    remove_data_point(all_dates);
+
+                //
+                if(all_dates.length==0)
+                    sync();
+            });
+        }
+
+        //
+        // for(var i=0; i<all_dates.length; i++)
+        //    console.log("before_last_date: " + all_dates[i]);
+    }
 
     //this will return null when file don't exist or not phone.
     sara.loadDataCollectionState = function(callback2) {

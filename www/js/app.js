@@ -385,23 +385,36 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
 
 
+            if($rootScope.gameloaded == undefined){
+                saraDatafactory.pullRLData(function(returnValue) {
+                    // use the return value here instead of like a regular (non-evented) return value
+                    //console.log(returnValue);
+                    //
+                    //console.log("json content: " + returnValue);
 
-            saraDatafactory.pullRLData(function(returnValue) {
-                // use the return value here instead of like a regular (non-evented) return value
-                //console.log(returnValue);
-                //
-                //console.log("json content: " + returnValue);
+
+                    //console.log(returnValue);
+                    /*
+                    if (returnValue == null) //return value will be a null if no internet connection, or profile don't exist
+                        returnValue = window.localStorage['cognito_data'] || "{}";
+                    else
+                        window.localStorage['cognito_data'] = returnValue;
+                    */
+                    $rootScope.gameloaded = true;
+                    loadgame(returnValue);
+                });
+            }else{
+                console.log("loading local copy");
+                returnValue = window.localStorage['cognito_data'];
+                loadgame(returnValue);
+            }
 
 
-                //console.log(returnValue);
-                /*
-                if (returnValue == null) //return value will be a null if no internet connection, or profile don't exist
-                    returnValue = window.localStorage['cognito_data'] || "{}";
-                else
-                    window.localStorage['cognito_data'] = returnValue;
-                */
 
+
+            function loadgame(returnValue){
                 if(returnValue == null){
+                    console.log("We got null");
                 }else
                     window.localStorage['latest_cloud_data'] = returnValue;
 
@@ -435,6 +448,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }else{
                     current_local_data['lastupdate'] = new Date().getTime(); //means first time we will store what we have.
                 }
+
                 //update if there is new data.
                 if(current_cloud_data['lastupdate'] > current_local_data['lastupdate']){
                     console.log('Cloud: updating data');
@@ -499,9 +513,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                 //save the changes if there is a change....
                 //scope.$emit('update:cloud');
+            }
 
-
-            });
 
             function checkReinforcement(){
                 //-------------------------------------------------------------------
@@ -894,8 +907,6 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     }
                 }
 
-
-
                 //get the first date
                 /*
                 var first_date = moment().format('YYYYMMDD');
@@ -910,16 +921,20 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //np data on the first day
                 var daily_survey_streaks = 0;
                 var daily_survey_last_date = moment().format('YYYYMMDD');
+                scope.daily_survey_images_str = '<div style="padding:10px;padding-top:15px;"><p><u>Surveys across days</u></p><div><p style="color:#5e9eb9;float:left;">Start&#8594;</p>';
                 if(first_date === moment().format('YYYYMMDD')){
                     //{name: 'clubs', symbol: '♣', show:true, up:100, class: 'blue', img:'img/blue.png', show_image: true}
                     if(daily_survey.hasOwnProperty(first_date)){
-                        scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15});
+                        //scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15, class:"fa fa-star", color:'red'});
+                        scope.daily_survey_images.push({width: 15, text: "&#9733;", color:'red'});
+                        scope.daily_survey_images_str = scope.daily_survey_images_str + '<p style="color:red;float:left;">&#9733;</p>';
                         $rootScope.total_days = 1;
+                    }else{
+                        scope.daily_survey_images.push({width: 15, text:"&#9734;", color:'DarkGray'});
+                        scope.daily_survey_images_str = scope.daily_survey_images_str + '<p style="color:DarkGray;float:left;">&#9734;</p>';
                     }
-                    else
-                        scope.daily_survey_images.push({img: 'img/not_done.png', width: 15});
-
-                    scope.daily_survey_images[1] = {img: 'img/today.png', width: 15};
+                    scope.daily_survey_images_str = scope.daily_survey_images_str + "<div><img src='img/today.png' style='height:15px;float: left;'/></div>"
+                    //scope.daily_survey_images[1] = {img: 'img/today.png', width: 15};
                     //return;
                 }else{
                     //there is more data
@@ -928,15 +943,37 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     while(true){
 
                         if(daily_survey.hasOwnProperty(current_date)){
-                            scope.daily_survey_images.push({img: 'img/survey_done.png', width: 15});
+                            scope.daily_survey_images.push({width: 15, text: "&#9733;", color:'red'});
+                            scope.daily_survey_images_str = scope.daily_survey_images_str + '<p style="color:red;float:left;">&#9733;</p>';
                             daily_survey_streaks = daily_survey_streaks + 1;
                             daily_survey_last_date = current_date;
                         }
                         else{
-                            scope.daily_survey_images.push({img: 'img/not_done.png', width: 15});
+                            scope.daily_survey_images.push({width: 15, text:"&#9734;", color:'DarkGray'});
+                            scope.daily_survey_images_str = scope.daily_survey_images_str + '<p style="color:DarkGray;float:left;">&#9734;</p>';
                             daily_survey_streaks = 0;
                         }
 
+                        if((scope.daily_survey_images.length+1)%5 == 0){
+                            if(current_date === moment().format('YYYYMMDD')){
+                                scope.daily_survey_images.push({img: 'img/today.png', width: 15});
+                                scope.daily_survey_images_str = scope.daily_survey_images_str + "<div><img src='img/today.png' style='height:15px;float: left;'/></div>"
+                            }
+                            else if((scope.daily_survey_images.length+1)%20 == 0){
+                                scope.daily_survey_images.push({img: 'img/arrow.png', width: 15, text: "" + number_of_days + " days" });
+                                //scope.daily_survey_images_str = scope.daily_survey_images_str + "<p></p>"
+                            }
+                            else{
+                                scope.daily_survey_images.push({img: 'img/nothing.png', width: 6});
+                                //scope.daily_survey_images_str = scope.daily_survey_images_str + '<p style="height:1px;color:white;float:left;">&#9734;</p>'
+                            }
+                        }else{
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.daily_survey_images_str = scope.daily_survey_images_str + "<div><img src='img/today.png' style='height:15px;float: left;'/></div>"
+                                //scope.daily_survey_images.push({img: 'img/today.png', width: 15});
+                        }
+
+                        /*
                         if((scope.daily_survey_images.length+1)%5 == 0){
                             if(current_date === moment().format('YYYYMMDD'))
                                 scope.daily_survey_images.push({img: 'img/today.png', width: 15});
@@ -947,7 +984,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         }else{
                             if(current_date === moment().format('YYYYMMDD'))
                                 scope.daily_survey_images.push({img: 'img/today.png', width: 15});
-                        }
+                        }*/
 
                         //if((scope.daily_survey_images.length+1)%15 == 0)
 
@@ -959,6 +996,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     }
                     $rootScope.total_days = number_of_days;
                 }
+                scope.daily_survey_images_str = scope.daily_survey_images_str + '</div></div>';
                 //console.log(scope.daily_survey_images);
                 console.log("todal days: " + $rootScope.total_days);
 
@@ -981,13 +1019,19 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //np data on the first day
                 var active_task_streaks = 0;
                 var active_task_last_date = moment().format('YYYYMMDD');
+                scope.active_task_images_str = '<div style="padding:10px;padding-top:15px;clear:left;"><p><u><br>Active task across days</u></p><p style="color:#5e9eb9;float:left;">Start&#8594;</p>';
                 if(first_date === moment().format('YYYYMMDD')){
-                    if(active_tasks_survey.hasOwnProperty(first_date))
-                        scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
-                    else
-                        scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15});
+                    if(active_tasks_survey.hasOwnProperty(first_date)){
+                        //scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15, class:"fa fa-star", color:'Navy'});
+                        scope.active_tasks_survey_images.push({width: 15, text: "&#9733;", color:'Navy'});
+                        scope.active_task_images_str = scope.active_task_images_str + '<p style="color:Navy;float:left;">&#9733;</p>';
+                    }
+                    else{
+                        scope.active_tasks_survey_images.push({width: 15, text:"&#9734;", color:'DarkGray'});
+                        scope.active_task_images_str = scope.active_task_images_str + '<p style="color:DarkGray;float:left;">&#9734;</p>';
+                    }
 
-                    scope.active_tasks_survey_images[1] = {img: 'img/today.png', width: 15};
+                    //scope.active_tasks_survey_images[1] = {img: 'img/today.png', width: 15};
                 }else{
 
                     //there is more data
@@ -996,16 +1040,28 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     while(true){
 
                         if(active_tasks_survey.hasOwnProperty(current_date)){
-                            scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15});
+                            //scope.active_tasks_survey_images.push({img: 'img/active_task_done.png', width: 15, class:"fa fa-star", color:'Navy'});
+                            scope.active_tasks_survey_images.push({width: 15, text: "&#9733;", color:'Navy'});
+                            scope.active_task_images_str = scope.active_task_images_str + '<p style="color:Navy;float:left;">&#9733;</p>';
                             active_task_streaks = active_task_streaks + 1;
                             active_task_last_date = current_date;
                         }
                         else{
-                            scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15});
+                            //scope.active_tasks_survey_images.push({img: 'img/not_done.png', width: 15, class:"fa fa-star-o", color:'DarkGray'});
+                            scope.active_tasks_survey_images.push({width: 15, text:"&#9734;", color:'DarkGray'});
+                            scope.active_task_images_str = scope.active_task_images_str + '<p style="color:DarkGray;float:left;">&#9734;</p>';
                             active_task_streaks = 0;
                         }
 
-
+                        if((scope.active_tasks_survey_images.length+1)%5 == 0){
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.active_task_images_str = scope.active_task_images_str + "<div><img src='img/today.png' style='height:15px;float: left;'/></div>"
+                        }else{
+                            if(current_date === moment().format('YYYYMMDD'))
+                                scope.active_task_images_str = scope.active_task_images_str + "<div><img src='img/today.png' style='height:15px;float: left;'/></div>"
+                                //scope.daily_survey_images.push({img: 'img/today.png', width: 15});
+                        }
+                        /*
                         if((scope.active_tasks_survey_images.length+1)%5 == 0){
                             if(current_date === moment().format('YYYYMMDD'))
                                 scope.active_tasks_survey_images.push({img: 'img/today.png', width: 15});
@@ -1016,7 +1072,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         }else{
                             if(current_date === moment().format('YYYYMMDD'))
                                 scope.active_tasks_survey_images.push({img: 'img/today.png', width: 15});
-                        }
+                        }*/
 
                         //if((scope.active_tasks_survey_images.length+1)%5 == 0)
                         //    scope.active_tasks_survey_images.push('img/nothing.png');
@@ -1032,6 +1088,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                         
                     }
                 }
+                scope.active_task_images_str = scope.active_task_images_str + '</div></div>';
+                scope.daily_survey_images_str = scope.daily_survey_images_str + scope.active_task_images_str;
+
                 //console.log(scope.active_tasks_survey_images);
 
                 $rootScope.current_streak = active_task_streaks;
@@ -1045,6 +1104,16 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 //scope.daily_survey_images[1] = 'img/not_done.png';
                 //scope.daily_survey_images[2] = 'img/survey_done.png';
                 creatLifeInsights(scoreValue);
+
+                //
+                var username = window.localStorage['username'] || 'unknown';
+                this.isStudyParticipant = username.indexOf('-study-') !== -1;
+                if(($rootScope.total_days > 30) && this.isStudyParticipant){
+                    //this.state.start('Gameover');
+                    //game.load.image('gameover', 'img/Fireworks.png');
+                    game.state.start('Gameover');
+                }
+
             }
 
 
@@ -1128,9 +1197,55 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     }
 
                 }
+
+                //add the at_tap
+                var q_data = [];
+                for(var j=0; j<dates.length; j++){
+                    if(dates[j] in lifeinsights_data["at_tap"]){
+                        //q_data_test = JSON.parse(lifeinsights_data["daily_survey"][dates[j]]);
+                        var tap_data = lifeinsights_data["at_tap"][dates[j]];
+                        if(str_split == undefined)
+                            q_data.push(-1);
+                        else
+                            q_data.push(parseInt(tap_data)); //
+
+                        //console.log("q_data_test: " + q_data_test);
+                    }else
+                        q_data.push(-1); 
+                }
+                //console.log("q_data, " + JSON.stringify(q_data));
+                var at_life_insights = {};
+                at_life_insights["tapcount"]={};
+                at_life_insights["tapcount"]['dates'] = JSON.stringify(dates);
+                at_life_insights["tapcount"]['data'] = JSON.stringify(q_data);
+
+
+                //add the at_sp
+                q_data = [];
+                for(var j=0; j<dates.length; j++){
+                    if(dates[j] in lifeinsights_data["at_sp"]){
+                        //q_data_test = JSON.parse(lifeinsights_data["daily_survey"][dates[j]]);
+                        var tap_data = lifeinsights_data["at_sp"][dates[j]];
+                        if(str_split == undefined)
+                            q_data.push(-1);
+                        else
+                            q_data.push(parseInt(tap_data)); //
+
+                        //console.log("q_data_test: " + q_data_test);
+                    }else
+                        q_data.push(-1); 
+                }
+                //console.log("q_data, " + JSON.stringify(q_data));
+                //var at_life_insights = {};
+                at_life_insights["spatialspeed"]={};
+                at_life_insights["spatialspeed"]['dates'] = JSON.stringify(dates);
+                at_life_insights["spatialspeed"]['data'] = JSON.stringify(q_data);
+
+
                 //console.log(scope.daily_survey_images);
                 //console.log(JSON.stringify(life_insights));
                 window.localStorage['lifeinsights_data'] = JSON.stringify(life_insights);
+                window.localStorage['at_life_insights_data'] = JSON.stringify(at_life_insights);
             }
 
 
@@ -1464,6 +1579,9 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
     var promise = $interval(testResumePause, 1000);
     $scope.money = window.localStorage['total_money_earned'] || "0";
 
+    //
+    $scope.isSyncing = false;
+
 
     function testResumePause() {
         console.log("App paused: " + isPaused);
@@ -1701,7 +1819,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             if(isActiveTaskAddedHowMany > 0){                     //
                 rl_data['survey_data']['active_tasks_survey'] = active_task_prior_data;
                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
-                saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
+                //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
             }
         //}
     }
@@ -1935,6 +2053,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         //only available after 6PM.
         var today_date_string = moment().format('YYYY-MM-DD');
         var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        //var daily_survey_start_time = moment(today_date_string + " " + "1:00" + " am", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         //
@@ -1951,7 +2070,8 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             var isDailySurveyCompleted = window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] || 0;
 
             //For debug, keep it
-            if (isDailySurveyCompleted <= 1) { //==0
+            //if (isDailySurveyCompleted <= 1) { //==0
+            if (isDailySurveyCompleted == 0) { //==0
                 console.log("Daily survey ");
                 //$scope.$broadcast('$destroy');
                 if(moment().format('dddd') == 'Sunday')
@@ -2070,6 +2190,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
 
         var today_date_string = moment().format('YYYY-MM-DD');
         var daily_survey_start_time = moment(today_date_string + " " + "6:00" + " pm", "YYYY-MM-DD hh:mm a");
+        //var daily_survey_start_time = moment(today_date_string + " " + "1:00" + " am", "YYYY-MM-DD hh:mm a");
         var daily_survey_end_time = moment(today_date_string + " " + "11:59" + " pm", "YYYY-MM-DD hh:mm a");
 
         var isFirstDay = false;
@@ -2104,9 +2225,15 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             else{
             */
 
+            //
+            var isDailySurveyCompleted = window.localStorage['active_task_' + moment().format('YYYYMMDD')] || 0;
+
             //$location.path("/activetasks");
             //$location.path("/tappingtask");
-            $location.path("/tappingtaskStep1");
+            if(isDailySurveyCompleted == 0)
+                $location.path("/tappingtaskStep1");
+            else
+                $scope.showAlertCompletedAT();
                 
                 
 
@@ -2131,6 +2258,17 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         var alertPopup = $ionicPopup.alert({
             title: 'Active tasks unavilable',
             template: 'Active tasks are only available between 6PM to 12AM.'
+        });
+
+        alertPopup.then(function(res) {
+            console.log('Active tasks unavilable');
+        });
+    };
+
+    $scope.showAlertCompletedAT = function() {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Thank you.',
+            template: 'You already completed the active tasks.'
         });
 
         alertPopup.then(function(res) {

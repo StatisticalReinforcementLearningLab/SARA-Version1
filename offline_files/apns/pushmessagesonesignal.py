@@ -22,16 +22,76 @@ CERT_FILE = '/home/ubuntu/SARA/apns/apns-dev-cert.pem'
 if os.path.isfile(CERT_FILE): # if file exist then we are on server
     CERT_FILE = "/home/ubuntu/SARA/apns/apns-prod-cert-Jul15.crt.pem"
     KEY_FILE = "/home/ubuntu/SARA/apns/apns-prod-cert-Jul15.key.pem"
+    FISH_JSON_FILE = "/home/ubuntu/SARA/apns/fishpoints.json"
 else:
     # CERT_FILE = 'apns-prod-cert-Jul15.pem'
     # CERT_FILE = 'apns-dev-cert.pem'
     CERT_FILE = "apns-prod-cert-Jul15.crt.pem"
     KEY_FILE = "apns-prod-cert-Jul15.key.pem"
+    FISH_JSON_FILE = 'fishpoints.json'
 print "CERT_FILE: " + CERT_FILE
 
 print "Connecting to APNs"
 #apns-prod-cert-Jul15.key.pem
 #apns-prod-cert-Jul15.crt.pem
+
+
+
+#### Get pre-randomize results
+ALL_RANDOMIZATION_DATA = {}
+def get_randomization_for_each_user():
+
+    #already in database
+    firebase3 = firebase.FirebaseApplication('https://sara-3529f.firebaseio.com/', None)
+    result = firebase3.get('/iOS/randomizations', None)
+
+    # get all prior users
+    prior_users = {}
+    if result == None:
+        print "No prior user found"
+    else:
+        for username in result:
+            # print "Prior, " +  username
+            prior_users[username] = username
+
+            #get prior user's randomization
+            # print username
+            rand_data_all = result[username]
+            for key in rand_data_all:
+                rand_data = rand_data_all[key]
+                # print json.dumps(rand_data, sort_keys=True, indent=4)
+                # pdb.set_trace()
+                ALL_RANDOMIZATION_DATA[username] = rand_data
+                break
+get_randomization_for_each_user()
+
+
+#### Get pre-randomize results
+def return_randomizations_for_user(username,type_of_randomization):
+
+    # get today's date
+    d = datetime.datetime.today()
+    date_str = d.strftime ("%Y%m%d")
+    
+    randomization_data_for_today_for_username = ALL_RANDOMIZATION_DATA[username][date_str]
+    return randomization_data_for_today_for_username[type_of_randomization]
+
+def write_log_to_file(text):
+    d1 = datetime.datetime.today()
+    date_str = d1.strftime("%b %d %Y %H:%M:%S %Z")
+    text = date_str + "---" + text + "\n"
+    if os.path.isfile('/home/ubuntu/SARA/apns/apns-dev-cert.pem'):
+        with open("/var/www/html/dailyupdates/log.txt", "r+") as f:
+            content = f.read()
+            f.seek(0, 0)
+            f.write(text.rstrip('\r\n') + '\n' + content)
+    else:
+        with open("log.txt", "r+") as f:
+            content = f.read()
+            f.seek(0, 0)
+            f.write(text.rstrip('\r\n') + '\n' + content)
+
+
 
 apns = APNs(use_sandbox=False, cert_file=CERT_FILE, key_file=KEY_FILE, enhanced=True)
 # apns = APNs(use_sandbox=False, cert_file=CERT_FILE, enhanced=True)
@@ -91,6 +151,11 @@ def send_message(token_hex, message, header, extra):
     frame.add_item(token_hex, payload, identifier, expiry, priority)
     
 
+# A number between 0...N-1
+def getRandomInt(username,type_of_randomization): 
+    # rand_prob = random.randint(0,1000000)
+    # return rand_prob%N
+    return return_randomizations_for_user(username,type_of_randomization)
 
 
 #########################################################################################################
@@ -117,19 +182,19 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
     reminder_notification_data = {}
 
     #randomization codes
-    rand_prob = random.randint(0,1) #zero or one 
+    rand_prob = getRandomInt(username,'randomization_reminder_level_1') #getRandomInt(2) #random.randint(0,1) #zero or one 
     reminder_notification_data['primary-randomization'] = rand_prob
-    rand_prob = 1
+    # rand_prob = 1
     if rand_prob == 0: #
         quote_text = "Don't forget to complete the surveys and active tasks on SARA" + notification_text
         notification_image = 'fishjournal.png'
         reminder_notification_data['secondary-randomization'] = -1
     else:
-        rand_prob2 = random.randint(0,2)
+        rand_prob2 = getRandomInt(username,'randomization_reminder_level_2') # getRandomInt(3) #random.randint(0,2)
         reminder_notification_data['secondary-randomization'] = rand_prob2
 
         #
-        rand_prob2 = 1
+        # rand_prob2 = 2
         if rand_prob2 == 0:
             quote_text = "Do you know it only takes a minute to complete the survey and active tasks in SARA?" + notification_text
             notification_image = 'easy.png'
@@ -150,7 +215,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
             #------ streak info
             if rand_prob2 == 1:
                 if daily_streak == 0:
-                    reminder_text = "Do you know that if you input data in SARA consecutive days then you can earn badges and money?" + notification_text
+                    reminder_text = "Do you know that if you input data in SARA for consecutive days then you can earn money?" + notification_text
                     image_name = "green.png";
 
                 if (daily_streak >=1) and (daily_streak < 3):
@@ -171,7 +236,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
                     image_name = "bronze.png";
 
                 if (daily_streak >=12) and (daily_streak < 18):
-                    reminder_text = "You are " + str(18-daily_streak) +  " day(s) to finishing a 9 day streak and earn some money" + notification_text
+                    reminder_text = "You are " + str(18-daily_streak) +  " day(s) to finishing a 18 day streak and earn some money" + notification_text
                     image_name = "red.png"
 
                 if (daily_streak >=18) and (daily_streak < 24):
@@ -182,6 +247,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
                     reminder_text = "You are " + str(30-daily_streak) +  " day(s) to finishing a 30 day streak and earn some money" + notification_text
                     image_name = "gold.png";
 
+                image_name = "fiftycent.png";
                 quote_text = reminder_text
                 notification_image = image_name
 
@@ -194,14 +260,14 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
 
                 #
 
-                with open('fishpoints.json') as json_data:
+                with open(FISH_JSON_FILE) as json_data:
                     fish_data = json.load(json_data)
                     for i in range(len(fish_data)): #();i++){
                         obj = fish_data[i];
                         fish_point = obj["points"];
                         if point < fish_point:
                             image_name = obj["img"];
-                            reminder_text = "You are close to unlocking the " + obj["name"] + " fish."  + notification_text;
+                            reminder_text = "You are close to unlocking the " + obj["name"] + "."  + notification_text;
                             break
 
                 quote_text = reminder_text
@@ -232,7 +298,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
 
     payload = {"app_id": "ae8ddfb9-a504-41e2-bc97-477017bb925f",
                "include_player_ids": [player_id],
-               "headings": {"en": "Survey reminder for SARA"},
+               "headings": {"en": "Time to checkin on SARA"},
                "contents": {"en": quote_text},
                "ios_attachments": {"id": "https://s3.amazonaws.com/aws-website-sara-ubicomp-h28yp/sarapp/" + notification_image},
                "data": {"image": "author_image", "message": "quote_text", "author": "author_name", "type": notification_type, "url": update_url},
@@ -243,6 +309,8 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
                "ttl" : 259200,
                "priority": 10}
 
+    # send reminder request
+    #"""
     req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
     print(req.status_code, req.reason)
 
@@ -254,7 +322,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
     delivery_status_data['req_data'] = req.reason
     firebase3 = firebase.FirebaseApplication('https://sara-3529f.firebaseio.com/', None)
     result = firebase3.post(update_url + "/delivery_status", delivery_status_data)
-
+    #"""
 
 
 def send_reminder_notifications():
@@ -275,7 +343,12 @@ def send_reminder_notifications():
             player_id = str(result[username]['oneSignalId'])
             quote_text = "Do you know it only takes a minute to complete the survey and active tasks in SARA?"
             notification_image = 'easy.png'
-            send_reminder_notifications_onesignal(quote_text, notification_image, player_id, username)
+            try: 
+                send_reminder_notifications_onesignal(quote_text, notification_image, player_id, username)
+                write_log_to_file(" Reminder message to " + username  + " sent successfully")
+            except:
+                write_log_to_file(" ERROR: Reminder message to " + username  + " was not sent successfully")
+                pass     
         else:
             token_hex = str(result[username]['regId']['token'])
             #print token_hex
@@ -287,10 +360,11 @@ def send_reminder_notifications():
 current_time = datetime.datetime.now()
 #print "current_time: "  + str(current_time.hour)
 if current_time.hour==18 and current_time.minute <15:
+# if current_time.hour==21 and current_time.minute <15:
     send_reminder_notifications()
 else:
     print "It is not time to send reminder notifications"
-send_reminder_notifications()
+# send_reminder_notifications()
 
 
 
@@ -329,12 +403,13 @@ def schedule_engagement_notifications():
             engagement_notification_data = {}
             engagement_notification_data['username'] = username
 
-            rand_prob = random.randint(0,1) #zero or one    
+            rand_prob = getRandomInt(username,'randomization_engagement') # getRandomInt(2) #random.randint(0,1) #zero or one    
             engagement_notification_data['isRandomized'] = rand_prob
 
             if rand_prob == 1:
                 #get a random message
-                index = random.randint(0,59)
+                #index = random.randint(0,59)
+                index = getRandomInt(username,'randomization_engagement_message') # getRandomInt(38)
                 #print engagement_data[index][u'quote']
                 #print engagement_data[index][u'author']
                 engagement_notification_data['quote'] = engagement_data[index][u'quote']
@@ -349,16 +424,17 @@ def schedule_engagement_notifications():
             
 
             # get a random time between 10AM to 6PM
-            d = d.replace(hour=10, minute=00)
-            print d
-            print random.randint(0,8*60*60)
-            unixtime = time.mktime(d.timetuple()) + random.randint(0,8*60*60)
+            d = d.replace(hour=16, minute=00)
+            # print d
+            # print random.randint(0,8*60*60)
+            unixtime = time.mktime(d.timetuple()) #+ random.randint(0,8*60*60)
             engagement_notification_data['whenNotifiedTs'] = unixtime
             engagement_notification_data['whenNotifiedReadbleTs'] = time.strftime("%b %d %Y %H:%M:%S %Z", time.localtime(unixtime))
             engagement_notification_data['isNotified'] = 0
 
             firebase3 = firebase.FirebaseApplication('https://sara-3529f.firebaseio.com/', None)
             result = firebase3.post('/iOS/engagement_notification/' + engagement_notification_data['username'], engagement_notification_data)
+            write_log_to_file("Scheduling engagement message for " + username)
                 #print result
             #for 
 
@@ -376,12 +452,14 @@ else:
 #####################################
 # --- send engagment notifications
 #####################################
+## send_engagement_notifications_onesignal(author, quote, engagement_data['img'], player_id, engagement_data_key, username)
 def send_engagement_notifications_onesignal(author_name, quote_text, author_image, player_id, engagement_key, username):
     #######################################
     # -- Engagement notifications
     #######################################
     header = {"Content-Type": "application/json; charset=utf-8",
               "Authorization": "Basic OWQzMzA4ODItOTliMC00NDY3LWJhYjgtYmQwN2YyMTk1OTQ2"}
+
 
     #author_image = '2pac.png';
     #quote_text = "I love it when you dance like there's nobody there."
@@ -464,10 +542,24 @@ def send_engagement_notifications():
             whenNotifiedTs = engagement_data['whenNotifiedTs']
             whenNotifiedTs = int(whenNotifiedTs)
 
-            #
-            if unixtime<=whenNotifiedTs and (unixtime+15*60)>whenNotifiedTs: #correct one
+            #---- at 4PM...
+            # d = d.replace(hour=16, minute=01)
+            # d = d.replace(hour=18, minute=38)
+            # whenNotifiedTs = time.mktime(d.timetuple())
+
+            # print "username: " + username + ", key: " + engagement_data_key + "time: " + str(whenNotifiedTs) + "," + str(unixtime)
+
+            #debug code
+            #if (whenNotifiedTs > 1507492702) and (whenNotifiedTs < 1507492902):
+            #    whenNotifiedTs = 1507492802
+            #    unixtime = 1507492702
+            # 
+            whenNotifiedTs = whenNotifiedTs + 120 # add two minutes so all notifications are delivered, because we will start sending at 4PM, if the time is 4:00:02
+
+            if (unixtime<=whenNotifiedTs) and ((unixtime+15*60)>whenNotifiedTs): #correct one
             # if unixtime<=whenNotifiedTs: 
             # if unixtime>=whenNotifiedTs and unixtime<(whenNotifiedTs+15*60*4*24): 
+                # print "222 username: " + username + ", key: " + engagement_data_key
                 if engagement_data['isRandomized'] == 1:
                     db.child("iOS").child("engagement_notification").child(username).child(engagement_data_key).update({"isNotified": 1})
 
@@ -487,7 +579,12 @@ def send_engagement_notifications():
                     if result[username]['regId'] == "decomissioned":
                         player_id = str(result[username]['oneSignalId'])
                         # send_engagement_notifications_onesignal(author_name,quote_text,author_image,player_id,engagement_key)
-                        send_engagement_notifications_onesignal(author, quote, engagement_data['img'], player_id, engagement_data_key, username)
+                        try: 
+                            send_engagement_notifications_onesignal(author, quote, engagement_data['img'], player_id, engagement_data_key, username)
+                            write_log_to_file(" Engagement message to " + username  + " sent successfully")
+                        except:
+                            write_log_to_file(" ERROR: Engagement message to " + username  + " was not sent successfully")
+                            pass    
                     else:
                         token_hex = str(result[username]['regId']['token'])
                         extra = {"type": "engagement", "author": author, "message": quote, "image": engagement_data['img']}
@@ -504,26 +601,18 @@ def send_engagement_notifications():
 send_engagement_notifications()
 
 
-
-
-
-
-
-
-
+# Test codes
+# write_log_to_file("holla")
+# print "randomization_engagement: " + str(return_randomizations_for_user('sara-study-29', 'randomization_engagement')) #return_randomizations_for_user(username,type_of_randomization)
+# print "randomization_engagement: " + str(getRandomInt('sara-study-29', 'randomization_engagement'))
+# print "randomization_engagement: " + str(getRandomInt('sara-study-29', 'randomization_engagement'))
+# print "randomization_engagement_message: " + str(getRandomInt('sara-study-29', 'randomization_engagement_message'))
+# print "randomization_reminder_level_1: " + str(getRandomInt('sara-study-29', 'randomization_reminder_level_1'))
+# print "randomization_reminder_level_2: " + str(getRandomInt('sara-study-29', 'randomization_reminder_level_2'))
 
 
 
 # engagment notification
-
-
-
-
-
-
-
-
-
 def error_check():
     print "error message listener"
     def response_listener(error_response):

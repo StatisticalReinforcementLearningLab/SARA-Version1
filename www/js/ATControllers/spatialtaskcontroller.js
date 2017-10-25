@@ -295,7 +295,7 @@ app.controller("ActiveTasksCompletedCtrl", function($scope, $http, $ionicPlatfor
         */
 
         //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
-
+        window.localStorage['active_task_' + moment().format('YYYYMMDD')] = 1;
         $location.path("/reward/29/true");
     };
 });

@@ -180,9 +180,10 @@
         </div>
         -->
 
-        <div style="clear: both;vertical-align: bottom;padding-top:30px;">
-          <p style="padding-bottom:-30px;">Fishes for the aquarium</p>
-          <img ng-repeat="x in pointsdata" class={{x.class}} src={{x.img}}  
+        <div style="clear: both;vertical-align: bottom;padding-top:40px;">
+          <p style="padding-bottom:-40px;">Fishes for the aquarium</p>
+          <p style="font-size: 12px;line-height: 15px;padding-bottom:10px;color:#666666;">Double click in a unlocked fish to show its trivia</p>
+          <img ng-repeat="x in pointsdata" class={{x.class}} src={{x.img}} ng-dblclick="showTrivia(x.fish_index,x.show_trivia)" 
             style="width:auto;height:75px;margin:5px;max-width:200px">
         </div>      
 

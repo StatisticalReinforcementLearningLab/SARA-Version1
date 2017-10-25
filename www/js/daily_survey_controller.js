@@ -393,7 +393,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
         //firebase.database().ref().update(updates);
 
         //
-        //window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
+        window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
 
         //
         //saraDatafactory.storedata('daily_survey2', $scope.survey, moment().format('YYYYMMDD'));

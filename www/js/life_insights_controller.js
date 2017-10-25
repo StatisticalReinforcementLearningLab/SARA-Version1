@@ -35,8 +35,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
 
     //
     $scope.lifeinsights = [];
-
-
+    
     saraDatafactory.copyUsageStats({'view':'lifeIn_'+type,'status':'start'});
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
@@ -82,9 +81,10 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
         visible_lifeinsights['Q4d'] = 1;
         visible_lifeinsights['Q5d'] = 1;
         visible_lifeinsights['Q6d'] = 1;
-        visible_lifeinsights['steps'] = 1;
-        visible_lifeinsights['maps'] = 1;
-        visible_lifeinsights['maps'] = 1;
+        visible_lifeinsights['steps'] = 0;
+        visible_lifeinsights['maps'] = 0;
+        visible_lifeinsights['tapcount'] = 1;
+        visible_lifeinsights['spatialspeed'] = 1;
         visible_lifeinsights[type] = 1;
 
         //maps are together.
@@ -112,7 +112,9 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
             visible_lifeinsights['Q5d'] = 0;
             visible_lifeinsights['Q6d'] = 0;
             visible_lifeinsights['steps'] = 0;
-            visible_lifeinsights['maps'] = 1;
+            visible_lifeinsights['maps'] = 0;
+            visible_lifeinsights['tapcount'] = 0;
+            visible_lifeinsights['spatialspeed'] = 0;
             window.localStorage['visible_lifeinsights'] = JSON.stringify(visible_lifeinsights);
         }
 
@@ -133,6 +135,8 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
         visible_lifeinsights['Q6d'] = 0;
         visible_lifeinsights['steps'] = 0;
         visible_lifeinsights['maps'] = 0;
+        visible_lifeinsights['tapcount'] = 0;
+        visible_lifeinsights['spatialspeed'] = 0;
         //visible_lifeinsights['maps'] = 0;
         visible_lifeinsights[type] = 1;
 
@@ -141,33 +145,124 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
 
     //
     $scope.showMaps = false;
-    if(visible_lifeinsights['maps'] == 1)
-        $scope.showMaps = true;
+    //if(visible_lifeinsights['maps'] == 1)
+    //    $scope.showMaps = true;
 
     loadQuestionLifeInsights();
-    loadLifeInsightsLocStepsData(); 
+    //loadLifeInsightsLocStepsData(); 
+    loadLifeInsightsActiveTasksData();
 
+    function loadLifeInsightsActiveTasksData(){
+        var at_life_insights_data = JSON.parse(window.localStorage['at_life_insights_data'] || '{}');
+        if('spatialspeed' in at_life_insights_data){
+            generateActiveTaskInsights(at_life_insights_data);
+        }
+
+    }
+
+    function generateActiveTaskInsights(data2){
+        //console.log(JSON.stringify(data2));
+        var at_tasks = ['tapcount','spatialspeed'];
+        for(var i=0; i < at_tasks.length; i++){
+
+            if(at_tasks[i] in visible_lifeinsights){
+            }else{
+                visible_lifeinsights[at_tasks[i]] = 0;
+            }
+            //
+            if(visible_lifeinsights[at_tasks[i]] == 0)
+                continue;
+
+            //
+            var dates = JSON.parse(data2[at_tasks[i]]['dates']);
+            var data = JSON.parse(data2[at_tasks[i]]['data']);
+
+            //
+            var total_data = 0;
+            for(var j=0; j < dates.length; j++){
+                if(data[j] != -1)
+                    total_data++;
+            }
+
+            //console.log("" + dates.length);
+            if(total_data > 7)
+                total_data = 7;
+
+            //
+            for(var j=0; j < dates.length; j++){
+                if(data[j] != -1){
+                    //
+                    if(at_tasks[i] == "spatialspeed")
+                        data[j] = data[j]/1000.0; //2 is added because null shows up as zero
+                    else
+                        data[j] = data[j];
+
+                    data_overlays.unshift([total_data - j, data[j], j]);
+                }else
+                    data_overlays.unshift([total_data - j, null, j]);
+
+                //console.log("Do: " + (total_data - j) + "," + data[j] + "," + j + ", " + at_tasks[i]) ;
+
+                if(j==6)
+                    break;
+            }
+
+            //add the tops
+            var title_text;
+            var img_link;
+            var top_text;
+            var bottom_text;
+
+            var t_forceY = [1.49, 6.5];
+            if(at_tasks[i] === "spatialspeed"){
+                title_text = "How quickly did you click the <b>right shells</b> for 'spatial task'?";
+                top_text = "10 seconds <i class='em em-turtle'></i>";
+                bottom_text = "2 seconds <i class='em em-rabbit2'></i>";
+                img_link = "img/spatial_lifeinsight.gif";
+                t_forceY = [1.49, 10.5];
+            }
+
+            if(at_tasks[i] === "tapcount"){
+                title_text = "How quickly did you <b>tap</b> the buttons for 'tapping task'?";
+                top_text = "120 times <i class='em em-rabbit2'></i>";
+                bottom_text = "20 times<i class='em em-turtle'></i>";
+                img_link = "img/tap_lifeinsight.gif";
+                t_forceY = [19.49, 120.5];
+            }
+
+            
+            //if(q==='Q3d')
+            //    t_forceY = [2, 17];
+            //
+            var lin = loadviz(data_overlays, at_tasks[i], qYaxis[i],t_forceY);
+            lin.title = title_text;
+            lin.img = img_link;
+            lin.subtext = "";
+            lin.top_message = top_text;
+            lin.bottom_message = bottom_text;
+            lin.showTopBottom = true;
+            lin.question = title_text;
+            //console.log(JSON.stringify(lin))
+            $scope.lifeinsights.push(lin);
+            data_overlays = [];
+        }
+    }
 
     //----------------------------------------
     //-- Daily insights questions
     //----------------------------------------
     function loadQuestionLifeInsights(){
-        saraDatafactory.loadLifeInsightsData(function(returnValue) {
-            if (returnValue == null) {
-
-                var lifeinsights_data = JSON.parse(window.localStorage['lifeinsights_data'] || '{}');
-                if('Q1d' in lifeinsights_data){
-                    generateDailySurveyInsights(lifeinsights_data);
-                }else{
-                    $http.get('js/lifeinsightsBig.json').success(function(data2) {
-                        generateDailySurveyInsights(data2);
-                    });
-                }
-            } else {
-                generateDailySurveyInsights(JSON.parse(returnValue));
-            }
-        });
-    }
+        //saraDatafactory.loadLifeInsightsData(function(returnValue) {
+        //    if (returnValue == null) {
+        var lifeinsights_data = JSON.parse(window.localStorage['lifeinsights_data'] || '{}');
+        if('Q1d' in lifeinsights_data){
+            generateDailySurveyInsights(lifeinsights_data);
+        }else{
+            $http.get('js/lifeinsightsBig.json').success(function(data2) {
+                generateDailySurveyInsights(data2);
+            });
+        }
+    } 
 
     var date_size_full = 0;
     function generateDailySurveyInsights(data2){
@@ -221,7 +316,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
                     }else
                         data_overlays.unshift([total_data - j, null, j]);
 
-                    console.log("Do: " + (total_data - j) + "," + data[j] + "," + j + ", " + questions[i]) ;
+                   //console.log("Do: " + (total_data - j) + "," + data[j] + "," + j + ", " + questions[i]) ;
 
                     if(j==6)
                         break;
@@ -233,8 +328,12 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
                 //console.log(data_overlays);
                 //console.log(data_overlays);
 
+                var t_forceY = [1.49, 6.5];
+                if(questions[i]==='Q3d')
+                    t_forceY = [2, 17];
+
                 //
-                var lin = loadviz(data_overlays, questions[i], qYaxis[i]);
+                var lin = loadviz(data_overlays, questions[i], qYaxis[i],t_forceY);
                 lin.title = lifeInsightsTitle[i];
                 lin.img = qimgs[i];
                 lin.subtext = qSubText[i];
@@ -431,14 +530,14 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
     */
     
 
-    function loadviz(data_overlays,q,qYaxis) {
+    function loadviz(data_overlays,q,qYaxis,t_forceY) {
 
         var data_size = date_size_full;//data_overlays.length; //date_size_full;//data_overlays.length;
         //console.log("data_size" + data_size);
         //console.log("" + JSON.stringify(data_overlays));
-        var t_forceY = [1.49, 6.5];
-        if(q==='Q3d')
-            t_forceY = [2, 17];
+        //var t_forceY = [1.49, 6.5];
+        //if(q==='Q3d')
+        //    t_forceY = [2, 17];
         //if(q==='Q4d')
         //    t_forceY = [1.49, 6.5];
 
@@ -626,7 +725,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
         //console.log("" + x);
 
         if($rootScope.isRealReinforcement == true){
-            rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
+            //rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
             rl_data['lastupdate'] = new Date().getTime();
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);    

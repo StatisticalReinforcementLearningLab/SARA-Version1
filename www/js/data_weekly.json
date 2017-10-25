@@ -235,19 +235,6 @@
     }
   },
   {
-    "name":"Q71",
-    "text":"Which days did you use marijuana (hash, weed) last week? ",
-    "type":"checkbox",
-    "extra":{
-      "choices":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "dependency":{
-        "question": "Q7", 
-        "show": "yes",
-        "hide": "no"
-      }
-    }
-  },
-  {
     "name":"Q71Sun",
     "text":"How much marijuana did you use on <b>Sunday/today</b>?",
     "type":"radiobutton",

@@ -328,7 +328,7 @@ app.controller("WeeklySurveyCtrl", function ($scope, $http, $interval, $ionicPla
           //save to "data_ds_ws.txt"
           saraDatafactory.saveDataCollectionState(rl_data['survey_data']['daily_survey'], rl_data['survey_data']['weekly_survey']); 
 
-
+          window.localStorage['daily_survey_' + moment().format('YYYYMMDD')] = 1;
           
           //var weekly_survey_data = score_data['weekly_survey'];
           //window.localStorage['weekly_survey_data'] = JSON.stringify(weekly_survey_data);
