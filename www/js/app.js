@@ -25,8 +25,11 @@ app.run(function($ionicPlatform,$ionicPush,$rootScope,$location) {
         }
         if (window.StatusBar) {
             
-            if(ionic.Platform.isIOS())
+            if(ionic.Platform.isIOS()){
                 StatusBar.styleLightContent();
+                //StatusBar.styleDefault();
+                StatusBar.overlaysWebView(true);
+            }
             else
                 StatusBar.styleDefault();
         }

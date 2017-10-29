@@ -4,12 +4,11 @@
     "description": "SARA: An Ionic project",
     "dependencies": {
         "@ionic/cloud": "^0.16.0",
-        "cordova-android": "^6.2.3",
         "cordova-ios": "^4.4.0",
         "cordova-plugin-console": "~1.0.5",
         "cordova-plugin-device": "~1.1.4",
         "cordova-plugin-splashscreen": "~4.0.1",
-        "cordova-plugin-statusbar": "~2.2.1",
+        "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
         "cordova-plugin-whitelist": "~1.3.1",
         "gulp": "^3.5.6",
         "gulp-concat": "^2.2.0",
@@ -17,7 +16,7 @@
         "gulp-rename": "^1.2.0",
         "gulp-sass": "^2.0.4",
         "ionic-plugin-keyboard": "~2.2.1",
-        "onesignal-cordova-plugin": "^2.1.2",
+        "onesignal-cordova-plugin": "^2.2.2",
         "phonegap-plugin-push": "^1.10.5"
     },
     "devDependencies": {
@@ -45,16 +44,15 @@
             "cordova-plugin-console": {},
             "cordova-plugin-device": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-statusbar": {},
             "cordova-plugin-whitelist": {},
             "ionic-plugin-keyboard": {},
             "phonegap-plugin-push": {
                 "SENDER_ID": "831721083674"
             },
-            "onesignal-cordova-plugin": {}
+            "onesignal-cordova-plugin": {},
+            "cordova-plugin-statusbar": {}
         },
         "platforms": [
-            "android",
             "ios"
         ]
     }
