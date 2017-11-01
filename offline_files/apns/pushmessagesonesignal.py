@@ -227,7 +227,7 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
                     image_name = "blue.png"
 
                 if (daily_streak >=6) and (daily_streak < 9):
-                    aBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.red);
+                    # aBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.red);
                     reminder_text = "You are " + str(9-daily_streak) +  " day(s) away from finishing a 9 day streak and earn some money" + notification_text
                     image_name = "red.png"
 

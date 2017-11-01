@@ -1532,24 +1532,26 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             //readActiveTaskData();
             //promise = $interval(readActiveTaskData, 2000);
             console.log('resumed');
+            $scope.$broadcast('game:resumed');
             //if($rootScope.insideMain == true)
             saraDatafactory.copyUsageStats({'view':'app','status':'resume'});
             isPaused = false;
             //$rootScope.game.lockRender = true;
 
-            $scope.$broadcast('game:resumed');
+            
 
         }, false);
 
         document.addEventListener("pause", function() {
             //$interval.cancel(promise);
             console.log('paused');
+            //
+            $scope.$broadcast('game:paused');
             //if($rootScope.insideMain == true)
             saraDatafactory.copyUsageStats({'view':'app','status':'paused'});
             isPaused = true;
 
-            //
-            $scope.$broadcast('game:paused');
+            
 
             //$rootScope.game.lockRender = false;
         }, false);
