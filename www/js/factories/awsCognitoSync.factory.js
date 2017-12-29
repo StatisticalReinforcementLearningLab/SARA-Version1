@@ -38,24 +38,28 @@ mod.factory('awsCognitoSyncFactory', function() {
   aws.synchronize = function(dataset, userCallback) {
     return dataset.synchronize({
       onSuccess: function(dataset, newRecords) {
+         console.log("aws.synchronize: " + "successful sync");
          return userCallback(null, 'success');
       },
       onFailure: function(err) {
+        console.log("aws.synchronize: " + "failed sync");
          return userCallback(err);
       },
       onConflict: function(dataset, conflicts, callback) {
          var resolved = [];
+         console.log("aws.synchronize: " + "conflict sync");
          for (var i=0; i<conflicts.length; i++) {
             // Take remote version.
-            resolved.push(conflicts[i].resolveWithRemoteRecord());
+            //resolved.push(conflicts[i].resolveWithRemoteRecord());
             // Or... take local version.
-            // resolved.push(conflicts[i].resolveWithLocalRecord());
+            resolved.push(conflicts[i].resolveWithLocalRecord());
 
             // Or... use custom logic.
             // var newValue = conflicts[i].getRemoteRecord().getValue() + conflicts[i].getLocalRecord().getValue();
             // resolved.push(conflicts[i].resolveWithValue(newValue);
          }
          dataset.resolve(resolved, function() {
+          console.log("aws.synchronize: " + " resolved");
             return callback(true);
          });
          // Or... callback false to stop the synchronization process.

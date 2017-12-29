@@ -43,7 +43,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         //save a local copy
         //var value = data;
         //window.localStorage['score_data'] = JSON.stringify(value);
-        console.log("storing: " + datasetname);
+        //console.log("storing: " + datasetname);
 
     }
 
@@ -125,6 +125,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             }
 
             //
+            console.log("from sara.factory.js" + JSON.stringify(data));
             window.localStorage['last_stored_date'] = key2;      
 
         }else{

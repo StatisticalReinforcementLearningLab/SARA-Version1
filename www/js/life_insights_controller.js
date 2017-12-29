@@ -1,4 +1,4 @@
-app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $location, $routeParams, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap) {
+app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $location, $routeParams, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, NgMap, $interval) {
     
     var type = $routeParams.type;
     console.log("" + type);
@@ -713,7 +713,7 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
           });
     }
 
-
+    var promise;
     $scope.ratingChanged = function(x){
         var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
         rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
@@ -723,16 +723,40 @@ app.controller("LifeInsightsCtrl", function($scope, $http, $ionicPlatform, $loca
         reinfrocement_data_today['reward_at_rating_tz'] = moment().format("ZZ");
 
         //console.log("" + x);
-
+        //$rootScope.isRealReinforcement = true;
+        console.log("" + x + ", " + $rootScope.isRealReinforcement);
+        console.log("came here");
         if($rootScope.isRealReinforcement == true){
             //rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
             rl_data['lastupdate'] = new Date().getTime();
+            $rootScope.cognito_data = rl_data;
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+            console.log("from lifeinsight.js");
+            console.log(window.localStorage['cognito_data']);
             //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
 
+        if(ionic.Platform.isIOS()){
+            promise = $interval(testResumePause, 1000);
+            console.log("starting seconds");
+            //$cordovaProgress.showSimpleWithLabel(true, "Saving");
+        }else{
+            $location.path("/main");
+            //promise = $interval(testResumePause, 1000);
+            //$cordovaProgress.showSimpleWithLabel(true, "Saving");
+        }
+    }
+
+    function testResumePause() {
+        console.log("wait two seconds")
+        //if(ionic.Platform.isIOS())
+        //    $cordovaProgress.hide();
+        
+        $interval.cancel(promise);
         $location.path("/main");
     }
+
+
 
 });

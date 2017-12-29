@@ -390,6 +390,9 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
             if($rootScope.gameloaded == undefined){
                 saraDatafactory.pullRLData(function(returnValue) {
+
+                    //------ this happens at the start. Load from the cloud.
+
                     // use the return value here instead of like a regular (non-evented) return value
                     //console.log(returnValue);
                     //
@@ -403,7 +406,14 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     else
                         window.localStorage['cognito_data'] = returnValue;
                     */
+
+
                     $rootScope.gameloaded = true;
+                    if(returnValue == null){}
+                    else{
+                        window.localStorage['latest_cloud_data'] = returnValue;
+                    }
+
                     loadgame(returnValue);
                 });
             }else{
@@ -418,8 +428,8 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             function loadgame(returnValue){
                 if(returnValue == null){
                     console.log("We got null");
-                }else
-                    window.localStorage['latest_cloud_data'] = returnValue;
+                }//else
+                    //window.localStorage['latest_cloud_data'] = returnValue;
 
 
                 rl_data_str = window.localStorage['cognito_data'] || "{}";
@@ -432,24 +442,28 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     }else{
                         //means we need to restore from the web.
                         rl_data_str = returnValue;
-                        window.localStorage['cognito_data'] = returnValue;
+                        //if coming from the web and we don't have any backup data then we are thinking cloud is cognito.
+                        //so in that case, there will be no update if we have already given done the survey or active tasks.
+                        window.localStorage['cognito_data'] = returnValue; 
                     }
                 }else{
                     //cognito_data is local storage is latest. Continue with that
                 }
 
-                //--other device sync issue
+                //------ other device sync issue: START
                 //cloud data initialize
                 var current_cloud_data = JSON.parse(window.localStorage['latest_cloud_data'] || '{}');
                 if(current_cloud_data.hasOwnProperty('lastupdate')){
                 }else{
                     current_cloud_data['lastupdate'] = 0;//means first time we will write what we have.
+                    window.localStorage['latest_cloud_data'] =  JSON.stringify(current_cloud_data);
                 }
                 //local data initialize
                 var current_local_data = JSON.parse(window.localStorage['cognito_data'] || '{}');
                 if(current_local_data.hasOwnProperty('lastupdate')){
                 }else{
                     current_local_data['lastupdate'] = new Date().getTime(); //means first time we will store what we have.
+                    window.localStorage['cognito_data'] = JSON.stringify(current_local_data); 
                 }
 
                 //update if there is new data.
@@ -458,7 +472,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                     window.localStorage['cognito_data'] = returnValue;
                     rl_data_str = returnValue;
                 }
-
+                //----- other device sync issue: END
 
                 //-- rl_data_str is the latest value..
                 //this is the latest value.
@@ -548,10 +562,18 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 }
 
                 //if undefined then get from local storage
-                if($rootScope.reinfrocement_data == undefined)
-                    $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                
+                //--- This is causing problems.
+                //if($rootScope.reinfrocement_data == undefined)
+                //    $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
 
-                var reinfrocement_data = $rootScope.reinfrocement_data;
+                //var reinfrocement_data = $rootScope.reinfrocement_data;
+
+                //if($rootScope.reinfrocement_data == undefined)
+                //$rootScope.reinfrocement_data = rl_data['reinfrocement_data'];
+
+                var reinfrocement_data = rl_data['reinfrocement_data'];//$rootScope.reinfrocement_data; 
+
 
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
@@ -579,14 +601,14 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                                 //save the data first
                                 //
-                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
 
                                 //
                                 //-- write it down to 'rl_data'
                                 //
-                                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+                                //var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
                                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
-                                var reinforcement_record = rl_data['reinfrocement_data'] || {};
+                                //var reinforcement_record = rl_data['reinfrocement_data'] || {};
                                 //if(Object.keys(reinforcement_record).length === 0)
                                 //     rl_data['reinfrocement_data'] = {};
 
@@ -629,7 +651,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                                 //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
-                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
 
                             //
@@ -663,14 +685,14 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
 
                                 //save the data first
                                 //
-                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
 
                                 //
                                 //-- write it down to 'rl_data'
                                 //
-                                var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+                                //var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
                                 ////don't worry load from local. It is only today. Also, ither will fill out stuffs here.
-                                var reinforcement_record = rl_data['reinfrocement_data'] || {};
+                                // var reinforcement_record = rl_data['reinfrocement_data'] || {};
                                 //if(Object.keys(reinforcement_record).length === 0)
                                 //     rl_data['reinfrocement_data'] = {};
 
@@ -711,7 +733,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                                 window.localStorage['cognito_data'] = JSON.stringify(rl_data);
                                 //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
 
-                                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
                             }
 
                             //
@@ -1632,12 +1654,19 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         }
         //updates['/user-posts/' + $scope.survey.id + '/' + newPostKey] = $scope.survey;
         //
-        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
-        if(rl_data.hasOwnProperty('badges')){
-            $scope.money = rl_data['badges']['money'];
-            if($scope.money=="" || $scope.money==undefined)
-                $scope.money = "0";
-            window.localStorage['total_money_earned'] = "" + $scope.money;
+        if(isPaused == true)
+            $rootScope.definedOnce = false;
+        else
+            $rootScope.definedOnce = true;
+
+        if($rootScope.definedOnce == true){
+            var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+            if(rl_data.hasOwnProperty('badges')){
+                $scope.money = rl_data['badges']['money'];
+                if($scope.money=="" || $scope.money==undefined)
+                    $scope.money = "0";
+                window.localStorage['total_money_earned'] = "" + $scope.money;
+            }
         }
     }
 
@@ -2012,15 +2041,24 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         //local data initialize
         var current_local_data = JSON.parse(window.localStorage['cognito_data'] || '{}');
         if(current_local_data.hasOwnProperty('lastupdate')){
+            if($rootScope.cognito_data != undefined){
+                //if($rootScope.cognito_data['lastupdate'] > current_local_data['lastupdate'])
+                //    current_local_data = $rootScope.cognito_data;
+            }
         }else{
             current_local_data['lastupdate'] = new Date().getTime(); //means first time we will store what we have.
         }
 
+        console.log("from app.js");
+        console.log(window.localStorage['cognito_data']); 
         //update if there is new data.
         if(current_cloud_data['lastupdate'] < current_local_data['lastupdate']){
             console.log('Cloud: updating data');
             current_local_data['readable_ts'] = moment().format("MMMM Do YYYY, h:mm:ss a ZZ");
             saraDatafactory.storedata('rl_data',current_local_data, moment().format('YYYYMMDD'));
+
+            //now latest_cloud_data and current_local_data is the same
+            window.localStorage['latest_cloud_data'] = window.localStorage['cognito_data']  || '{}';
 
             if(ionic.Platform.isIOS()){
                 //store firebase score.

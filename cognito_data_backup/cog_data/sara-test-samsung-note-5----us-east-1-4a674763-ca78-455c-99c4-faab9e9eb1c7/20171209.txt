@@ -1,0 +1,26 @@
+{
+    "badges": {}, 
+    "imei": "353877070864925", 
+    "reinfrocement_data": {
+        "20170705": {
+            "at": 1, 
+            "ds": 1, 
+            "reward_ds": 1, 
+            "reward_ds_content": "img/reinforcements/gifs/IG9.gif", 
+            "reward_ds_prob": 7214, 
+            "reward_ds_ts": "1499281492771", 
+            "reward_ds_ts_tz": "2017-07-05 15:04:52 pm -0400"
+        }, 
+        "visible_lifeinsights": {}
+    }, 
+    "survey_data": {
+        "active_tasks_survey": {
+            "20170705": 2
+        }, 
+        "daily_survey": {
+            "20170705": 1
+        }, 
+        "weekly_survey": {}
+    }, 
+    "username": "sara-test-samsung-note-5"
+}

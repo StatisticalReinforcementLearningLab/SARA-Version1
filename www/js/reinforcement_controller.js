@@ -1,4 +1,4 @@
-app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $location, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory) {
+app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $location, $rootScope, $cordovaStatusbar, $timeout, awsCognitoSyncFactory, awsCognitoIdentityFactory, $ionicHistory, $state, $ionicLoading, saraDatafactory, $cordovaProgress, $interval) {
     
     /*
     if(Math.random() > 0.5)
@@ -38,6 +38,10 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
     else
         type = "money";
     */
+
+    //
+    //$rootScope.reinforcementType == "ActiveTasks";
+
     if($rootScope.reinforcementType != "ActiveTasks")
         saraDatafactory.copyUsageStats({'view':'reinforcement_view','status':'start'});
     $scope.$on('$destroy', function() {
@@ -64,6 +68,8 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
     //type = reward_options[3];
 
     var visible_lifeinsights = rl_data['reinfrocement_data']['visible_lifeinsights'] || {};
+
+
 
     if($rootScope.reinforcementType=="ActiveTasks"){
         type = 'life_insights';
@@ -99,13 +105,14 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
                     rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
                     rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
                     rl_data['lastupdate'] = new Date().getTime();
+                    $rootScope.cognito_data = rl_data;
                     window.localStorage['cognito_data'] = JSON.stringify(rl_data); 
 
                     //save to local
                     var reinfrocement_data_total = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                     reinfrocement_data_total[moment().format('YYYYMMDD')] = reinfrocement_data_today;
                     window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data_total);
-                    $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                    //$rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
 
                     //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
                 }
@@ -187,28 +194,42 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
             }
         }
 
+        //TODO: the reward content has not been saved
         if(rand_index == -1){//this rand_index=-1 will never happen
-            $location.path("/lifeinsights/" + all);
             reinfrocement_data_today['reward_type_extra_at'] = 'all';
+            //$location.path("/lifeinsights/" + all);
         }else{
-            $location.path("/lifeinsights/" + life_insight_keys[rand_index]);
             reinfrocement_data_today['reward_at_content'] = life_insight_keys[rand_index];
+            //$location.path("/lifeinsights/" + life_insight_keys[rand_index]);
         }
+        
 
         if($rootScope.isRealReinforcement == true){
             rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
             rl_data['lastupdate'] = new Date().getTime();
+            $rootScope.cognito_data = rl_data;
             window.localStorage['cognito_data'] = JSON.stringify(rl_data);
 
             //------ 
             var reinfrocement_data_total = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
             reinfrocement_data_total[moment().format('YYYYMMDD')] = reinfrocement_data_today;
             window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data_total);
-            $rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+            //$rootScope.reinfrocement_data = JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
 
             //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
+
+
+        if(rand_index == -1){//this rand_index=-1 will never happen
+            //reinfrocement_data_today['reward_type_extra_at'] = 'all';
+            $location.path("/lifeinsights/" + all);
+        }else{
+            //reinfrocement_data_today['reward_at_content'] = life_insight_keys[rand_index];
+            $location.path("/lifeinsights/" + life_insight_keys[rand_index]);
+        }
+
+
     }
 
 
@@ -227,24 +248,47 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
 
     //
     $scope.s = {};
+    var promise;
     $scope.ratingChanged = function(x){
-        var rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
-        rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
-        var reinfrocement_data_today = rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] || {};
+        //rl_data = JSON.parse(window.localStorage['cognito_data'] || "{}");
+        //rl_data['reinfrocement_data'] = rl_data['reinfrocement_data'] ||{};
+        //reinfrocement_data_today = rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] || {};
         reinfrocement_data_today['reward_ds_rating'] = x;
         reinfrocement_data_today['reward_ds_rating_ts'] = moment().format("x");
         reinfrocement_data_today['reward_ds_rating_tz'] = moment().format("ZZ");
 
-        //console.log("" + x);
-
-        if($rootScope.isRealReinforcement == true){
+        //$rootScope.isRealReinforcement = true;
+        console.log("" + x + ", " + $rootScope.isRealReinforcement);
+        console.log("came here");
+        if($rootScope.isRealReinforcement == true)
+        {
             //rl_data['reinfrocement_data']['visible_lifeinsights'] = visible_lifeinsights;
             rl_data['reinfrocement_data'][moment().format('YYYYMMDD')] = reinfrocement_data_today;    
             rl_data['lastupdate'] = new Date().getTime();
-            window.localStorage['cognito_data'] = JSON.stringify(rl_data);    
+            $rootScope.cognito_data = rl_data;
+            console.log("from meme.js");
+            window.localStorage['cognito_data'] = JSON.stringify(rl_data);
+            console.log("came here");
+            console.log(window.localStorage['cognito_data']);    
             //saraDatafactory.storedata('rl_data',rl_data, moment().format('YYYYMMDD'));
         }
 
+        if(ionic.Platform.isIOS()){
+            promise = $interval(testResumePause, 1000);
+            //$cordovaProgress.showSimpleWithLabel(true, "Saving");
+        }else{
+            $location.path("/main");
+            //promise = $interval(testResumePause, 1000);
+            //$cordovaProgress.showSimpleWithLabel(true, "Saving");
+        }
+    }
+
+    function testResumePause() {
+        console.log("wait two seconds")
+        //if(ionic.Platform.isIOS())
+        //    $cordovaProgress.hide();
+
+        $interval.cancel(promise);
         $location.path("/main");
     }
 

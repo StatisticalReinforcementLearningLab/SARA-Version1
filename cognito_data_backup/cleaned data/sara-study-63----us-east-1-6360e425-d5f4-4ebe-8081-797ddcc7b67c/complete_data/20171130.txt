@@ -1,0 +1,12 @@
+{
+    "badges": {}, 
+    "imei": "", 
+    "lastupdate": 1512088444781, 
+    "readable_ts": "November 30th 2017, 7:34:04 pm -0500", 
+    "survey_data": {
+        "active_tasks_survey": {}, 
+        "daily_survey": {}, 
+        "weekly_survey": {}
+    }, 
+    "username": "sara-study-63"
+}

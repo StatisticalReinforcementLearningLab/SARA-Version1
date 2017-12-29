@@ -266,15 +266,20 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
 
             //-- Save the reward
             if(isreal == true){
-                var reinfrocement_data = $rootScope.reinfrocement_data;//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                var reinfrocement_data = cognito_data['reinfrocement_data'];//$rootScope.reinfrocement_data;//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
                 }else
                     reinfrocement_data[moment().format('YYYYMMDD')] = {};
 
                 reinfrocement_data[moment().format('YYYYMMDD')]['ds'] = 1;
-                $rootScope.reinfrocement_data = reinfrocement_data;
-                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                //$rootScope.reinfrocement_data = reinfrocement_data;
+
+                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                cognito_data['reinfrocement_data'] = reinfrocement_data;
+                cognito_data['lastupdate'] = new Date().getTime();
+                window.localStorage['cognito_data'] = JSON.stringify(cognito_data);
+
             }
 
         }else{
@@ -515,15 +520,19 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             $rootScope.reward_awarded_at = reward_awarded_at;
 
             if(isreal == true){
-                var reinfrocement_data = $rootScope.reinfrocement_data;//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
+                var reinfrocement_data = cognito_data['reinfrocement_data'];//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
                 }else
                     reinfrocement_data[moment().format('YYYYMMDD')] = {};
 
                 reinfrocement_data[moment().format('YYYYMMDD')]['at'] = 1;
-                $rootScope.reinfrocement_data = reinfrocement_data;
-                window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+                //$rootScope.reinfrocement_data = reinfrocement_data;
+                //window.localStorage['reinfrocement_data'] = JSON.stringify(reinfrocement_data);
+
+                cognito_data['reinfrocement_data'] = reinfrocement_data;
+                cognito_data['lastupdate'] = new Date().getTime();
+                window.localStorage['cognito_data'] = JSON.stringify(cognito_data);
             }
 
         }else{

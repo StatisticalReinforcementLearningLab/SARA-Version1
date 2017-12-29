@@ -662,6 +662,8 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
         //
         //init();
 
+        console.log(JSON.stringify($scope.survey));
+
     }
 
     function contains(a, obj) {

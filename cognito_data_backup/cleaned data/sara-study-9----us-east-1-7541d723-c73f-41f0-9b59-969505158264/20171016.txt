@@ -1,0 +1,10 @@
+{
+    "badges": {}, 
+    "imei": "", 
+    "survey_data": {
+        "active_tasks_survey": {}, 
+        "daily_survey": {}, 
+        "weekly_survey": {}
+    }, 
+    "username": "sara-study-9"
+}

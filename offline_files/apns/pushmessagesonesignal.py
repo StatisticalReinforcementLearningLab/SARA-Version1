@@ -13,6 +13,8 @@ import threading
 import datetime
 import requests
 import json 
+import os.path
+import os
 
 _logger = logging.getLogger()
 _logger.setLevel(logging.DEBUG)
@@ -306,6 +308,8 @@ def send_reminder_notifications_onesignal(quote_text, notification_image, player
                "ios_badgeType": "Increase",
                "ios_badgeCount": 1,
                "collapse_id": "reminder", 
+               "delayed_option": "timezone",
+               "delivery_time_of_day": "6:00PM",
                "ttl" : 259200,
                "priority": 10}
 
@@ -359,8 +363,9 @@ def send_reminder_notifications():
 # send_message(token_hex, reminder_message, reminder_header)
 current_time = datetime.datetime.now()
 #print "current_time: "  + str(current_time.hour)
-if current_time.hour==18 and current_time.minute <15:
+# if current_time.hour==18 and current_time.minute <15:
 # if current_time.hour==21 and current_time.minute <15:
+if current_time.hour==0 and current_time.minute <45 and current_time.minute >=30:
     send_reminder_notifications()
 else:
     print "It is not time to send reminder notifications"
@@ -440,11 +445,11 @@ def schedule_engagement_notifications():
 
 current_time = datetime.datetime.now()
 #print "current_time: "  + str(current_time.hour)
-if current_time.hour==1 and current_time.minute <15:
+if current_time.hour==0 and current_time.minute <15:
     schedule_engagement_notifications()
 else:
     print "It is not time to schedule engagement notifications"
-#schedule_engagement_notifications()
+# schedule_engagement_notifications()
 
 
 
@@ -478,6 +483,8 @@ def send_engagement_notifications_onesignal(author_name, quote_text, author_imag
                "ios_badgeType": "Increase",
                "ios_badgeCount": 1,
                "collapse_id": "engagement", 
+               "delayed_option": "timezone",
+               "delivery_time_of_day": "4:00PM",
                "ttl" : 259200,
                "priority": 10}
 
@@ -554,12 +561,14 @@ def send_engagement_notifications():
             #    whenNotifiedTs = 1507492802
             #    unixtime = 1507492702
             # 
-            whenNotifiedTs = whenNotifiedTs + 120 # add two minutes so all notifications are delivered, because we will start sending at 4PM, if the time is 4:00:02
+            whenNotifiedTs = whenNotifiedTs + 240 # add two minutes so all notifications are delivered, because we will start sending at 4PM, if the time is 4:00:02
 
-            if (unixtime<=whenNotifiedTs) and ((unixtime+15*60)>whenNotifiedTs): #correct one
+            # if (unixtime<=whenNotifiedTs) and ((unixtime+15*60)>whenNotifiedTs): #correct one
             # if unixtime<=whenNotifiedTs: 
             # if unixtime>=whenNotifiedTs and unixtime<(whenNotifiedTs+15*60*4*24): 
                 # print "222 username: " + username + ", key: " + engagement_data_key
+            # if True:
+            if unixtime<whenNotifiedTs: # today at 4PM, unixtime at 12:15AM will be less than only for todays "whenNotifiedTs" and higher than any one else.
                 if engagement_data['isRandomized'] == 1:
                     db.child("iOS").child("engagement_notification").child(username).child(engagement_data_key).update({"isNotified": 1})
 
@@ -596,9 +605,106 @@ def send_engagement_notifications():
 
             #pdb.set_trace()
 
+# send_engagement_notifications()
+
+# send_engagement_notifications()
+if current_time.hour==0 and current_time.minute <30 and current_time.minute >=15:
+    # schedule_engagement_notifications()
+    send_engagement_notifications()
+else:
+    print "It is not time to send engagement notifications"
 
 
-send_engagement_notifications()
+
+def send_demo_notifications():
+    print "demo notification"
+    header = {"Content-Type": "application/json; charset=utf-8",
+              "Authorization": "Basic OWQzMzA4ODItOTliMC00NDY3LWJhYjgtYmQwN2YyMTk1OTQ2"}
+
+    quote_text = "demo notification"
+    notification_type = 'reminder'
+    update_url = 'null'
+    notification_image = ""
+    notification_image = 'fishjournal.png'
+    player_id = '82b74b76-1efc-401f-8f67-19dd6829c2f9'
+    payload = {"app_id": "ae8ddfb9-a504-41e2-bc97-477017bb925f",
+               "include_player_ids": [player_id],
+               "headings": {"en": "Time to checkin on SARA"},
+               "contents": {"en": quote_text},
+               "ios_attachments": {"id": "https://s3.amazonaws.com/aws-website-sara-ubicomp-h28yp/sarapp/" + notification_image},
+               "data": {"image": "author_image", "message": "quote_text", "author": "author_name", "type": notification_type, "url": update_url},
+               #"buttons": [{"id": "iLike", "text": "Like"}, {"id": "iNope", "text": "Nope"}],
+               "ios_badgeType": "Increase",
+               "ios_badgeCount": 1,
+               "collapse_id": "reminder2", 
+               "ttl" : 259200,
+               "delayed_option": "timezone",
+               "delivery_time_of_day": "9:55PM",
+               "priority": 10}
+    req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))           
+    #req = requests.post(("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
+    print(req.status_code, req.reason)
+    #print json.dumps(r.json(), indent=4, sort_keys=False) 
+    # pass
+
+# send_demo_notifications()
+
+
+
+# save the last 30 days data
+def get_30_day_notifications():
+    #
+    # req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
+    header = {"Content-Type": "application/json; charset=utf-8",
+              "Authorization": "Basic OWQzMzA4ODItOTliMC00NDY3LWJhYjgtYmQwN2YyMTk1OTQ2"}
+    r = requests.get("https://onesignal.com/api/v1/notifications?app_id=" + "ae8ddfb9-a504-41e2-bc97-477017bb925f" + "&limit=1&offset=0", headers=header)
+    print json.dumps(r.json(), indent=4, sort_keys=False)
+
+    last_30_day_count = r.json()
+    last_30_day_count = last_30_day_count['total_count']
+    print last_30_day_count
+
+    #
+    offset = 0
+    last_30_day_count = last_30_day_count - last_30_day_count%50
+    last_30_day_count = last_30_day_count + 1
+    all_notifications = []
+    print last_30_day_count
+    for i in range(last_30_day_count):
+        if ((i+1)%50==0) or (i==(last_30_day_count-1)):
+            print i+1, offset
+        else:
+            continue
+
+        #
+        r = requests.get("https://onesignal.com/api/v1/notifications?app_id=" + "ae8ddfb9-a504-41e2-bc97-477017bb925f" + "&limit=50&offset=" + str(offset), headers=header)
+        notifications = r.json()
+        notifications = notifications['notifications']#['id']
+        all_notifications.extend(notifications)
+        offset = offset + 50
+
+    print len(all_notifications)
+    # pdb.set_trace()
+
+    if os.path.isfile('/home/ubuntu/SARA/apns/apns-dev-cert.pem'): # if file exist then we are on server
+        COG_BACKUP_DIRECTORY = "/home/ubuntu/SARA/noti_data/"
+    else:
+        COG_BACKUP_DIRECTORY = "./noti_data/"
+
+
+    if not os.path.exists(COG_BACKUP_DIRECTORY):
+        os.makedirs(COG_BACKUP_DIRECTORY)
+
+    d = datetime.datetime.today()
+    date_str = d.strftime ("%Y%m%d")
+    json_file = open(COG_BACKUP_DIRECTORY + '/' + date_str + ".txt","w")
+    json_file.write(json.dumps(all_notifications, indent=4, sort_keys=True)) 
+    json_file.close()
+
+if current_time.hour==23 and current_time.minute <45 and current_time.minute >=30:
+    get_30_day_notifications()
+else:
+    print "Not time to save notification data"
 
 
 # Test codes

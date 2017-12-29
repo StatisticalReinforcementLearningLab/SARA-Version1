@@ -1,0 +1,77 @@
+{
+    "at_streak": {}, 
+    "badges": {
+        "active_tasks": [
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0
+        ], 
+        "daily_survey": [
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0
+        ], 
+        "money": 1, 
+        "weekly_survey": [
+            0, 
+            0, 
+            0, 
+            0
+        ]
+    }, 
+    "daily_streak": {}, 
+    "imei": "", 
+    "lastupdate": 1507597142462, 
+    "life-insights": {
+        "at_sp": {
+            "20171006": 1985, 
+            "20171009": 1802
+        }, 
+        "at_tap": {
+            "20171006": 37, 
+            "20171009": 48
+        }, 
+        "daily_survey": {
+            "20171006": "2,0.14365281967973953:-0.6731630824372763,0,2,0,3"
+        }
+    }, 
+    "readable_ts": "October 9th 2017, 8:59:02 pm -0400", 
+    "reinfrocement_data": {
+        "20171006": {
+            "at": 1, 
+            "ds": 1, 
+            "reward_at": 1, 
+            "reward_at_prob": 5040, 
+            "reward_at_ts": "1507340645066", 
+            "reward_at_ts_tz": "2017-10-06 21:44:05 pm -0400", 
+            "reward_ds": 0, 
+            "reward_ds_prob": 7283, 
+            "reward_ds_ts": "1507331643361", 
+            "reward_ds_ts_tz": "2017-10-06 19:14:03 pm -0400"
+        }, 
+        "20171009": {
+            "at": 1, 
+            "reward_at": 0, 
+            "reward_at_prob": 2989, 
+            "reward_at_ts": "1507597142461", 
+            "reward_at_ts_tz": "2017-10-09 20:59:02 pm -0400"
+        }
+    }, 
+    "survey_data": {
+        "active_tasks_survey": {
+            "20171006": 2, 
+            "20171009": 2
+        }, 
+        "daily_survey": {
+            "20171006": 1
+        }, 
+        "weekly_survey": {}
+    }, 
+    "username": "sara-study-30"
+}
