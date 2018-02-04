@@ -9,7 +9,7 @@ app.controller("DailySurveyCtrl", function($scope, $http, $interval, $ionicPlatf
             //$cordovaStatusbar.overlaysWebView(true);
             //$cordovaStatusbar.styleHex('#4527A0');
             if (window.StatusBar) {
-                StatusBar.overlaysWebView(true);
+                //StatusBar.overlaysWebView(true);
                 StatusBar.backgroundColorByHexString("#303F9F"); //Light
                 //StatusBar.style(2); //Black, transulcent
                 //StatusBar.style(3); //Black, opaque

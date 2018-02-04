@@ -28,7 +28,7 @@ app.run(function($ionicPlatform,$ionicPush,$rootScope,$location) {
             if(ionic.Platform.isIOS()){
                 StatusBar.styleLightContent();
                 //StatusBar.styleDefault();
-                StatusBar.overlaysWebView(true);
+                //StatusBar.overlaysWebView(true);
             }
             else
                 StatusBar.styleDefault();
@@ -1529,7 +1529,7 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             //$cordovaStatusbar.overlaysWebView(true);
             //$cordovaStatusbar.styleHex('#4527A0');
             if (window.StatusBar) {
-                StatusBar.overlaysWebView(true);
+                //StatusBar.overlaysWebView(true);
                 StatusBar.backgroundColorByHexString("#303F9F"); //Light
                 //StatusBar.style(2); //Black, transulcent
                 //StatusBar.style(3); //Black, opaque
@@ -2495,7 +2495,7 @@ app.controller('LoginCtrl', function($scope, awsCognitoIdentityFactory, $state, 
                 //$cordovaStatusbar.overlaysWebView(true);
                 //$cordovaStatusbar.styleHex('#4527A0');
                 if (window.StatusBar) {
-                    StatusBar.overlaysWebView(true);
+                    //StatusBar.overlaysWebView(true);
                     StatusBar.backgroundColorByHexString("#303F9F"); //Light
                 }
             }

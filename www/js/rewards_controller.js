@@ -9,7 +9,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
           //$cordovaStatusbar.overlaysWebView(true);
           //$cordovaStatusbar.styleHex('#4527A0');
           if(window.StatusBar) {
-            StatusBar.overlaysWebView(true);
+            //StatusBar.overlaysWebView(true);
             StatusBar.backgroundColorByHexString("#303F9F"); //Light
             //StatusBar.style(2); //Black, transulcent
             //StatusBar.style(3); //Black, opaque
@@ -268,6 +268,9 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             if(isreal == true){
                 var reinfrocement_data = cognito_data['reinfrocement_data'];//$rootScope.reinfrocement_data;//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
+                if(reinfrocement_data == undefined)
+                  reinfrocement_data = {};
+
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
                 }else
                     reinfrocement_data[moment().format('YYYYMMDD')] = {};
@@ -522,6 +525,10 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             if(isreal == true){
                 var reinfrocement_data = cognito_data['reinfrocement_data'];//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
+
+                if(reinfrocement_data == undefined)
+                  reinfrocement_data = {};
+                
                 if(moment().format('YYYYMMDD') in reinfrocement_data){
                 }else
                     reinfrocement_data[moment().format('YYYYMMDD')] = {};
