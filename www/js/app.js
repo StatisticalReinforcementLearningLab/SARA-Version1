@@ -365,6 +365,7 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
                 cognito_data['username'] = window.localStorage['username'] || '';
                 cognito_data = JSON.stringify(cognito_data);
                 window.localStorage['cognito_data'] = cognito_data;
+                returnValue = window.localStorage['cognito_data'];
             }else{
                 
                 returnValue = window.localStorage['cognito_data'];
@@ -1471,7 +1472,6 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
     document.addEventListener("deviceready", onDeviceReady, false);
 
     //var promise = $interval(readActiveTaskData, 2000);
-
     var isPaused = false;
     function onDeviceReady() {
         console.log(StatusBar);
@@ -1488,6 +1488,8 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
 
         //
         console.log("On device ready");
+
+       
 
         /*
         saraDatafactory.loadDataCollectionState(function(returnValue) {
@@ -1523,9 +1525,6 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
             saraDatafactory.copyUsageStats({'view':'app','status':'paused'});
             isPaused = true;
 
-            
-
-            //$rootScope.game.lockRender = false;
         }, false);
 
 
@@ -1572,6 +1571,18 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
         //    readActiveTaskData();
         var regid = window.localStorage['oneSignalId'] || 'unknown';
 
+        //$rootScope.game.lockRender = false;
+        /*
+        var data = {};
+        data['username'] = 'test';
+        var updates = {};
+        updates['/test/'] = data;
+        data['ts'] = new Date().getTime();
+        data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
+        firebase.database().ref().update(updates);
+        */
+
+
         if (ionic.Platform.isIOS()) {
             if($scope.username === 'unknown')
                 return;
@@ -1602,7 +1613,9 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
                 }
             }
         }
-        //updates['/user-posts/' + $scope.survey.id + '/' + newPostKey] = $scope.survey;
+
+        //
+        //--- updates['/user-posts/' + $scope.survey.id + '/' + newPostKey] = $scope.survey;
         //
         if(isPaused == true)
             $rootScope.definedOnce = false;
@@ -1774,15 +1787,18 @@ app.controller("MainCtrl", function($scope, $ionicPush, awsCognitoIdentityFactor
                             }
                         }
             }
+
+            //
             //console.log("AT data: " + isActiveTaskAddedHowMany + ", " + isActiveTaskAdded);
             //console.log("AT data prior: " + JSON.stringify(active_task_prior_data));
             //console.log("AT data new: "  + JSON.stringify(active_tasks_survey_data));
             //if(isActiveTaskAdded){
+            //
                     
             //means 2 active task has been done.
             if(active_tasks_survey_data.hasOwnProperty(moment().format('YYYYMMDD')) && active_tasks_survey_data[moment().format('YYYYMMDD')] == 2){
 
-                        //see if we have given a reward already.
+                //see if we have given a reward already.
                 var active_tasks_reward_records = JSON.parse(window.localStorage['active_tasks_reward_records']||'{}'); 
                 if(active_tasks_reward_records.hasOwnProperty(moment().format('YYYYMMDD'))){
                             //we have given rewards already so move on
