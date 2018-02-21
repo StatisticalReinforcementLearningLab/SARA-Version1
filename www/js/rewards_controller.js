@@ -268,6 +268,7 @@ app.controller("RewardsCtrl", function($scope, $location,$cordovaStatusbar,$root
             if(isreal == true){
                 var reinfrocement_data = cognito_data['reinfrocement_data'];//$rootScope.reinfrocement_data;//JSON.parse(window.localStorage['reinfrocement_data'] || "{}");
                 //if we alrady have the data
+                
                 if(reinfrocement_data == undefined)
                   reinfrocement_data = {};
 
