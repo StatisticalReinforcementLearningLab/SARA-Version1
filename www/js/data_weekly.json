@@ -1,0 +1,380 @@
+[
+  {
+    "name":"Section1",
+    "text":"The following 7 questions are about <b>today</b>",
+    "type":"sectionheader",
+    "style":"header",
+    "img": "img/happy_fish.png"
+  },
+  {
+    "name":"Q1d",
+    "text":"How stressed are you today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","A<br>lot"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q2d",
+    "text":"How are you feeling today? Please click on the spot that best represents your mood",
+    "type":"moodgrid2"
+  },
+  {
+    "name":"Q3d",
+    "text":"How much free time have you had today?",
+    "type":"radiobutton",
+    "type":"range2",
+    "extra":{
+      "choices":["0<br>hours","600<br>min",0,1440,60]
+    }
+  },
+  {
+    "name":"Q4d",
+    "text":"How much fun have you had today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","A<br>lot"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q5d",
+    "text":"How lonely or left out have you felt today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q6d",
+    "text":"How new and exciting has your day been?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q7d",
+    "text":"Do you expect good things will happen to you tomorrow?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"QRand",
+    "text":"",
+    "type":"random",
+    "extra":"js/random_question.json"
+  },
+  {
+    "name":"Section2",
+    "text":"The following questions are about <b>last week</b>",
+    "type":"sectionheader",
+    "style":"header",
+    "img": "img/cute_whale.png"
+  },
+  {
+    "name":"Q1",
+    "text":"This past week, did you do or say things without thinking?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Rarely/Never","Occasionally","Often","Almost Always/Always"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q2",
+    "text":"This past week, did you plan tasks carefully?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Rarely/Never","Occasionally","Often","Almost Always/Always"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q3",
+    "text":"This past week, did you concentrate easily?",
+    "type":"radiobutton",
+    "extra":{
+          "choices":["Rarely/Never","Occasionally","Often","Almost Always/Always"],
+          "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q3n",
+    "text":"How frequently have you smoked cigarettes last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not at all","Less than one cigarette per day","1-5 cigarettes per day","About ½ pack per day","About 1 pack per day","About 1 ½ packs per day","Two packs or more per day"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q3e",
+    "text":"How many days this past week did you use an electronic vaporizer to inhale a nicotine mist?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0","1","2","3","4","6 or more days"],
+      "orientation": "vertical"
+    }
+  },
+  {
+    "name":"Q41sun",
+    "text":"How many drinks did you have on <b>Sunday/today</b>?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41mon",
+    "text":"How many drinks did you have on <b>Monday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41tue",
+    "text":"How many drinks did you have on <b>Tuesday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41wed",
+    "text":"How many drinks did you have on <b>Wednesday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41thu",
+    "text":"How many drinks did you have on <b>Thursday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41fri",
+    "text":"How many drinks did you have on <b>Friday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q41sat",
+    "text":"How many drinks did you have on <b>Saturday</b> last week?",
+    "type":"range3",
+    "extra":{
+      "choices":["0","20",0,20,1],
+      "isGroup": true,
+      "groupId": "drinks"
+    }
+  },
+  {
+    "name":"Q42",
+    "text":"Pick the top reason(s) why you drank last week:",
+    "type":"checkbox",
+    "extra":{
+      "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed, anxious or angry", "To make social gatherings more fun","Other"],
+      "dependency":{
+        "question": "Q4", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q43",
+    "text":"Pick the top reason(s) why you didn’t drink last week",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Did not want to", "No chance/time", "Out of alcohol", "Trying to cut back", "More important things to do", "Cost","Other"],
+      "dependency":{
+        "question": "Q4", 
+        "show": "no",
+        "hide": "yes"
+      }
+    }
+  },
+  {
+    "name":"Q6",
+    "text":"In the past week, overall how tempted were you to use marijuana? ",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>strong"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q71Sun",
+    "text":"How much marijuana did you use on <b>Sunday/today</b>?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71Mon",
+    "text":"How much marijuana did you use on <b>Monday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71tues",
+    "text":"How much marijuana did you use on <b>Tuesday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71Wed",
+    "text":"How much marijuana did you use on <b>Wednesday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71thu",
+    "text":"How much marijuana did you use on <b>Thursday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71fri",
+    "text":"How much marijuana did you use on <b>Friday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q71sat",
+    "text":"How much marijuana did you use on <b>Saturday</b> last week?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["0g","0.25g (1/2 joint)","0.5g (1 joint)","1g (2 joints)","1.5g (3 joints)","2g (4 joints)","2.5g+ (5+ joints)","Not sure"],
+      "orientation": "vertical",
+      "isGroup": true,
+      "groupId": "weed"
+    }
+  },
+  {
+    "name":"Q72",
+    "text":"Pick the top reason(s) why you used marijuana last week",
+    "type":"checkbox",
+    "extra":{
+      "choices":["To enjoy the feeling", "To avoid feeling left out", "To feel less depressed", "To feel less anxious", "To feel less angry", "To make social gatherings more fun","Other"],
+      "dependency":{
+        "question": "Q7", 
+        "show": "yes",
+        "hide": "no"
+      }
+    }
+  },
+  {
+    "name":"Q73",
+    "text":"Pick the top reason(s) why you didn’t use marijuana last week",
+    "type":"checkbox",
+    "extra":{
+      "choices":["Did not want to", "No chance/time", "Out of weed", "Trying to cut back", "More important things to do", "Cost","Other"],
+      "dependency":{
+        "question": "Q7", 
+        "show": "no",
+        "hide": "yes"
+      }
+    }
+  },
+  {
+    "name":"Q12",
+    "text":"How much do you think people your age risk harming themselves (physically or in other ways) if they smoke marijuana?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["None", "slight", "moderate", "very", "extremely"],
+      "orientation": "vertical",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q13",
+    "text":"How much do you think people your age risk harming themselves (physically or in other ways) drinking alcohol?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["None", "slight", "moderate", "very", "extremely"],
+      "orientation": "vertical",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q14",
+    "text":"In the next week, how likely are you to say no to using marijuana if offered?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>likely"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q15",
+    "text":"In the next week, how likely are you to say no to drinking alcohol if offered?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>likely"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  }
+]

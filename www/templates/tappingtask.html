@@ -1,0 +1,49 @@
+<ion-view view-title="Login" name="login-view" ng-init="connect()">
+
+  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">Tapping task</h1>
+  </ion-header-bar>
+
+
+  <ion-content class="padding">
+  <center style="font-size: 4vw;line-height: 25px;padding-bottom:6vw;padding-top:2vw;">Tap the buttons as quickly as you can using two fingers</center>
+  <center style="font-size: 8vw;line-height: 25px;padding-bottom:2vw;">{{seconds}}</center>
+  <center style="font-size: 4vw;line-height: 25px;padding-bottom:4vw; color:#999;">seconds left</center>
+  <center style="font-size: 5vw;line-height: 25px;padding-bottom:2vw;">Tap count</center>
+  <!-- <center style="font-size: 15vw;line-height: 25px; padding-bottom:10vw;">{{tapcount}}</center> -->
+  <!-- <center style="font-size: 50px;line-height: 55px;">{{tapcount}}</center> -->
+  <center style="font-size: 15vw;line-height: 16vw;">{{tapcount}}</center>
+  <center style="padding-top:10vw;"><img src={{gifimage}} alt="Smiley face" height="50" width="50"></center>
+
+  <!--
+  <button class="button button-full button-positive" ng-click="addAT()">
+    Add all active tasks
+  </button>
+  
+  <img src="img/reinforcements/ken_hair.gif" alt="Smiley face" width="100%">
+  <br>
+  <br>
+  <img src="img/reinforcements/devil_kid.jpg" alt="Smiley face" width="100%">
+  -->
+
+  </ion-content>
+
+  <div class="bar bar-footer" style="height:130px;border: 0px solid #FFFFFF;background:#ffffff">
+    <div style="width: 100%; text-align: center;">
+      <div class="round-button">
+        <div class="round-button-circle">
+        <a class="round-button" ng-click="leftTapped()">Tap</a>
+        </div>
+      </div>
+
+      <div class="round-button">
+        <div class="round-button-circle">
+        <a class="round-button" ng-click="rightTapped()">Tap</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-view>

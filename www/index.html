@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, viewport-fit=cover">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <script src="js/phaser.min.js"></script>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
+    <link href="css/emoji.css" rel="stylesheet">
+
+    
+
+    <!-- 
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <script src="lib/sjcl.js"></script> 
+    <script src="http://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+    <script type="text/javascript" src="http://cryptojs.altervista.org/api/functions_cryptography.js"></script>
+    <script src="lib/cryptcomponents/core.js"></script>
+    -->
+     
+    <script src="lib/cryptrollups/aes.js"></script>
+    <script src="lib/cryptrollups/pbkdf2.js"></script>
+    
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/angular-route.js"></script>
+
+    
+    <script src="lib/aws/aws-sdk-2.4.9.min.js"></script>
+    <script src="lib/aws/aws-cognito-sdk.min.js"></script>
+    <script src="lib/aws/amazon-cognito.min.js"></script>
+    <script src="lib/aws/amazon-cognito-identity.min.js"></script>
+    <script src="lib/aws/dependencies/sjcl.js"></script>
+    <script src="lib/aws/dependencies/jsbn.js"></script>
+    <script src="lib/aws/dependencies/jsbn2.js"></script>
+    <script src="lib/offlinejs/moment.min.js"></script>
+
+    <script src="lib/angular/angular-messages.min.js"></script>
+
+
+    <script src="js/factories/awsCognitoIdentity.factory.js"></script>
+    <script src="js/factories/awsCognitoSync.factory.js"></script>
+    <script src="js/factories/sara.data.factory.js"></script>
+
+    
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+     <link rel="stylesheet" href="lib/offlinejs/nv.d3.min.css">
+    <script src="lib/offlinejs/d3.min.js" charset="utf-8"></script>
+    <script src="lib/offlinejs/nv.d3.min.js"></script>
+    <script src="lib/offlinejs/angular-nvd3.js"></script>
+
+    <script src="js/fishgame/Boot.js"></script>
+    <script src="js/fishgame/Preloader.js"></script>
+    <script src="js/fishgame/Game.js"></script>
+    <script src="js/fishgame/GamesSmall.js"></script>
+    <script src="js/fishgame/Level1.js"></script>
+    <script src="js/fishgame/Level1Small.js"></script>
+    <script src="js/fishgame/Gameover.js"></script>
+    <script src="js/fishgame/GameLast.js"></script>
+
+    <!-- your app's js     <script src="js/routers.js"></script>-->
+
+    <script src="lib/offlinejs/ng-map.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/daily_survey_controller.js"></script>
+    <script src="js/weekly_survey_controller.js"></script>
+    <script src="js/rewards_controller.js"></script>
+    <script src="js/points_controller.js"></script>
+    <script src="js/life_insights_controller.js"></script>
+    <script src="js/reinforcement_controller.js"></script>
+    <script src="js/ATControllers/tappingtaskcontroller.js"></script>
+    <script src="js/ATControllers/spatialtaskcontroller.js"></script> 
+    <script src="js/inspirationalquotes.js"></script>
+
+   <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic.cloud.min.js"></script>
+
+    
+    <!--
+    <script type="text/javascript" src="js/game/index.js"></script>
+    <script type="text/javascript" src="js/game/game_controller.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    -->
+
+  </head>
+
+
+  <body ng-app="starter">  
+
+      <!--
+        <div class="panel play" 
+          ng-repeat="room in ctrl.rooms track by room.id"
+          ui-sref='game.play({id: room.id})'>
+          <span ng-bind="room.players.length"></span> Players
+          <a ui-sref='game.play()'>Create a game</a>
+        </div>
+        <div id="gameCanvas"></div>
+      -->
+
+    <ion-pane>
+        <div ng-view=""></div>
+    </ion-pane>
+
+    <!--
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+    -->
+    <script src="lib/offlinejs/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyB94dUtYKhqJIpJWv2zVss1EbY0L5QwImE",
+        authDomain: "sara-opensource.firebaseapp.com",
+        databaseURL: "https://sara-opensource.firebaseio.com",
+        projectId: "sara-opensource",
+        storageBucket: "sara-opensource.appspot.com",
+        messagingSenderId: "571836302534"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <!--
+    <div id = "gameArea"></div>
+    <div id = "ionicControls"  ng-app="starter">
+        <ion-nav-view> Hello world!! </ion-nav-view>
+    </div>
+    
+
+
+    <script src="lib/offlinejs/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyC3NCY_zSmsKwZyUnUnO4jIlWk_cNVeNnM",
+        authDomain: "smartemaumich.firebaseapp.com",
+        databaseURL: "https://smartemaumich.firebaseio.com",
+        storageBucket: "smartemaumich.appspot.com",
+      };
+      firebase.initializeApp(config);
+    </script>
+    -->
+    <script src="lib/angular-swing/dist/angular-swing.min.js"></script>
+    <script src="js/ngProgress.min.js"></script>
+    <link rel="stylesheet" href="css/ngProgress.css"> 
+    <script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places"></script>
+
+
+
+  </body>
+
+
+
+</html>

@@ -1,0 +1,51 @@
+<ion-view view-title="Login" name="login-view">
+
+  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">Rewards</h1>
+  </ion-header-bar>
+
+
+  <ion-content class="padding">
+
+        <div class="center">
+          <h2>Congratulations!!!</h2>
+
+          <div ng-show="showBadge">
+              <br>
+              <img src="{{badge_img}}" alt="Paris" style="width:80px">
+              <p>You completed the daily survey for last {{how_many_days}} days. You earned <b>{{how_much}}</b> for your amazing work.</p>
+          </div>
+
+
+          <div ng-show="showAquariumPoints">
+
+              <br>
+              <h3><b>{{added_fish_points}}</b> points</h3>
+              <img src={{images[0]}} alt="Paris" style="height:80px">
+
+              <br>
+              <p>You earned <b>{{added_fish_points}}</b> points for completing the survey. {{fish_names}}</p>
+
+              <br>
+              <div ng-show="showTrivia">
+                <p ng-bind-html="trivia_text"></p>
+              </div>  
+
+              <br>
+              <div ng-show="showNextFish">
+                <img src={{next_fish[0]}} alt="Paris" style="height:80px">
+                <p>{{next_fish_names}}</p>
+              </div>
+
+          </div>
+
+          <br>
+          <button class="button button-full button-positive" style="padding:5px" ng-click="goHome()">Go to Aquarium</button>
+
+        </div>
+
+  </ion-content>
+</ion-view>

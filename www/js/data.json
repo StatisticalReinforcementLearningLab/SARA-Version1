@@ -1,0 +1,66 @@
+[
+  {
+    "name":"Q1d",
+    "text":"How stressed are you today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","A<br>lot"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q2d",
+    "text":"How are you feeling today? Please click on the spot that best represents your mood",
+    "type":"moodgrid2"
+  },
+  {
+    "name":"Q3d",
+    "text":"How much free time have you had today?",
+    "type":"radiobutton",
+    "type":"range2",
+    "extra":{
+      "choices":["0<br>hour","600<br>min",0,1440,60]
+    }
+  },
+  {
+    "name":"Q4d",
+    "text":"How much fun have you had today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","A<br>lot"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q5d",
+    "text":"How lonely or left out have you felt today?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q6d",
+    "text":"How new and exciting has your day been?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  },
+  {
+    "name":"Q7d",
+    "text":"Do you expect good things will happen to you tomorrow?",
+    "type":"radiobutton",
+    "extra":{
+      "choices":["Not<br>at all","Very<br>much"],
+      "orientation": "horzontal",
+      "levels": 5
+    }
+  }
+]

@@ -1,0 +1,65 @@
+{
+    "name": "sara",
+    "version": "1.1.1",
+    "description": "SARA: An Ionic project",
+    "dependencies": {
+        "@ionic/cloud": "^0.16.0",
+        "cordova-android": "^6.2.3",
+        "cordova-ios": "^4.4.0",
+        "cordova-plugin-console": "~1.0.5",
+        "cordova-plugin-device": "~1.1.4",
+        "cordova-plugin-ionic-webview": "^1.1.16",
+        "cordova-plugin-progressindicator": "^1.2.0",
+        "cordova-plugin-splashscreen": "~4.0.1",
+        "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
+        "cordova-plugin-whitelist": "~1.3.1",
+        "gulp": "^3.5.6",
+        "gulp-concat": "^2.2.0",
+        "gulp-minify-css": "^0.3.0",
+        "gulp-rename": "^1.2.0",
+        "gulp-sass": "^2.0.4",
+        "ionic-angular": "^1.3.5",
+        "ionic-plugin-keyboard": "~2.2.1",
+        "onesignal-cordova-plugin": "^2.2.2",
+        "phonegap-plugin-push": "^1.10.5"
+    },
+    "devDependencies": {
+        "@ionic/cli-plugin-cordova": "1.6.2",
+        "@ionic/cli-plugin-gulp": "1.1.1",
+        "@ionic/cli-plugin-ionic1": "2.1.1",
+        "bower": "^1.3.3",
+        "gulp-util": "^2.2.14",
+        "ionic": "3.7.0",
+        "shelljs": "^0.3.0"
+    },
+    "cordovaPlugins": [
+        {
+            "variables": {
+                "SENDER_ID": "Not Required for iOS"
+            },
+            "locator": "phonegap-plugin-push"
+        }
+    ],
+    "cordovaPlatforms": [
+        "ios"
+    ],
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-console": {},
+            "cordova-plugin-device": {},
+            "cordova-plugin-splashscreen": {},
+            "cordova-plugin-whitelist": {},
+            "ionic-plugin-keyboard": {},
+            "phonegap-plugin-push": {
+                "SENDER_ID": "831721083674"
+            },
+            "onesignal-cordova-plugin": {},
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-ionic-webview": {}
+        },
+        "platforms": [
+            "android",
+            "ios"
+        ]
+    }
+}
