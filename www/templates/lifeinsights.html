@@ -1,0 +1,200 @@
+<ion-view view-title="Login" name="login-view" ng-init="connect()">
+
+  <ion-header-bar class="bar-dark" style="background:#2e6b67;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">{{title_text}}</h1>
+  </ion-header-bar>
+
+
+  <ion-content class="padding">
+
+  <!--
+  <nvd3 options="options" data="data"></nvd3>
+  -->
+  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">Congratulations!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">You unlocked a life-insight</center>
+
+
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-hide="showAllLIButton">The following insights are based some information you gave us</center>
+  <center style="font-size: 14px;line-height: 15px;padding-bottom:10px;" ng-hide="showAllLIButton">More insights will be unlocked as you fill out more active tasks</center>
+  <!--
+  <center style="font-size: 24px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">Congratulations!!</center>
+  <center style="font-size: 20px;line-height: 25px;padding-bottom:10px;" ng-show="showAllLIButton">You unlocked a life insight.</center>
+  -->
+  <div ng-repeat="lifeinsight in lifeinsights">
+    <div class="card">
+      <div style="position: absolute;top:4px;left: 4px;z-index: 20;" >
+          <img src={{lifeinsight.img}} style="width:75px;height:auto;">
+      </div>
+      <div class="item item-avatar" style="background: #c9e8e6;border-left: 2px solid #004D40; padding-left: 90px;">
+        <div ng-bind-html="lifeinsight.title"></div>
+        <p ng-hide="lifeinsight.showTopBottom">{{lifeinsight.subtext}}</p> 
+      </div>
+      <div style="margin-left:0px; margin-right:0px;margin-top:0px; background:#eef7f7; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 14px;" ng-show="lifeinsight.showTopBottom" ng-bind-html="lifeinsight.top_message">
+      </div>
+
+      <div id="{{lifeinsight.label}}">
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+      </div>
+      <!--
+      <div id="container" style="position:relative;">
+          <div id="div1"><nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3></div>
+          <div id="div2"><nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3></div>
+      </div>
+      -->
+
+      <div style="margin-left:0px; margin-right:0px;margin-top:5px; background:#eef7f7; padding:5px; padding-left:15px; border-left: 0px solid #004D40; color:black; text-align:center; font-size: 14px;" ng-show="lifeinsight.showTopBottom" ng-bind-html="lifeinsight.bottom_message"> 
+      </div>      
+
+      <!--
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+        <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+
+      <div class="item item-body">
+        <p>
+          <b>Suggestion</b>: This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+        </p>
+        <p>
+          <a href="#" class="subdued">Like</a>
+          <a href="#" class="subdued">Nope</a>
+        </p>
+      </div>
+
+
+      
+
+      <div style="position: absolute;top:4px;left: 2px;">
+          <img src="img/dance2.png" style="width:70px;height:auto;">
+      </div>
+      <div style="background: #E0F2F1;border-left: 2px solid #004D40; padding:2px; padding-left: 90px; margin-bottom:15px;">
+        <p ng-bind-html="lifeinsight.title" style="font-size: 16px;font-weight: normal;"></p>
+        <p>0=low stress, 5=high stress</p>
+      </div>
+
+
+
+      <nvd3 options="lifeinsight.options" data="lifeinsight.data"></nvd3>
+      <p style="padding: 5px; padding-left: 10px; padding-top: 15px;">
+          Suggestions 1
+      </p>
+      <p style="padding: 5px; padding-left: 10px;">
+          <a href="#" class="subdued">Like</a>
+          <a href="#" class="subdued">Nope</a>
+      </p>
+
+      <div style="position: absolute;top:4px;right: 2px;">
+          <img src="img/dance2.png" style="width:80px;height:auto;">
+      </div>
+      <p style="font-size: 17px; padding: 8px; color: black; background: #E0F2F1; padding-top: 12px; padding-bottom: 12px; border-left: 2px solid #004D40;" ng-bind-html="lifeinsight.title"></p>  
+      
+    </div> 
+    -->
+    </div>
+    <br/>
+  </div>
+
+   <div class="card" ng-show = "showMaps">
+        <div class="item item-avatar" style="background: #E0F2F1;border-left: 2px solid #004D40; padding-left: 10px;">
+	        <h2 style="padding-bottom: 5px;"><b>Which <b>two locations</b> did you visit the most this week?</h2>
+
+	        <p style="padding-bottom: 5px;">
+						<img src="img/location_icon2.png" style="width:15px;height:auto;float: left;" />
+						&nbsp;&nbsp; <b>1st:</b> {{location_point0.title}}
+					</p> 
+
+					<p>
+						<img src="img/location_icon1.png" style="width:15px;height:auto;float: left;" />
+						&nbsp;&nbsp; <b>2nd:</b> {{location_point1.title}}
+					</p> 
+
+     	  </div>
+        <ng-map center="{{map_center}}" zoom="16" style="width:100%;height:300px;">
+						<marker position="{{location_point0.loc}}" title="{{location_point0.title}}" optimized="false" 
+              icon="{
+                url:'img/location_icon2.png',
+                scaledSize:[27,45]
+            }"></marker>
+						<marker position="{{location_point1.loc}}" title="{{location_point1.title}}" optimized="false" 
+              icon="{
+                url:'img/location_icon1.png',
+                scaledSize:[27,45]
+            }"></marker>
+			  </ng-map>
+			  <!--
+			  	        <div style="float:left;">	
+		        <img src="img/location_icon2.png" style="width:15px;height:auto;">
+		        <p>{{location_point0.title}}</p>
+	        </div>
+
+			  <marker position="{{map_center}}" title="Hello World!"></marker>
+
+        <ng-map center="{{map_center}}" style="width:100%;height:300px;">
+            <div ng-repeat="location_point in markers track by $index">
+              <marker position="{{location_point.loc}}" title="" optimized="false"
+              icon="{
+                url:'{{location_point.icon}}',
+                scaledSize:[24,27]
+              }">
+            </marker>
+            </div>
+        </ng-map>
+        
+             <shape name="polyline" 
+	              path="{{path}}"
+	              geodesic="true"
+	              stroke-color="#000000"
+	              stroke-opacity="1.0"
+	              stroke-weight="2">
+            </shape>
+            <div id="map" data-tap-disabled="true"></div>
+              <div class="bar bar-footer bar-positive" ng-show="showAllLIButton">
+          <div class="title" ng-click="showLifeInishgts()">Show all life insights</div>
+        </div>
+        -->
+  </div> 
+
+  </ion-content>
+
+  <div class="bar bar-footer bar-dark" style="background:#fff;border: 0px solid #fff;height:80px;" ng-show="showAllLIButton">
+    <!--
+    <div class="title" ng-click="goHome()">Back to aquarium</div>
+    
+    <p style="font-size: 18px;padding-top:8px;">Rate this insight</p>
+    <div class="rating">
+      <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating" name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating" name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating" name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
+    </div>
+    -->
+    
+    <center style="width:50%;"></center>
+
+    <center style="width:25%;">
+      <button style="height: 70px;width: 70px;border-radius:70px;border: 1px solid #fff;margin-right:10px;font-size:24px;color:#fff;background:#D32F2F;" 
+      class="button button-icon ion-thumbsdown" ng-click="ratingChanged(0)"></button>
+    </center>
+    <center style="width:25%;">
+      <button style="height: 70px;width: 70px;border-radius:70px;border: 1px solid #fff;margin-right:0px;font-size:24px;color:#fff;background:#33691E;" 
+      class="button button-icon ion-thumbsup" ng-click="ratingChanged(1)"></button>
+    </center>
+    
+  </div>
+    <!--
+    <p style="font-size: 18px;padding-top:8px;">Rate this insight</p>
+    <div class="rating">
+      <input type="radio" id="star5" ng-model="s.rating" name="rating" value="5" ng-change="ratingChanged(5)"/><label for="star5" title="Rocks!">5 stars</label>
+      <input type="radio" id="star4" ng-model="s.rating"name="rating" value="4" ng-change="ratingChanged(4)"/><label for="star4" title="Pretty good">4 stars</label>
+      <input type="radio" id="star3" ng-model="s.rating"name="rating" value="3" ng-change="ratingChanged(3)"/><label for="star3" title="Meh">3 stars</label>
+      <input type="radio" id="star2" ng-model="s.rating"name="rating" value="2" ng-change="ratingChanged(2)"/><label for="star2" title="Kinda bad">2 stars</label>
+      <input type="radio" id="star1" ng-model="s.rating" name="rating" value="1" ng-change="ratingChanged(1)"/><label for="star1" title="Sucks big time">1 star</label>
+    </div>
+    -->
+
+
+
+
+</ion-view>

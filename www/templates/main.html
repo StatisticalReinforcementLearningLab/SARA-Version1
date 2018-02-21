@@ -1,0 +1,253 @@
+<ion-view view-title="Login" name="login-view" ng-init="getUserFromLocalStorage()">
+
+          <ion-header-bar class="bar-stable" style="background:#3F51B5;" align-title="left">
+
+                <h1 class="title" style="color:#fff;">SARA</h1>
+
+                
+                <div class="buttons">
+                  <h3 style="color:#fff;font-size:15px;padding-top:7px;padding-right:5px;">${{money}}</h3>
+                  <button class="button button-icon ion-upload" style="color:#fff;" ng-show="isSyncing"></button>
+                  <button class="button button-icon ion-arrow-graph-up-right" style="color:#fff;" ng-click="showLifeInishgts()"></button>
+                  <button class="button button-icon ion-trophy" style="color:#fff;" ng-click="showHelp()"></button>
+                </div>
+                
+                <!--
+                <i class="icon ion-android-upload"></i>
+                <div class="buttons">
+                     <button class="button button-icon ion-trophy" style="color:#fff;" ng-click="showHelp()"></button>
+                </div>
+                <div class="buttons" ng-hide="isFocusGroup">
+                     <button class="button button-icon ion-arrow-graph-up-right" style="color:#fff;" ng-click="showLifeInishgts()"></button>
+                </div>
+                -->
+
+          </ion-header-bar>
+
+          <ion-content >
+
+              <div w3-test-directive></div>
+
+
+              <!-- 
+              
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(30)">DS+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(50)">WS+50</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(29)">AT+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(300)">R+300</button></div>
+              </div>
+              
+
+              <div class="row"  ng-hide="isFocusGroup">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
+              </div>
+
+              
+
+              <button ng-click="startGame()">Click me</button> 
+
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(1)">Aq 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(2)">Aq 2</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(3)">Sea 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
+              </div>
+              -->
+
+              <p  style="padding-top:10px;padding-bottom:0px;padding-left:10px;"><b>Username</b>: {{username}}</p>  
+              <div style="padding:10px;">
+                  <h4 style="margin: 0px 0">Surveys and active tasks across days</h4>  
+                  <p style="margin: 1px 0"><img src='img/active_task_done.png' style="height:12px;"></img>/<img src='img/survey_done.png' style="height:12px;"/></img> = completed, <img src='img/not_done.png' style="height:12px;"></img> = skipped</p> 
+                  <small>1 star for each day. Top-left star is 1st day. Last star is today.</small>
+              </div>
+
+
+              <div compile="daily_survey_images_str"></div>
+                <!--
+                <div style="padding:10px;padding-top:15px;">
+                <p><u>Surveys across days</u></p>
+                <div  ng-repeat="x in daily_survey_images track by $index">
+                    <p style="color:{{x.color}};float:left;" ng-bind-html="x.text"></p>
+                </div>
+                <div><img src='img/today.png' style="height:15px;float: left;"/></div>
+                </div>
+                --> 
+              
+
+                <!--
+                <div style="padding:10px;padding-top:15px;">
+                <p><u>Active task across days</u></p>
+                <div compile="active_task_images_str"></div>
+                <p><u>Surveys across days</u></p>
+                <div  ng-repeat="x in daily_survey_images track by $index">
+                    <p style="color:{{x.color}};float:left;" ng-bind-html="x.text"></p>
+                </div>
+                <div><img src='img/today.png' style="height:15px;float: left;"/></div>
+                </div>
+                --> 
+              
+
+              <!--
+              <p>&nbsp;</p>
+              <br>
+              <div style="padding:10px;padding-top:105px;">
+                <p><u><br><br>Active task across days</u></p>
+                <div  ng-repeat="x in active_tasks_survey_images track by $index">
+                    <p style="color:{{x.color}};float:left;" ng-bind-html="x.text"></p>
+                </div> 
+                <div><img src='img/today.png' style="height:15px;float: left;"/></div>
+                <br>
+              </div>
+
+              
+              <div style="padding:10px;padding-top:15px;">
+                <p><u>Surveys across days</u></p>
+                <div  ng-repeat="x in daily_survey_images track by $index">
+                    <i ng-if="($index+1)%5!=0" class={{x.class}} style="font-size:16px;color:{{x.color}};float:left;"></i>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <div><img src='img/today.png' style="height:15px;float: left;"/></div>
+                <br>
+              </div>
+
+              <div style="padding:10px;">
+                <p><u>Active task across days</u></p>
+                <div  ng-repeat="x in active_tasks_survey_images track by $index">
+                    <i ng-if="($index+1)%5!=0" class={{x.class}} style="font-size:16px;color:{{x.color}};float:left;"></i>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <div><img src='img/today.png' style="height:15px;float: left;"/></div>
+                <br>
+              </div>
+              -->
+              
+              <!--
+              <div style="padding:10px;padding-top:15px;">
+                <p><u>Surveys across days</u></p>
+                <div  ng-repeat="x in daily_survey_images track by $index">
+                    <img ng-if="($index+1)%5!=0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <br>
+              </div>
+
+              <div style="padding:10px;">
+                <p><u>Active task across days</u></p>
+                <div  ng-repeat="x in active_tasks_survey_images track by $index">
+                    <img ng-if="($index+1)%5!=0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <img ng-if="($index+1)%5==0" src={{x.img}} style="height:{{x.width}}px;float: left;"/>
+                    <small ng-if="($index+1)%20==0" style="color:#5e9eb9;">{{x.text}}</small>
+                </div> 
+                <br>
+              </div>
+              <p  style="padding:10px;"><b>Username</b>: {{username}}</p>
+
+              
+              
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(30)">DS+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(50)">WS+50</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(29)">AT+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(300)">R+300</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(1)">Aq 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(2)">Aq 2</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(3)">Sea 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
+              </div>
+
+
+
+              
+              <div class="row"  ng-hide="isFocusGroup">
+                 <div class="col col-50"> <button class="button button-full button-positive" ng-click="showAllLifeInishgts()">Life insights</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemo()">R-DS</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="showRewarDemoAT()">R-AT</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(30)">DS+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(50)">WS+50</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(29)">AT+30</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="addpoint(300)">R+300</button></div>
+              </div>
+
+              <div class="row">
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(1)">Aq 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(2)">Aq 2</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(3)">Sea 1</button></div>
+                 <div class="col col-25"> <button class="button button-full button-positive" ng-click="changeLevel(4)">Sea 2</button></div>
+              </div>
+
+              
+              
+              <button class="button button-full button-positive" ng-click="startGame()">Add points</button>
+              <div class="list">
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/clownfish.png"  style="width:  75px;height: auto;margin: auto;">
+                    <h2>The Clown Fish</h2>
+                    <p>Point: 0</p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/starfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Star Fishes</h2>
+                    <p>Point: 50 </p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/octopus.png"  style="width:  75px;height: auto;">
+                    <h2>The Octopus</h2>
+                    <p>Point: 100 </p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/electricfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Electric Fish</h2>
+                    <p>Point: 150</p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/crabfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Crab</h2>
+                    <p>Point: 200</p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/greenfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Green Fish</h2>
+                    <p>Point: 250</p>
+                  </a>
+
+                  
+                  <a class="item item-thumbnail-left" href="#">
+                    <img src="img/seahorseyellow.png"  style="width:  auto;height: 100%;margin: auto;">
+                    <h2>The Horse Fish</h2>
+                    <p>Point: 300</p>
+                  </a>
+
+              </div>
+              <button class="button button-full button-positive" ng-click="startDailySurvey()">Weekly Survey</button>
+              <button class="button button-full button-positive" ng-click="startDailySurvey()">Active Tasks</button>
+              -->
+
+              
+
+</ion-content>
+</ion-view>

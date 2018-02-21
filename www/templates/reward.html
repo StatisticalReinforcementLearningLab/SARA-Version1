@@ -1,0 +1,160 @@
+<ion-view view-title="Login" name="login-view">
+
+  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">Rewards</h1>
+  </ion-header-bar>
+
+
+  <ion-content class="padding">
+
+
+          
+              <center style="font-size: 4vw;line-height: 2vw;padding-top:1vw;padding-bottom:2vw;">Thanks for completing the {{type_of_work}}</center>
+              <center style="font-size: 5vw;line-height: 8vw;padding-top:1vw;padding-bottom:2vw;">You have unlocked <b>{{number_of_rewards}}</b> rewards <i class='em em-tada'></i></center>
+
+              <!--
+              <center style="font-size: 5vw;line-height: 8vw;padding-top:1vw;padding-bottom:2vw;" ng-bind-html="congrats_message"></center>
+              <center style="font-size: 20px;line-height: 25px;font-weight: bold;padding-top:10px;">{{gift_msg}}</center>
+              -->
+
+              
+                <div class="list">
+                    <!--
+                    <div class="card" ng-repeat="card in cards" ng-show="card.show_image" style="border-left: 3px solid #263238;border-top: 0px solid #263238;"> 
+                        <img src="{{card.img}}" style="float:left;width:100px;padding:10px;padding-right:20px;padding-top:15px" />
+                        <p style="padding:25px;font-size:15px;color:#37474F">{{card.name}}</p>
+                    </div>
+                    -->
+                    
+                    <li class="item" ng-repeat="card in cards" ng-show="card.show_image" style="border-left: 0px solid #263238;border-top: 0px solid #263238;"> 
+                        <div class="animation-target">
+                            <img src="{{card.img}}" style="float:left;width:20vw;padding:10px;padding-right:10px;padding-top:5px" />
+                            <p style="padding:3vw;padding-top:2vw;font-size:4vw;color:#37474F">{{card.name}}</p>
+                        </div>
+                    </li>
+                </div>
+              
+
+              <button class="button button-block button-positive" ng-click="goHome()">
+                Go to aquarium
+              </button>
+
+
+              <!--
+              <div >
+                  <img ng-repeat="card in cards" ng-show="card.show_image" src="{{card.img}}" alt="Paris" style="width:80px; margin-top:10px">
+              </div>
+              
+
+              <div ng-repeat="card in cards">
+                    <div class="animation-target" ng-show="card.show" >
+                        <div id="rewards" style="top: {{card.up}}px;" ng-class="card.class">
+                            <img ng-show="card.show_image" src="{{card.img}}" alt="Paris" style="width:80px; margin-top:20px">
+                            <p ng-show="card.show_image" style="margin:10px;margin-top:10px;"> {{card.name}}</p>
+                            <p ng-hide="card.show_image" style="margin-top:50px"> {{card.name}}</p>
+                        </div>  
+                    </div>
+              </div>
+
+              
+              <div id="buttons">
+                  <a class="w3-btn-floating-large w3-red" ng-click="throwOut(false)" style="margin:10px;margin-top:430px;">X</a>
+                  <a class="w3-btn-floating-large w3-teal" ng-click="throwOut(true)" style="margin:10px;margin-top:430px;color:white;">♥</a>
+              <div>  
+
+
+              <footer style="position: fixed; bottom: 0px; width: 100%; height: 60px; background-color: black;">
+                Copyright information
+              </footer>    
+
+              <div class="animation-target" id="rewards" >
+                    This is a basic Card which contains an item that has wrapping text.
+              </div>
+
+              <div class="animation-target" id="rewards" ng-show="toshow" style="top: 100px;">
+                    This is a basic Card which contains an item that has wrapping text.
+              </div>
+
+
+               <div class="animation-target" id="viewport">
+                    <ul class="stack" swing-stack swing-options="options">
+                        <li
+                            swing-card
+                            swing-on-throwout="remove($index)"
+                            ng-repeat="card in cards">
+                                This is a basic Card which contains an item that has wrapping text.
+                                {{card}}
+                        </li>
+                    </ul>
+              </div>
+
+
+              <div class="card">
+                  <div class="item item-text-wrap">
+                    This is a basic Card which contains an item that has wrapping text.
+                  </div>
+              </div>
+
+              <div class="list">
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/clownfish.png"  style="width:  75px;height: auto;margin: auto;">
+                    <h2>The Clown Fish</h2>
+                    <p>Point: 0</p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/starfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Star Fish</h2>
+                    <p>Point: 50 </p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/octopus.png"  style="width:  75px;height: auto;">
+                    <h2>The Octopus</h2>
+                    <p>Point: 100 </p>
+                  </a>
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/greenfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Green Fish</h2>
+                    <p>Point: 150</p>
+                  </a>
+
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/crabfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Crab</h2>
+                    <p>Point: 200</p>
+                  </a>
+
+
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/electricfish.png"  style="width:  75px;height: auto;">
+                    <h2>The Electric Fish</h2>
+                    <p>Point: 250</p>
+                  </a>
+
+                  
+                  <a class="item item-thumbnail-left" href="#/red">
+                    <img src="img/seahorseyellow.png"  style="width:  auto;height: 100%;margin: auto;">
+                    <h2>The Seahorse</h2>
+                    <p>Point: 300</p>
+                  </a>
+
+              </div>
+              -->
+  </ion-content>
+
+  <!--
+  <footer style="position: fixed; bottom: 0px; width: 100%; height:58px; background-color: white;">
+      
+      <button class="button button-block button-positive" ng-click="throwOut(true)">
+        {{next_message}}
+      </button>  
+  </footer> 
+  -->   
+</ion-view>

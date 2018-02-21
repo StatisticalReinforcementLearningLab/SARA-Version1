@@ -1,0 +1,245 @@
+<!-- This is the survey pane -->
+<ion-view view-title="Login" name="login-view">
+
+  <ion-header-bar class="bar-dark" style="background:#3F51B5;">
+        <div class="buttons">
+            <button class="button button-icon ion-chevron-left" style="color:#fff;" ng-click="goHome()"></button>
+        </div>
+        <h1 class="title" style="color:#fff;">{{greetings}}</h1>
+  </ion-header-bar>
+
+
+  <ion-content>
+      <!--<div ng-bind-html="thisCanBeusedInsideNgBindHtml  | sanitize"></div> 
+      <div class="card"> <img src="img/cute_whale.png" style="width:100px;padding:10px" />  Tell us a few things about <b>last week</b></div>
+      
+      <div class="card">
+      <div class="quetiontextstyle">Rate your overall mood today</div>   
+      <canvas id="myCanvas" width="310" height="310" style="border:0px solid #000000;padding:10px;">
+        Your browser does not support the HTML5 canvas tag.
+      </canvas>
+      </div>
+      -->
+      
+      <p compile="thisCanBeusedInsideNgBindHtml"></p>
+      <br>
+      <button class="button button-full button-positive" ng-click="submit()">Submit</button>
+
+
+      <!--  
+
+      <div class="card">
+      <questiontext>Rate your overall mood today</questiontext>   
+        <div class = "row">
+           <div ng-click="affectclick(1,'afraid')" class = "col col-25"><div style="width:100%;padding-bottom:8%;padding-top:20%;background-color:#FFCDD2;" align="center"><p ng-bind-html="affect[0]"></p></div></div>
+           <div ng-click="affectclick(2,'tense')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#FFCDD2;" align="center">Tense</div></div>
+           <div ng-click="affectclick(3,'excited')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#FFE0B2;" align="center">Excited</div></div>
+           <div ng-click="affectclick(4,'delighted')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#FFE0B2;" align="center">Delighted</div></div>
+        </div>
+        <div class = "row">
+           <div ng-click="affectclick(5,'Frustrated')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#FFCDD2;" align="center">Frustrated</div></div>
+           <div ng-click="affectclick(6,'Angry')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;;background-color:#FFCDD2;" align="center">Angry</div></div>
+           <div ng-click="affectclick(7,'Happy')" class = "col col-25"><div style="width:100%;pa dding-bottom:20%;padding-top:20%;background-color:#FFE0B2;" align="center">Happy</div></div>
+           <div ng-click="affectclick(8,'Glad')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#FFE0B2;" align="center">Glad</div></div>
+        </div>
+        <div class = "row">
+           <div ng-click="affectclick(9,'Miserable')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#BBDEFB;" align="center">Miserable</div></div>
+           <div ng-click="affectclick(10,'Sad')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#BBDEFB;" align="center">Sad</div></div>
+           <div ng-click="affectclick(11,'Calm')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#C8E6C9;" align="center">Calm</div></div>
+           <div ng-click="affectclick(12,'Satisfied')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#C8E6C9;" align="center">Satisfied</div></div>
+        </div>
+        <div class = "row"> 
+           <div ng-click="affectclick(13,'Gloomy')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#BBDEFB;" align="center">Gloomy</div></div>
+           <div ng-click="affectclick(14,'Tired')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#BBDEFB;" align="center">Tired</div></div>
+           <div ng-click="affectclick(15,'Sleepy')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#C8E6C9;" align="center">Sleepy</div></div>
+           <div ng-click="affectclick(16,'Serene')" class = "col col-25"><div style="width:100%;padding-bottom:20%;padding-top:20%;background-color:#C8E6C9;" align="center">Serene</div></div>
+        </div>
+      </div>
+
+      
+      <h1>{{msg}}</h1>
+      <w3-test-directive></w3-test-directive>
+      <h2>After directive</h2>
+      <div ng-repeat="item in quesitons">
+
+      <br>
+        <div class="card">
+                <questiontext>Holla!!</questiontext>    
+                <div class="radiovertical">
+                    <ul>
+                      <li>
+                        <input type="radio" id="f-option" ng-model="survey.qx" name="x" value="pizza">
+                        <label for="f-option">Pizza</label> 
+                        <div class="check"></div>[]
+                      </li>
+                      
+                      <li>
+                        <input type="radio" id="s-option" ng-model="survey.qx" name="x" value="bf">
+                        <label for="s-option">Boyfriend</label>
+                        <div class="check"><div class="inside"></div></div>
+                      </li>
+                      
+                      <li>
+                        <input type="radio" id="t-option" ng-model="survey.qx" name="x" value="cat">
+                        <label for="t-option">Cats</label>
+                        <div class="check"><div class="inside"></div></div>
+                      </li>
+                    </ul>
+                </div>
+      </div>
+
+
+      <div class="card">
+            <questiontext>Holla!!</questiontext>    
+             <label class="item item-input">
+                 <input type="text" id="automplete-3" placeholder="First Name">  
+
+                <input ion-autocomplete type="text" readonly="readonly" class="ion-autocomplete" autocomplete="on" ng-model="model" max-selected-items="1" items-method-value-key="items" items-method="callbackMethod(query)"/>
+                
+                <input ion-autocomplete type="text" readonly="readonly" class="ion-autocomplete" autocomplete="on" 
+                            ng-model="model" 
+                            search-items="preselectedSearchItems"
+                            item-value-key="name" 
+                            item-view-value-key="view" 
+                            max-selected-items="3" 
+                            items-method="getTestItems(query, isInitializing)"
+                            items-method-value-key="items" 
+                            external-model="externalModel" 
+                            placeholder="Enter test query ..."
+                            selected-items="selectedItems"
+                            model-to-item-method="modelToItemMethod(modelValue)" />
+            </label>
+      </div>
+          <br>
+          <div class="card">
+                <questiontext>Holla!!</questiontext> 
+                <div class="radioimages">
+                    <label>   
+                        <input type="radio" name="fb" value="1" />
+                        <img style="width:18%;" src=img/1.png>
+                    </label>
+                    <label>   
+                        <input type="radio" name="fb" value="2" />
+                        <img style="width:18%;" src=img/2.png>
+                    </label>
+                    <label>   
+                        <input type="radio" name="fb" value="3" />
+                        <img style="width:18%;" src=img/3.png>
+                    </label>
+                    <label>   
+                        <input type="radio" name="fb" value="4" />
+                        <img style="width:18%;" src=img/4.png>
+                    </label>
+                    <label>   
+                        <input type="radio" name="fb" value="5" />
+                        <img style="width:18%;" src=img/5.png>
+                    </label>
+                </div>
+          </div>
+
+
+         <br>
+         <div class="card">
+            <questiontext>Holla!!</questiontext>  
+          <div class="radiovertical">
+            <ul>
+              <li>
+                <input type="radio" id="f-option" name="selector">
+                <label for="f-option">Pizza</label> 
+                <div class="check"></div>
+              </li>
+              
+              <li>
+                <input type="radio" id="s-option" name="selector">
+                <label for="s-option">Boyfriend</label>
+                <div class="check"><div class="inside"></div></div>
+              </li>
+              
+              <li>
+                <input type="radio" id="t-option" name="selector">
+                <label for="t-option">Cats</label>
+                <div class="check"><div class="inside"></div></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+            <br>
+            <div class="card">
+            <questiontext>Holla!!</questiontext>  
+            <div class="radiohorizontal">
+              <ul>
+                <li>
+                  <p>Not <br> at all</p>
+                </li> 
+                <li>
+                  <input type="radio" id="f-option2" name="selector2">
+                  <label for="f-option2"></label>
+                  <div class="check"></div>
+                </li>
+
+                <li>
+                  <input type="radio" id="f-option3" name="selector2">
+                  <label for="f-option3"></label>
+                  <div class="check"></div>
+                </li>
+
+                <li>
+                  <input type="radio" id="f-option4" name="selector2">
+                  <label for="f-option4"></label>
+                  <div class="check"></div>
+                </li>
+
+                <li>
+                  <input type="radio" id="f-option5" name="selector2">
+                  <label for="f-option5"></label>
+                  <div class="check"></div>
+                </li>   
+
+                <li>
+                  <input type="radio" id="f-option6" name="selector2">
+                  <label for="f-option6"></label>
+                  <div class="check"></div>
+                </li>
+                <li>
+                  <p>Very <br> stressed</p>
+                </li> 
+
+              </ul>
+            </div>
+            </div>
+        <br>
+
+
+          <button class="button button-full button-balanced" ng-click="submit()">Submit</button>
+
+          
+        <h1>{{msg}}</h1>
+        <div ng-repeat="item in qs track by $index">
+            <br>
+          <questiontext>{{item.text}}</questiontext>  
+        </div>
+        <br>
+
+        <div style="padding:0px;margin:0px;margin-left:0px; margin-top:0px; border: 0px solid #004D40;border-left: 8px solid #004D40;">
+          <questiontext>Holla 2!!</questiontext>  
+          <ion-list radio-group >
+            <ion-radio ng-model="choice" ng-value="'A'" style="padding-left:0px;">Choose A</ion-radio>
+            <ion-radio ng-model="choice" ng-value="'B'" style="padding-left:0px;">Choose B</ion-radio>
+          </ion-list>
+        </div>
+
+
+
+         <br>
+         <h4 class="padding">Gender?</h4>
+         <div class="button-bar padding">
+            <a grouped-radio="'male'" ng-model="data.gender">Male</a>
+            <a grouped-radio="'female'" ng-model="data.gender">Female</a>
+         </div>
+       -->
+
+      
+  </ion-content>
+
+</ion-view>

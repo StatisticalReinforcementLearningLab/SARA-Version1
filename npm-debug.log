@@ -1,0 +1,121 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'angular-messages@X.Y.Z' ]
+2 info using npm@2.15.5
+3 info using node@v4.4.5
+4 verbose install initial load of /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/package.json
+5 warn package.json sara@1.1.1 No repository field.
+6 warn package.json sara@1.1.1 No README data
+7 warn package.json sara@1.1.1 No license field.
+8 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/bower/package.json
+9 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp/package.json
+10 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp-concat/package.json
+11 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp-minify-css/package.json
+12 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp-rename/package.json
+13 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp-sass/package.json
+14 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/gulp-util/package.json
+15 verbose installManyTop reading scoped package data from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/node_modules/shelljs/package.json
+16 info package.json gulp-minify-css@0.3.13 No license field.
+17 info package.json gulp-rename@1.2.2 No license field.
+18 info package.json gulp-util@2.2.20 No license field.
+19 info package.json shelljs@0.3.0 license should be a valid SPDX license expression
+20 verbose readDependencies loading dependencies from /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA/package.json
+21 silly cache add args [ 'angular-messages@X.Y.Z', null ]
+22 verbose cache add spec angular-messages@X.Y.Z
+23 silly cache add parsed spec Result {
+23 silly cache add   raw: 'angular-messages@X.Y.Z',
+23 silly cache add   scope: null,
+23 silly cache add   name: 'angular-messages',
+23 silly cache add   rawSpec: 'X.Y.Z',
+23 silly cache add   spec: 'X.Y.Z',
+23 silly cache add   type: 'tag' }
+24 silly addNamed angular-messages@X.Y.Z
+25 verbose addNamed "X.Y.Z" is being treated as a dist-tag for angular-messages
+26 info addNameTag [ 'angular-messages', 'X.Y.Z' ]
+27 silly mapToRegistry name angular-messages
+28 silly mapToRegistry using default registry
+29 silly mapToRegistry registry https://registry.npmjs.org/
+30 silly mapToRegistry data Result {
+30 silly mapToRegistry   raw: 'angular-messages',
+30 silly mapToRegistry   scope: null,
+30 silly mapToRegistry   name: 'angular-messages',
+30 silly mapToRegistry   rawSpec: '',
+30 silly mapToRegistry   spec: 'latest',
+30 silly mapToRegistry   type: 'tag' }
+31 silly mapToRegistry uri https://registry.npmjs.org/angular-messages
+32 verbose addNameTag registry:https://registry.npmjs.org/angular-messages not in flight; fetching
+33 verbose request uri https://registry.npmjs.org/angular-messages
+34 verbose request no auth needed
+35 info attempt registry request try #1 at 11:21:47 AM
+36 verbose request id 3b369528a4f3e813
+37 http request GET https://registry.npmjs.org/angular-messages
+38 http 200 https://registry.npmjs.org/angular-messages
+39 verbose headers { server: 'nginx/1.10.1',
+39 verbose headers   'content-type': 'application/json',
+39 verbose headers   'last-modified': 'Tue, 07 Feb 2017 14:00:34 GMT',
+39 verbose headers   etag: 'W/"5899d302-1563c"',
+39 verbose headers   'content-encoding': 'gzip',
+39 verbose headers   'cache-control': 'max-age=300',
+39 verbose headers   'content-length': '9254',
+39 verbose headers   'accept-ranges': 'bytes',
+39 verbose headers   date: 'Mon, 27 Feb 2017 16:21:47 GMT',
+39 verbose headers   via: '1.1 varnish',
+39 verbose headers   age: '56',
+39 verbose headers   connection: 'keep-alive',
+39 verbose headers   'x-served-by': 'cache-ord1732-ORD',
+39 verbose headers   'x-cache': 'HIT',
+39 verbose headers   'x-cache-hits': '1',
+39 verbose headers   'x-timer': 'S1488212507.938079,VS0,VE0',
+39 verbose headers   vary: 'Accept-Encoding' }
+40 silly get cb [ 200,
+40 silly get   { server: 'nginx/1.10.1',
+40 silly get     'content-type': 'application/json',
+40 silly get     'last-modified': 'Tue, 07 Feb 2017 14:00:34 GMT',
+40 silly get     etag: 'W/"5899d302-1563c"',
+40 silly get     'content-encoding': 'gzip',
+40 silly get     'cache-control': 'max-age=300',
+40 silly get     'content-length': '9254',
+40 silly get     'accept-ranges': 'bytes',
+40 silly get     date: 'Mon, 27 Feb 2017 16:21:47 GMT',
+40 silly get     via: '1.1 varnish',
+40 silly get     age: '56',
+40 silly get     connection: 'keep-alive',
+40 silly get     'x-served-by': 'cache-ord1732-ORD',
+40 silly get     'x-cache': 'HIT',
+40 silly get     'x-cache-hits': '1',
+40 silly get     'x-timer': 'S1488212507.938079,VS0,VE0',
+40 silly get     vary: 'Accept-Encoding' } ]
+41 verbose get saving angular-messages to /Users/mashfiqui/.npm/registry.npmjs.org/angular-messages/.cache.json
+42 verbose correctMkdir /Users/mashfiqui/.npm correctMkdir not in flight; initializing
+43 silly addNameTag next cb for angular-messages with tag X.Y.Z
+44 verbose stack Error: No compatible version found: angular-messages@'X.Y.Z'
+44 verbose stack Valid install targets:
+44 verbose stack ["1.3.0-rc.5","1.3.0","1.3.1","1.3.2","1.3.3","1.3.4","1.3.5","1.3.6","1.3.7","1.3.8","1.4.0-beta.0","1.3.9","1.3.10","1.4.0-beta.1","1.4.0-beta.2","1.3.11","1.4.0-beta.3","1.3.12","1.3.13","1.4.0-beta.4","1.3.14","1.4.0-beta.5","1.4.0-beta.6","1.3.15","1.4.0-rc.0","1.4.0-rc.1","1.4.0-rc.2","1.4.0","1.3.16","1.4.1","1.4.2","1.3.17","1.4.3","1.4.4","1.3.18","1.4.5","1.3.19","1.4.6","1.5.0-beta.0","1.3.20","1.4.7","1.5.0-beta.2","1.4.8","1.5.0-rc.0","1.5.0-rc.1","1.4.9","1.5.0-rc.2","1.5.0","1.5.1","1.4.10","1.5.2","1.5.3","1.5.5","1.4.11","1.5.6","1.4.12","1.5.7","1.5.8","1.4.13","1.4.14","1.6.0-rc.0","1.6.0-rc.1","1.5.9","1.6.0-rc.2","1.6.0","1.5.10","1.6.1","1.5.11","1.6.2"]
+44 verbose stack
+44 verbose stack     at installTargetsError (/usr/local/lib/node_modules/npm/lib/cache/add-named.js:284:12)
+44 verbose stack     at next (/usr/local/lib/node_modules/npm/lib/cache/add-named.js:94:10)
+44 verbose stack     at RES (/usr/local/lib/node_modules/npm/node_modules/inflight/inflight.js:23:14)
+44 verbose stack     at f (/usr/local/lib/node_modules/npm/node_modules/once/once.js:17:25)
+44 verbose stack     at fixName (/usr/local/lib/node_modules/npm/lib/cache/add-named.js:29:5)
+44 verbose stack     at saved (/usr/local/lib/node_modules/npm/lib/cache/caching-client.js:173:7)
+44 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:210:7
+44 verbose stack     at FSReqWrap.oncomplete (fs.js:82:15)
+45 verbose cwd /Users/mashfiqui/Dropbox (PAC LAB)/codes/ionic_projects/SARA
+46 error Darwin 15.2.0
+47 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "angular-messages@X.Y.Z"
+48 error node v4.4.5
+49 error npm  v2.15.5
+50 error code ETARGET
+51 error notarget No compatible version found: angular-messages@'X.Y.Z'
+51 error notarget Valid install targets:
+51 error notarget ["1.3.0-rc.5","1.3.0","1.3.1","1.3.2","1.3.3","1.3.4","1.3.5","1.3.6","1.3.7","1.3.8","1.4.0-beta.0","1.3.9","1.3.10","1.4.0-beta.1","1.4.0-beta.2","1.3.11","1.4.0-beta.3","1.3.12","1.3.13","1.4.0-beta.4","1.3.14","1.4.0-beta.5","1.4.0-beta.6","1.3.15","1.4.0-rc.0","1.4.0-rc.1","1.4.0-rc.2","1.4.0","1.3.16","1.4.1","1.4.2","1.3.17","1.4.3","1.4.4","1.3.18","1.4.5","1.3.19","1.4.6","1.5.0-beta.0","1.3.20","1.4.7","1.5.0-beta.2","1.4.8","1.5.0-rc.0","1.5.0-rc.1","1.4.9","1.5.0-rc.2","1.5.0","1.5.1","1.4.10","1.5.2","1.5.3","1.5.5","1.4.11","1.5.6","1.4.12","1.5.7","1.5.8","1.4.13","1.4.14","1.6.0-rc.0","1.6.0-rc.1","1.5.9","1.6.0-rc.2","1.6.0","1.5.10","1.6.1","1.5.11","1.6.2"]
+51 error notarget
+51 error notarget This is most likely not a problem with npm itself.
+51 error notarget In most cases you or one of your dependencies are requesting
+51 error notarget a package version that doesn't exist.
+51 error notarget
+51 error notarget It was specified as a dependency of 'sara'
+52 verbose exit [ 1, true ]

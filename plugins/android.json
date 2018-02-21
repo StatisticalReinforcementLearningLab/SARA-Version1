@@ -1,0 +1,53 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.lampa.startapp": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "onesignal-cordova-plugin": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "phonegap-plugin-push": {
+            "SENDER_ID": "831721083674",
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        },
+        "cordova-plugin-ionic-webview": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "edu.umich.srl.sara"
+        }
+    }
+}
