@@ -83,6 +83,8 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
     //add a meme
     if(type === 'memes' || type === 'gif'){
         $http.get('js/memeslist.json').success(function(data2) {
+
+            //
             //generateDailySurveyInsights(data2);
             
             //
@@ -93,7 +95,13 @@ app.controller("ReinforcementCtrl", function($scope, $http, $ionicPlatform, $loc
             var index = getRandomInt(0, data2.length-1);
 
             //
-            $scope.rein_image = data2[index].filename;
+            // following lines are commented for open sourcing
+            // "img/reinforcements/memes/HM4.jpg" is the filename
+            // $scope.rein_image = data2[index].filename;
+            //
+
+            //
+            $scope.rein_image = "img/sample_meme.jpg";
 
             //
             $scope.all_images = data2;
