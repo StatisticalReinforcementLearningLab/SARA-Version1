@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="your_relative_path_here" width="350"/>
-  <img src="https://raw.githubusercontent.com/mashfiqui-rabbi/sara/master/9850-169539-1-SP.png" width="450"/>
+  <img src="https://raw.githubusercontent.com/mashfiqui-rabbi/sara/master/9850-169539-1-SP.png" width="650"/>
 </p>
 
 SARA is a novel app to engage users with ongoing tracking using timely rewards thereby reinforcing users for data input. SARA is
