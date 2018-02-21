@@ -38,7 +38,10 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
         data = data_temp;
         key2 = key_temp;
-        connect();
+        
+
+        //--- commented for open source            
+        //connect();
 
         //save a local copy
         //var value = data;
@@ -158,9 +161,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             if (callback2 != undefined) {
                 callback2();
             }
-            //refreshTasksList();
-            //refreshTasksList();
-            //$scope.$apply();
         });
     };
 
@@ -178,7 +178,13 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     //sara.pullGameScoreData(callback2){
     sara.pullRLData = function(callback2) {
         //sync(function() {
-        sara.pullData('rl_data', "", callback2);
+
+
+        //---- commented for opensource    
+        //sara.pullData('rl_data', "", callback2);
+        
+
+
         //sara.pullData('rl_data_v2', "", callback2);
         //});
     }
@@ -190,57 +196,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         sara.pullData('game_score', "", callback2);
         //});
     }
-
-    /*
-    sara.pullBadgeData = function(callback2) {
-        //sync(function() {
-        //sara.pullData("badges","",callback2);
-        datasetName = "badges";
-        key2 = "";
-        //connect();
-        awsCognitoIdentityFactory.getUserFromLocalStorage(function(err, isValid) {
-            if (err) {
-                //$scope.error.message = err.message;
-                console.log(err.message);
-                if (isValid == false) { //means there is no user data in local storage.
-                    $location.path("/");
-                    return;
-                }
-            }
-            //if(isValid) $state.go('todo', {}, {reoload: true})
-            if (isValid) {
-                awsCognitoSyncFactory.connect(datasetName, function(err, dataset_temp) {
-                    if (err) $scope.error.message = err.message;
-                    else {
-                        dataset = dataset_temp;
-                        //sync();
-
-                        sync(function() {
-                            //sara.pullData('game_score',"",callback2);
-                            dataset.getAllRecords(function(err, records) {
-                                //$scope.tasks = {};
-                                //console.log("Error message: " + err);
-                                for (i = 0; i < records.length; i++) {
-                                    if (records[i].value.length > 0) {
-                                        //console.log("" + i + ", " + records[i].value + ", " + records[i].key);
-                                        value = records[i].value;
-                                    }
-                                }
-                                callback2(value);
-                                //sync();
-                            });
-                        });
-
-                    }
-                });
-            } else
-                $location.path("/"); //
-
-            //$state.go('todo', {}, {reoload: true})
-        });
-        //});
-    }
-    */
 
     //
     sara.pullData = function(datasetname, key_temp, callback2) {
@@ -422,23 +377,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     //this will return null when file don't exist or not phone.
     sara.loadDataCollectionState = function(callback2) {
 
-        /*
-        var value = {};
-        value['daily_survey'] = {};
-        value['weekly_survey'] = {};
-        value['active_tasks_survey'] = {};
-        value['imei'] = {};
-        */
-
-
-        /*
-        data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)"); 
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        console.log("Encrypted: " + encrypted);
-        console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-        */
-
         if (ionic.Platform.isAndroid()) {
             var directory = cordova.file.externalRootDirectory;
 
@@ -481,23 +419,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     //this will return null when file don't exist or not phone.
     sara.loadLifeInsightsData = function(callback2) {
 
-        /*
-        var value = {};
-        value['daily_survey'] = {};
-        value['weekly_survey'] = {};
-        value['active_tasks_survey'] = {};
-        value['imei'] = {};
-        */
-
-
-        /*
-        data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)"); 
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        console.log("Encrypted: " + encrypted);
-        console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-        */
-
         if (ionic.Platform.isAndroid()) {
             var directory = cordova.file.externalRootDirectory;
 
@@ -538,23 +459,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
 
     sara.loadLifeInsightsLocStepsData = function(callback2) {
-
-        /*
-        var value = {};
-        value['daily_survey'] = {};
-        value['weekly_survey'] = {};
-        value['active_tasks_survey'] = {};
-        value['imei'] = {};
-        */
-
-
-        /*
-        data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)"); 
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        console.log("Encrypted: " + encrypted);
-        console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-        */
 
         if (ionic.Platform.isAndroid()) {
             var directory = cordova.file.externalRootDirectory;
@@ -600,23 +504,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     //
     sara.saveDataCollectionState = function(value_ds, value_ws) {
 
-        /*
-        var value = {};
-        value['daily_survey'] = {};
-        value['weekly_survey'] = {};
-        value['active_tasks_survey'] = {};
-        value['imei'] = {};
-        */
-
-
-        /*
-        data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)"); 
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        console.log("Encrypted: " + encrypted);
-        console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-        */
-
         //
         var value_ds_ws = {};
         value_ds_ws['daily_survey'] = value_ds; //value['daily_survey'];
@@ -633,22 +520,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
                     var file_location = "data_ds_ws.txt";
                     //console.log("File loc: " + directory + "/SensorLogger/data/" + file_location);
-
-                    /*
-                    $cordovaFile.checkFile(directory + "/SensorLogger/", file_location)
-                    .then(function (success) {
-                        // success
-                        $cordovaFile.readAsText(directory + "/SensorLogger/", file_location)
-                        .then(function (success) {
-                            // success
-                             console.log("json content: " + success);
-                        }, function (error) {
-                            // error
-                        });
-                    }, function (error) {
-                      // error
-                    });
-                    */
 
                     //$cordovaFile.writeFile(cordova.file.applicationStorageDirectory, file_location, encrypted, true )
                     $cordovaFile.writeFile(directory + "/SensorLogger/", file_location, JSON.stringify(value_ds_ws, null, 4), true)
@@ -679,23 +550,17 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
     //
     sara.copyJSONToFile = function(data, type) {
-        //
-
-        //var h = sjcl.codec.hex, count = 2048 ;
-        //var salt = h.fromBits(sjcl.random.randomWords('10','0'));
-        //var encrypted_message = sjcl.encrypt("password", JSON.stringify(data),{count:2048,salt:salt,ks:256});
-        //var encrypted_message = sjcl.encrypt("password", JSON.stringify(data),{count:2048,ks:256});
-        //var encrypted_message = window.sjcl.encrypt("password", "data");
-        //console.log("Encrypted: " + encrypted_message);
-        //console.log("Decrypted: " + window.sjcl.decrypt("password", encrypted_message));
-
 
         var data2 = data;
         data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)");
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
-        //console.log("Encrypted: " + encrypted);
-        //console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+        var encrypted = encrypt(data, "xxxxxxxxxxxxxxx");
+        var decrypted = decrypt(encrypted, "xxxxxxxxxxxxxxx");
+
+
+        var isOpenSource = true;
+        if(isOpenSource == true)
+            return;
+
 
         if (ionic.Platform.isAndroid()) {
 
@@ -717,20 +582,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
 
             }else{
                 var directory = cordova.file.externalRootDirectory;
-                //directory = directory.slice(7);
-
-                // success
-                //
-
-                //var Crypt = new Crypt();  // constructor  
-                /*** encrypt */
-
-                //var ciphertext = CryptoJS.AES.encrypt("plaintext", "Secret Passphrase");  
-                // H3fAh9bppeg=xuHy8woEtOfYYI18tLM76A==BKUvKCztSNl8  
-
-                /*** decrypt */
-                //var plaintext  = CryptoJS.AES.decrypt(ciphertext, "Secret Passphrase"); 
-                //var xxx =  "" + encrypted.toString();
 
 
                 $cordovaFile.checkDir(cordova.file.externalRootDirectory + "/SensorLogger/", "data")
@@ -766,22 +617,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
             }
 
 
-        }else{
-            var updates = {};
-            var survey_data = {};
-            survey_data['username'] = window.localStorage['username'] || "unknwon";
-            survey_data['ts'] = new Date().getTime();
-            survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
-            survey_data['data'] = encrypted;
-            //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-            // survey_data['regId'] = $ionicPush.token;
-            // survey_data['ts'] = new Date().getTime();
-            // survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
-
-            updates['/iOS/data/' + survey_data['username'] + "/" + type + "/" + moment().format('YYYYMMDD-HHmmss')] = survey_data;
-            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
-            firebase.database().ref().update(updates);
-
         }
 
 
@@ -803,11 +638,14 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         //console.log("Encrypted: " + encrypted_message);
         //console.log("Decrypted: " + window.sjcl.decrypt("password", encrypted_message));
 
+        var isOpenSource = true;
+        if(isOpenSource == true)
+            return;
 
 
         data = JSON.stringify(data);
-        var encrypted = encrypt(data, "Z&wz=BGw;%q49/<)");
-        var decrypted = decrypt(encrypted, "Z&wz=BGw;%q49/<)");
+        var encrypted = encrypt(data, "xxxxxxxxxxxxxxx");
+        var decrypted = decrypt(encrypted, "xxxxxxxxxxxxxxx");
         //console.log("Encrypted: " + encrypted);
         //console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
 
@@ -884,6 +722,11 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
         //console.log("Encrypted: " + encrypted);
         //console.log("Decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
 
+
+        var isOpenSource = true;
+        if(isOpenSource == true)
+            return;
+
         var string_to_write = moment().format('x') + "," + JSON.stringify(data);
 
         var existing_usage_data = window.localStorage["usage_data"] || '';
@@ -938,29 +781,6 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
                             //means I 
                 });
             });
-        }else{
-            var updates = {};
-            var survey_data = {};
-            survey_data['username'] = window.localStorage['username'] || "unknwon";
-            survey_data['ts'] = new Date().getTime();
-            survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
-            
-            console.log(JSON.stringify(data));
-
-            //if (("status" in data) && ("$$hashKey" in data["status"]))
-            //    delete data["status"]["$$hashKey"];
-
-            survey_data['data'] = JSON.parse(angular.toJson(data));
-
-            console.log("Modified: " + JSON.stringify(data));
-            //survey_data['decrypted'] = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-            // survey_data['regId'] = $ionicPush.token;
-            // survey_data['ts'] = new Date().getTime();
-            // survey_data['readableTs'] = moment().format('MMMM Do YYYY, h:mm:ss a ZZ');
-
-            updates['/iOS/usage/' + survey_data['username'] + "/" + moment().format('YYYYMMDD-HH:mm:ss:SSS')] = survey_data;//existing_usage_data;
-            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
-            firebase.database().ref().update(updates);
         }
 
     };
@@ -1023,113 +843,7 @@ mod.factory('saraDatafactory', function(awsCognitoSyncFactory, awsCognitoIdentit
     };
 
 
-    //upload to S3
-    sara.uploadImage = function(index) {
-
-        /*
-        var imageURI = $scope.uploadstats[index].filename;
-        var options = {
-            fileKey: "file",
-            fileName: $scope.email + "_" + imageURI.substr(imageURI.lastIndexOf('/')+1),
-            chunkedMode: false,
-            mimeType: "image/jpeg"
-        };
- 
-        var params = new Object();
-        params.value1 = "test";
-        params.value2 = "param";
-        options.params = params;
-        options.chunkedMode = false;
-        */
-
-        var imageURI = $scope.uploadstats[index].filename;
-        var s3URI = encodeURI("http://levitsky-experiment.s3.amazonaws.com/"),
-            policyBase64 = "eyJleHBpcmF0aW9uIjoiMjAyMC0xMi0zMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoibGV2aXRza3ktZXhwZXJpbWVudCJ9LFsic3RhcnRzLXdpdGgiLCIka2V5IiwiIl0seyJhY2wiOiJwdWJsaWMtcmVhZCJ9LFsic3RhcnRzLXdpdGgiLCIkQ29udGVudC1UeXBlIiwiIl0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCw1MjQyODgwMDAwMF1dfQ==",
-            signature = "OHnmJafrgd/iCWyESMnDnsDJIBQ=",
-            awsKey = 'AKIAIIG6QM7NED6S2LNQ',
-            acl = "public-read";
-
-        var fileName = $scope.email + "_" + imageURI.substr(imageURI.lastIndexOf('/') + 1);
-        var options = {
-            fileKey: "file",
-            fileName: $scope.email + "_" + imageURI.substr(imageURI.lastIndexOf('/') + 1),
-            chunkedMode: false,
-            mimeType: "image/jpeg"
-        };
-        options.params = {
-            "key": fileName,
-            "AWSAccessKeyId": awsKey,
-            "acl": acl,
-            "policy": policyBase64,
-            "signature": signature,
-            "Content-Type": "image/jpeg"
-        };
-
-
-        $cordovaFileTransfer.upload(s3URI,
-            imageURI, options).then(function(result) {
-            console.log("SUCCESS: " + JSON.stringify(result.response));
-            $scope.uploadstats[index].isUploaded = 1;
-            window.localStorage['upload'] = JSON.stringify($scope.uploadstats);
-        }, function(err) {
-            console.log("ERROR: " + JSON.stringify(err));
-        }, function(progress) {
-            // constant progress updates
-        });
-    };
-
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// --- upload latest json image data
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    sara.uploadJSON55 = function() {
-        var data = JSON.stringify($scope.meals);
-        var file_location = $scope.email + "_" + Date.now() + "_imageData.json";
-        $cordovaFile.writeFile(cordova.file.dataDirectory, file_location, data, true).then(function(result) {
-
-            // Success! Now upload
-            console.log('file created ' + result);
-
-
-            var imageURI = cordova.file.dataDirectory + file_location;
-            var s3URI = encodeURI("http://levitsky-experiment.s3.amazonaws.com/"),
-                policyBase64 = "eyJleHBpcmF0aW9uIjoiMjAyMC0xMi0zMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoibGV2aXRza3ktZXhwZXJpbWVudCJ9LFsic3RhcnRzLXdpdGgiLCIka2V5IiwiIl0seyJhY2wiOiJwdWJsaWMtcmVhZCJ9LFsic3RhcnRzLXdpdGgiLCIkQ29udGVudC1UeXBlIiwiIl0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCw1MjQyODgwMDAwMF1dfQ==",
-                signature = "OHnmJafrgd/iCWyESMnDnsDJIBQ=",
-                awsKey = 'AKIAIIG6QM7NED6S2LNQ',
-                acl = "public-read";
-
-            var fileName = file_location;
-            var options = {
-                fileKey: "file",
-                fileName: file_location,
-                chunkedMode: false,
-                mimeType: "text/plain"
-            };
-            options.params = {
-                "key": fileName,
-                "AWSAccessKeyId": awsKey,
-                "acl": acl,
-                "policy": policyBase64,
-                "signature": signature,
-                "Content-Type": "text/plain"
-            };
-
-
-            $cordovaFileTransfer.upload(s3URI,
-                imageURI, options).then(function(result) {
-                console.log("SUCCESS: " + JSON.stringify(result.response));
-            }, function(err) {
-                console.log("ERROR: " + JSON.stringify(err));
-            }, function(progress) {
-                // constant progress updates
-            });
-
-        }, function(err) {
-            // An error occured. Show a message to the user
-            console.log('file creation failed: ' + JSON.stringify(err));
-        });
-    };
-
+    
 
 
     return sara;

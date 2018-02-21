@@ -1,2 +1,0 @@
-Each key frame on the sprite sheet is 500px wide by 300px high. 
-

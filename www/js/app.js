@@ -103,40 +103,6 @@ app.run(function($ionicPlatform,$ionicPush,$rootScope,$location) {
             $rootScope.insp_message = custom_data;
             //window.localStorage['insp_message'] = JSON.stringify(custom_data);
             //---- 
-            if(custom_data.type === "engagement"){
-                    //
-                    var updates = {};
-                    updates[custom_data.url + '/isClicked' ] = 1;
-                    updates[custom_data.url + '/whenClickedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
-                    updates[custom_data.url + '/whenClickedTs' ] = Date.now();
-                    //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
-                    
-
-                    var actions = jsonData["action"];
-                    if("type" in actions){
-                        var action_type = actions["actionID"];
-                        if(action_type == 'iLike'){
-                            //updates = {};
-                            updates[custom_data.url + '/isLiked' ] = 2;//means direct change.. 
-                            updates[custom_data.url + '/whenRatedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
-                            updates[custom_data.url + '/whenRatedTs' ] = Date.now();
-                            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
-                            firebase.database().ref().update(updates);
-                            //$location.path("/main");
-                        }else{
-                            //updates = {};
-                            updates[custom_data.url + '/isLiked' ] = -2;//means direct change..
-                            updates[custom_data.url + '/whenRatedReadableTs' ] = moment().format("YYYY-MM-DD H:mm:ss a ZZ");
-                            updates[custom_data.url + '/whenRatedTs' ] = Date.now();
-                            //updates['/iOS/HistoryRegToken/' + newPostKey] = data;
-                            firebase.database().ref().update(updates);
-                            //$location.path("/main");
-                        }
-                    }else{
-                        firebase.database().ref().update(updates);//save the change so far.
-                        $location.path("/inspirationalquotes");
-                    }
-            }
         };
 
         window.plugins.OneSignal
@@ -196,8 +162,8 @@ app.config(function($routeProvider,$ionicCloudProvider) {
             controller: "RegisterCtrl"
         })
         .when("/", {
-            templateUrl: "templates/login.view.html",
-            controller: "LoginCtrl"
+            templateUrl: "templates/main.html",
+            controller: "MainCtrl"
         })
         .when("/reward/:added/:real", {
             //templateUrl : "templates/rewards.html",
@@ -387,38 +353,22 @@ app.directive("w3TestDirective", function($rootScope, saraDatafactory) {
             */
 
 
-
-            if($rootScope.gameloaded == undefined){
-                saraDatafactory.pullRLData(function(returnValue) {
-
-                    //------ this happens at the start. Load from the cloud.
-
-                    // use the return value here instead of like a regular (non-evented) return value
-                    //console.log(returnValue);
-                    //
-                    //console.log("json content: " + returnValue);
-
-
-                    //console.log(returnValue);
-                    /*
-                    if (returnValue == null) //return value will be a null if no internet connection, or profile don't exist
-                        returnValue = window.localStorage['cognito_data'] || "{}";
-                    else
-                        window.localStorage['cognito_data'] = returnValue;
-                    */
-
-
-                    $rootScope.gameloaded = true;
-                    if(returnValue == null){}
-                    else{
-                        window.localStorage['latest_cloud_data'] = returnValue;
-                    }
-
-                    loadgame(returnValue);
-                });
+            console.log("cognito_data:"); 
+            if(window.localStorage['cognito_data'] == undefined){
+                var cognito_data = {};
+                cognito_data['survey_data'] = {};
+                cognito_data['badges'] = {};
+                cognito_data['imei'] = window.localStorage['imei'] || '';
+                cognito_data['survey_data']['daily_survey'] = {}; //value['daily_survey'];
+                cognito_data['survey_data']['weekly_survey'] = {}; //value['weekly_survey'];
+                cognito_data['survey_data']['active_tasks_survey'] = {};
+                cognito_data['username'] = window.localStorage['username'] || '';
+                cognito_data = JSON.stringify(cognito_data);
+                window.localStorage['cognito_data'] = cognito_data;
             }else{
-                console.log("loading local copy");
+                
                 returnValue = window.localStorage['cognito_data'];
+                console.log("loading local copy " + returnValue);
                 loadgame(returnValue);
             }
 

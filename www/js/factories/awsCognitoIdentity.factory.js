@@ -7,13 +7,13 @@ mod.factory('awsCognitoIdentityFactory', function() {
   /* CUSTOM AWS COGNITO CONFIGURATION */
   // http://docs.aws.amazon.com/general/latest/gr/rande.html#cognito_identity_region
   var cognitoEndpoint = 'cognito-idp.us-east-1.amazonaws.com';
-  var region = 'us-east-1';
+  var region = 'xxxxxxxxxxxxxxx';
   // how to get userPoolId, go to AWS Console -> Cognito -> User pools -> <select_user_pool> -> Pool details -> Pool Id
-  var userPoolId = 'us-east-1_QGtmnevn0';
+  var userPoolId = 'xxxxxxxxxxxxxxx';
   // how to get clientId, go to AWS Console -> Cognito -> User pools -> <select_user_pool> -> Apps -> App client id
-  var clientId = '421rqn0q791dtmpkeugs93e9vo';
+  var clientId = 'xxxxxxxxxxxxxxx';
   // how to get identityPoolId, go to AWS Console -> Cognito -> Federate Identities > <select_federate_identity> -> Edit -> Identity pool ID
-  var identityPoolId = 'us-east-1:1c7436a4-e3fb-417b-945a-f3a4cc413d9a';
+  var identityPoolId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
   /* *********************************** */
 
   AWS.config.region = region;
@@ -23,7 +23,7 @@ mod.factory('awsCognitoIdentityFactory', function() {
   AWSCognito.config.region = region;
   AWSCognito.config.credentials =
     new AWS.CognitoIdentityCredentials({ IdentityPoolId: identityPoolId });
-  AWSCognito.config.update({ accessKeyId: 'AKIAI2SU3X2R6FIPDSDA', secretAccessKey: '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' })
+  AWSCognito.config.update({ accessKeyId: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', secretAccessKey: 'xxxxxxxxxxxxxxx/xxxxxxxxxxxxxxx' })
 
   var poolData = { UserPoolId: userPoolId, ClientId: clientId };
   var userPool =
