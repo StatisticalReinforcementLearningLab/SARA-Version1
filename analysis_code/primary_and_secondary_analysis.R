@@ -1,11 +1,44 @@
-# Tianchen Qian, 2018/8/29
-# Based on SARAanalysis_20180824.R, added availability.
+####################################
+# Created by Tianchen Qian, 2018/8/29
+#
+# The code is based on SARAanalysis_20180824.R (on Tianchen's local laptop),
+# and Tianchen updated the code to incorporate availability indicator.
 
+# Note of code logic in handling availability:
 # the availability indicator is always multiplied with the residual r := Y - exp(alpha*Z + beta*X)
 # in estimating function and in asymptotic variance calculation
 
+####################################
+# Update by Tianchen Qian, 2018/9/25
+#
+# 1. Revised the code to allow individuals with different lengths of observations.
+#    Argument change: removed "max_days" argument.
+# 2. Revised the code to allow treatment indicator = NA, when availability = 0
+# 3. Revised the code for primary hypothesis 2:
+#    previously, the code used "no_intercept_for_moderator" to handle availability;
+#    the updated version now handles availability in a more consistent way.
+#    Argument change: removed "no_intercept_for_moderator" argument.
+
 
 library(rootSolve) # for solver function multiroot()
+
+##########################################
+# A utility function to find the change location of a vector.
+# This is used to handle different length of observations among individuals.
+# 
+# example:
+# v <- c("a", "a", "b", "c", "c"); find_change_location(v)
+# [1] 1 3 4
+find_change_location <- function(v){
+    n <- length(v)
+    if (n <= 1) {
+        stop("The vector need to have length > 1.")
+    }
+    return(c(1, 1 + which(v[1:(n-1)] != v[2:n])))
+}
+
+
+
 
 binary_outcome_moderated_effect <- function(
         dta,
@@ -13,13 +46,11 @@ binary_outcome_moderated_effect <- function(
         moderator,
         id_var,
         day_var = "Day",
-        max_days = 30,
         trt_var = "A",
         outcome_var = "Y",
         avail_var = NULL,
         prob_treatment = 1/2,
-        significance_level = 0.025,
-        no_intercept_for_moderator = FALSE)
+        significance_level = 0.025)
 {
     ############## description ###############
     ##
@@ -32,6 +63,9 @@ binary_outcome_moderated_effect <- function(
     ##    (as in Liao et al. 2015)
     ##
     ## It is used as an internal function for SARA analysis wrapper functions.
+    ##
+    ## Note: dta needs to be sorted by id_var then day_var
+    ##       (currently this is handled in each of the wrapper functions)
     
     ############## arguments ###############
     ##
@@ -41,15 +75,13 @@ binary_outcome_moderated_effect <- function(
     ## moderator.............vector of variable names as effect modifiers (X in the model),
     ##                       could be NULL (no effect modifier)
     ## id_var................variable name for subject id (to distinguish between subjects in dta)
-    ## day_var...............variable name for day in study (from 1 to max_days)
-    ## max_days..............maximum of days observed for a participant
+    ## day_var...............variable name for day in study
     ## trt_var...............variable name for treatment indicator
     ## outcome_var...........variable name for outcome variable
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
     ## significance_level....significance level for the hypothesis testing (default to 0.025)
-    ## no_intercept_for_moderator.....whether to add intercept to the moderator
 
 
     ############## return value ###############
@@ -71,37 +103,37 @@ binary_outcome_moderated_effect <- function(
 
     ############## part 1 :: preparation ###############
     
-    # make sure every subject has max_days observations
-    stopifnot(all(aggregate(dta[, day_var] ~ dta[, id_var], dta, length)[, 2] == max_days))
+    # location of each individual's data in dta, when looping over individuals
+    person_first_index <- find_change_location(dta[, id_var])
+    if (length(person_first_index) != length(unique(dta[, id_var]))) {
+        stop("The length of person_first_index doesn't equal the number of unique id_var's.")
+    }
+    person_data_location <- c(person_first_index, nrow(dta) + 1)
     
     # gather variables
-    A <- dta[, trt_var]
-    cA <- A - prob_treatment # centered A
-    if (no_intercept_for_moderator) {
-        Xdm <- as.matrix( dta[, moderator] )    # X design matrix, no intercept
+    if (is.null(avail_var)) {
+        avail <- rep(1, nrow(dta))
     } else {
-        Xdm <- as.matrix( cbind( rep(1, nrow(dta)), dta[, moderator] ) )   # X design matrix, intercept added
+        avail <- dta[, avail_var]
     }
+    
+    A <- dta[, trt_var]
+    if (any(is.na(A[avail == 1]))) {
+        stop("Treatment indicator is NA where availability = 1.")
+    }
+    A[avail == 0] <- 0
+    
+    cA <- A - prob_treatment # centered A
+    Xdm <- as.matrix( cbind( rep(1, nrow(dta)), dta[, moderator] ) )   # X design matrix, intercept added
     Zdm <- as.matrix( cbind( rep(1, nrow(dta)), dta[, control_var] ) ) # Z design matrix, intercept added
     Y <- dta[, outcome_var]
     
     n <- sample_size <- length(unique(dta[, id_var]))
     
-    if (is.null(avail_var)) {
-        avail <- rep(1, sample_size * max_days)
-    } else {
-        avail <- dta[, avail_var]
-    }
-    
     p <- ncol(Xdm) # dimension of beta
     q <- ncol(Zdm) # dimension of alpha
     
-    if (no_intercept_for_moderator) {
-        Xnames <- moderator
-    } else {
-        Xnames <- c("Intercept", moderator)
-    }
-    
+    Xnames <- c("Intercept", moderator)
     Znames <- c("Intercept", control_var)
     
 
@@ -149,7 +181,7 @@ binary_outcome_moderated_effect <- function(
     
     # Compute M_n matrix (M_n is the empirical expectation of the derivative of the estimating function)
 
-    Mn_summand <- array(NA, dim = c(sample_size * max_days, p+q, p+q))
+    Mn_summand <- array(NA, dim = c(nrow(dta), p+q, p+q))
     for (it in 1:nrow(dta)) {
 
         # this is to make R code consistent whether X_it, Z_it contains more entries or is just 1.        
@@ -185,7 +217,7 @@ binary_outcome_moderated_effect <- function(
     exp_Zdm_alpha <- exp(Zdm %*% alpha_root)
     exp_negAXdm_beta <- exp(- A * (Xdm %*% beta_root))
     residual <- Y * exp_negAXdm_beta - exp_Zdm_alpha
-    Sigman_summand <- matrix(NA, nrow = sample_size * max_days, ncol = p+q)
+    Sigman_summand <- matrix(NA, nrow = nrow(dta), ncol = p+q)
     for (i in 1:p) {
         Sigman_summand[, i] <- residual * avail * cA * Xdm[, i]
     }
@@ -195,7 +227,8 @@ binary_outcome_moderated_effect <- function(
     
     Sigman <- matrix(0, nrow = p+q, ncol = p+q)
     for (user in 1:sample_size) {
-        summand <- Sigman_summand[((user-1)*max_days+1):(user*max_days), ]
+        rows_for_this_user <- person_data_location[user]:(person_data_location[user+1] - 1)
+        summand <- Sigman_summand[rows_for_this_user, ]
         summand <- colSums(summand)
         summand <- summand %o% summand
         Sigman <- Sigman + summand
@@ -220,12 +253,13 @@ binary_outcome_moderated_effect <- function(
     meat <- 0
     for (user in 1:sample_size) {
         # preparation
-        A_user <- A[((user-1)*max_days+1):(user*max_days)] # A_i1 to A_iT
-        cA_user <- cA[((user-1)*max_days+1):(user*max_days)] # centered A
-        Xdm_user <- Xdm[((user-1)*max_days+1):(user*max_days), ] # X_i1 to X_iT
-        Zdm_user <- Zdm[((user-1)*max_days+1):(user*max_days), ] # Z_i1 to Z_iT
-        Y_user <- Y[((user-1)*max_days+1):(user*max_days)] # Y_i1 to Y_iT
-        avail_user <- avail[((user-1)*max_days+1):(user*max_days)]
+        rows_for_this_user <- person_data_location[user]:(person_data_location[user+1] - 1)
+        A_user <- A[rows_for_this_user] # A_i1 to A_iT
+        cA_user <- cA[rows_for_this_user] # centered A
+        Xdm_user <- Xdm[rows_for_this_user, ] # X_i1 to X_iT
+        Zdm_user <- Zdm[rows_for_this_user, ] # Z_i1 to Z_iT
+        Y_user <- Y[rows_for_this_user] # Y_i1 to Y_iT
+        avail_user <- avail[rows_for_this_user]
         
         # this is to make R code consistent whether X_it, Z_it contains more entries or is just 1.    
         if (p == 1) {
@@ -257,7 +291,7 @@ binary_outcome_moderated_effect <- function(
         # compute H_i
         H_i <- de_i %*% Mn_inv %*% t(D_i) / sample_size
         
-        Ii_minus_Hi_inv <- solve(diag(max_days) - H_i)
+        Ii_minus_Hi_inv <- solve(diag(length(rows_for_this_user)) - H_i)
         meat <- meat + t(D_i) %*% Ii_minus_Hi_inv %*% r_i %*% t(r_i) %*% t(Ii_minus_Hi_inv) %*% D_i
     }
     meat <- meat / sample_size
@@ -339,8 +373,7 @@ SARA_primary_hypothesis_1 <- function(
     ## control_var...........vector of variable names used to reduce noise (Z in the model),
     ##                       could be NULL (no control covariates)
     ## id_var................variable name for subject id (to distinguish between subjects in dta)
-    ## day_var...............variable name for day in study (from 1 to max_days)
-    ## max_days..............maximum of days observed for a participant
+    ## day_var...............variable name for day in study
     ## trt_var...............variable name for treatment indicator
     ## outcome_var...........variable name for outcome variable
     ## avail_var.............variable name for availability variable
@@ -358,22 +391,19 @@ SARA_primary_hypothesis_1 <- function(
     ## critical_value........(one sided) critical value for t-test with the input significance level 
     ## p_value...............(one sided) p-value for t-test
 
-        
     # make sure dta is sorted by id_var then day_var
     dta <- dta[order(dta[, id_var], dta[, day_var]), ]
-    
+        
     result <- binary_outcome_moderated_effect(dta = dta,
                                               control_var = control_var,
                                               moderator = NULL,
                                               id_var = id_var,
                                               day_var = day_var,
-                                              max_days = 30,
                                               trt_var = trt_var,
                                               outcome_var = outcome_var,
                                               avail_var = avail_var,
                                               prob_treatment = prob_treatment,
-                                              significance_level = significance_level,
-                                              no_intercept_for_moderator = FALSE)
+                                              significance_level = significance_level)
     output <- list(beta = as.numeric(result$beta_hat),
                    beta_se = as.numeric(result$beta_se_ssa),
                    test_stat = as.numeric(result$test_result_t$test_stat),
@@ -413,8 +443,7 @@ SARA_primary_hypothesis_2 <- function(
     ## control_var...........vector of variable names used to reduce noise (Z in the model),
     ##                       could be NULL (no control covariates)
     ## id_var................variable name for subject id (to distinguish between subjects in dta)
-    ## day_var...............variable name for day in study (from 1 to max_days)
-    ## max_days..............maximum of days observed for a participant
+    ## day_var...............variable name for day in study
     ## trt_var...............variable name for treatment indicator
     ## survey_completion_var......variable name for the survey completion indicator of each day (I_{it} in the writeup)
     ## outcome_var...........variable name for outcome variable
@@ -432,7 +461,7 @@ SARA_primary_hypothesis_2 <- function(
     ## test_stat.............(one sided) t-test statsitic for testing beta = 0
     ## critical_value........(one sided) critical value for t-test with the input significance level 
     ## p_value...............(one sided) p-value for t-test
-    
+
     # make sure survey_completion_var is binary
     stopifnot(all(dta[, survey_completion_var] %in% c(0, 1)))
     
@@ -441,27 +470,36 @@ SARA_primary_hypothesis_2 <- function(
     
     # create new_dta with shifted outcome (for day t, the outcome is Y_{t+1})
     new_dta <- dta
+    new_dta$survey_completion_internal <- new_dta[, survey_completion_var]
     new_dta[1:(nrow(new_dta)-1), outcome_var] <- dta[2:nrow(dta), outcome_var]
     
-    # remove the observations on day 30 (since there is no Y_{t+1} for day t = 30)
-    new_dta <- new_dta[new_dta[, day_var] != 30, ]
-    
-    for (varname in control_var) {
-        new_dta[, varname] <- new_dta[, varname] * new_dta[, survey_completion_var]
+    # remove the last observation for each individual (since there is no Y_{t+1} for the last day)
+    person_first_index <- find_change_location(dta[, id_var])
+    if (length(person_first_index) != length(unique(dta[, id_var]))) {
+        stop("The length of person_first_index doesn't equal the number of unique id_var's.")
     }
+    person_last_index <- c(person_first_index[-1] - 1, nrow(dta))
+    new_dta <- new_dta[-person_last_index, ]
+
+    # create avail_new, which is the product of both the original availability indicator
+    # and the survey_completion_var
+    if (is.null(avail_var)) {
+        avail <- rep(1, nrow(new_dta))
+    } else {
+        avail <- new_dta[, avail_var]
+    }
+    new_dta$avail_new <- avail * new_dta$survey_completion_internal
     
     result <- binary_outcome_moderated_effect(dta = new_dta,
                                               control_var = control_var,
-                                              moderator = survey_completion_var,
+                                              moderator = NULL,
                                               id_var = id_var,
                                               day_var = day_var,
-                                              max_days = 29,
                                               trt_var = trt_var,
                                               outcome_var = outcome_var,
-                                              avail_var = avail_var,
+                                              avail_var = "avail_new",
                                               prob_treatment = prob_treatment,
-                                              significance_level = significance_level,
-                                              no_intercept_for_moderator = TRUE)
+                                              significance_level = significance_level)
     output <- list(beta = as.numeric(result$beta_hat),
                    beta_se = as.numeric(result$beta_se_ssa),
                    test_stat = as.numeric(result$test_result_t$test_stat),
@@ -500,7 +538,6 @@ SARA_exploratory_analysis <- function(
     ##                       could be NULL (no effect modifier)
     ## id_var................variable name for subject id (to distinguish between subjects in dta)
     ## day_var...............variable name for day in study (from 1 to max_days)
-    ## max_days..............maximum of days observed for a participant
     ## trt_var...............variable name for treatment indicator
     ## outcome_var...........variable name for outcome variable
     ## avail_var.............variable name for availability variable
@@ -523,14 +560,11 @@ SARA_exploratory_analysis <- function(
                                               control_var = control_var,
                                               moderator = moderator,
                                               id_var = id_var,
-                                              day_var = day_var,
-                                              max_days = 30,
                                               trt_var = trt_var,
                                               outcome_var = outcome_var,
                                               avail_var = avail_var,
                                               prob_treatment = prob_treatment,
-                                              significance_level = significance_level,
-                                              no_intercept_for_moderator = FALSE)
+                                              significance_level = significance_level)
     output <- list(beta = result$beta_hat,
                    beta_se = result$beta_se_ssa)
                    # test_stat = result$test_result_f$test_stat,
@@ -576,12 +610,115 @@ if (0) {
     
     
     ### create fake availability indicator, and try the three analysis functions with availability ###
-    
+    set.seed(123)
     dta2 <- dta
     dta2$avail <- rbinom(nrow(dta2), 1, 0.2)
-    dta2$A[dta2$avail == 0] <- 0
+    dta2$A[dta2$avail == 0] <- NA
     SARA_primary_hypothesis_1(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), avail_var = "avail")
     SARA_primary_hypothesis_2(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y", avail_var = "avail")
     SARA_exploratory_analysis(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", avail_var = "avail")
     
+}
+
+
+if (0) {
+    # output of the above example
+    # Version: 2018/9/25
+    
+    
+    >     ### try out the three analysis functions ###
+    >     
+    >     # primary hypothesis 1
+    >     SARA_primary_hypothesis_1(dta, control_var = c("Y_lag1", "at_tapcount_lag1"))
+    $beta
+    [1] 0.1761973
+    
+    $beta_se
+    [1] 0.01926731
+    
+    $test_stat
+    [1] 9.144882
+    
+    $critical_value
+    [1] 1.984984
+    
+    $p_value
+    [1] 5.112921e-15
+    
+    >     
+    >     # primary hypothesis 2
+    >     SARA_primary_hypothesis_2(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y")
+    $beta
+    [1] 0.006871496
+    
+    $beta_se
+    [1] 0.01939516
+    
+    $test_stat
+    [1] 0.3542892
+    
+    $critical_value
+    [1] 1.984984
+    
+    $p_value
+    [1] 0.3619496
+    
+    >     
+    >     # exploratory analysis
+    >     SARA_exploratory_analysis(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1")
+    $beta
+    Intercept     Y_lag1 
+    0.3493801 -0.2138751 
+    
+    $beta_se
+    Intercept     Y_lag1 
+    0.05310572 0.05948923 
+    
+    >     
+    >     
+    >     ### create fake availability indicator, and try the three analysis functions with availability ###
+    >     set.seed(123)
+    >     dta2 <- dta
+    >     dta2$avail <- rbinom(nrow(dta2), 1, 0.2)
+    >     dta2$A[dta2$avail == 0] <- NA
+    >     SARA_primary_hypothesis_1(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), avail_var = "avail")
+    $beta
+    [1] 0.08584806
+    
+    $beta_se
+    [1] 0.03993013
+    
+    $test_stat
+    [1] 2.149957
+    
+    $critical_value
+    [1] 1.984984
+    
+    $p_value
+    [1] 0.01703565
+    
+    >     SARA_primary_hypothesis_2(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y", avail_var = "avail")
+    $beta
+    [1] 0.02120382
+    
+    $beta_se
+    [1] 0.04106978
+    
+    $test_stat
+    [1] 0.5162875
+    
+    $critical_value
+    [1] 1.984984
+    
+    $p_value
+    [1] 0.3034204
+    
+    >     SARA_exploratory_analysis(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", avail_var = "avail")
+    $beta
+    Intercept      Y_lag1 
+    0.13959347 -0.06764016 
+    
+    $beta_se
+    Intercept    Y_lag1 
+    0.1104629 0.1155651 
 }
