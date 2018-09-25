@@ -1,0 +1,428 @@
+% \documentclass[english]{article}
+\documentclass[11pt]{article}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+% \geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{setspace}
+\onehalfspacing
+% \usepackage{babel}
+\newcommand{\sam}[1]{\textcolor{blue}{[SAM:\ #1]}}
+
+\begin{document}
+
+\title{Statistical Analysis for SARA}
+
+\author{Tianchen Qian, Mashfiqui Rabbi, Susan Murphy}
+
+\date{2018.09.25}
+
+\maketitle
+In this document, we describe the statistical methods to conduct the
+primary analysis, secondary analysis, and exploratory analysis for
+SARA. They are implemented in the attached R code; usage of the R
+code doesn't require understanding of the sections with {*}.
+
+Throughout this document, we assume the treatment probability is a
+known constant (constant across time and across all subjects).
+
+The wording of primary hypotheses, secondary hypotheses, and exploratory
+analysis are all extracted from Mash's working paper.
+
+\section{Statistical method for primary analysis}
+
+\subsection{Primary hypothesis 1\label{subsec:Primary-hypothesis-1}}
+
+$H_{0}$: The 4pm push notification with inspirational quote will
+\textbf{not} increase the full completion of survey and/or active
+task the same day as compared to no inspirational quote.
+
+$H_{1}$: The 4pm push notification with inspirational quote will
+increase the full completion of survey and/or active task the same
+day as compared to no inspirational quote.
+
+\subsubsection{Test statistic and critical value}
+
+\textbf{Data notation for testing this hypothesis.} The data collected
+from participant $i$ is denoted by $(Z_{i1},A_{i1},Y_{i1},\ldots,Z_{i,T_i},A_{i,T_i},Y_{i,T_i})$,
+where the subscript $1,2,\ldots,T_i$ denotes day in the study. Here we allow the length of observations $T_i$ to be different for each individual. $Y_{it}$
+denotes the binary outcome (full completion of either the survey or
+completion of both active tasks) on day $t$. $A_{it}$ is the indicator
+of treatment on day $t$ ($A_{it}=1$ if sent 4pm push notification,
+0 if not). $Z_{it}$ is the control variables on day $t$. The purpose
+of $Z_{it}$ is to reduce variance in the analysis. The definition
+of which observations can be in $Z_{it}$ depends on the definition
+of $A_{it}$: $Z_{it}$ can only include information that is available
+prior to $A_{it}$. In this particular example, $Z_{it}$ can only
+include information that is available prior to 4pm on day $t$. For
+instance, $Z_{it}$ can include variables such as: weather on day
+$t$ (before 4pm), previous day adherence $Y_{i,t-1}$, and other
+information available before 4pm on day $t$. Let $I_{it}$ denote the availability status indicator for day $t$: if unavailable, the treatment is not delivered.
+
+\textbf{Marginal treatment effect on log scale. }To form the test
+statistic, we consider the marginal treatment effect on the log scale:
+\begin{align}
+\beta_{0} & :=\log\left(\frac{\sum_{t=1}^{T_i}E[Y_{it}|A_{it}=1, I_{it} = 1]}{\sum_{t=1}^{T_i}E[Y_{it}|A_{it}=0, I_{it} = 1]}\right)\nonumber \\
+ & =\log\left(\frac{\sum_{t=1}^{T_i}e^{\beta_{0t}}E[Y_{it}|A_{it}=0, I_{it} = 1]}{\sum_{t=1}^{T_i}E[Y_{it}|A_{it}=0, I_{it} = 1]}\right),\label{eq:estimand-primary1}
+\end{align}
+where $\beta_{0t}=\log\left(\frac{E[Y_{it}|A_{it}=1, I_{it} = 1]}{E[Y_{it}|A_{it}=0, I_{it} = 1]}\right)$.
+Thus the definition of $\beta_{0}$ given in (\ref{eq:estimand-primary1})
+is marginal both accross time as well as across users.
+
+\textbf{Test statistic and critical value.} In Section \ref{subsec:Technical-details-1},
+we describe how to construct an estimator $\hat{\beta}$ for this
+marginal treatment effect $\beta_{0}$, and an estimate of its variance
+$\widehat{\text{Var}}(\hat{\beta})$. The test statistic $T$ is defined
+by
+\begin{equation}
+T=\frac{\hat{\beta}}{\{\widehat{\text{Var}}(\hat{\beta})\}^{1/2}}.\label{eq:test-primary1}
+\end{equation}
+To conduct one-sided hypothesis test with significance level $0.025$,
+the critical value is $c=t_{n-1-q}^{-1}(1-0.025)$. If $T>c$, we
+reject $H_{0}$. Here, $n$ is the sample size, $q$ is the length
+of vector $Z_{it}$ (including the added intercept), and $t_{n-1-q}^{-1}(\gamma)$
+denotes the $\gamma$-quantile of $t$-distribution with $(n-1-q)$
+degrees of freedom. For example, suppose $Z_{it}$ includes two variables:
+the previous day adherence $Y_{i,t-1}$ and the weather of day $t$.
+Then $q=2+1=3$.
+
+\textbf{Software.} R function to conduct primary hypothesis 1 is
+\textsf{SARA\_primary\_hypothesis\_1} in \textsf{SARAanalysis.R}.
+
+\subsubsection{Statistical details{*} \label{subsec:Technical-details-1}}
+
+$\hat{\beta}$ in the test statistic (\ref{eq:test-primary1}) is
+obtained by solving the following estimating equation (simutaneously
+solving for $\hat{\alpha}$ and $\hat{\beta}$):
+\begin{equation}
+0=\sum_{i=1}^{n}\sum_{t=1}^{T_i} I_{it} e^{-A_{it}\beta}\left(Y_{it}-e^{Z_{it}^{T}\alpha+A_{it}\beta}\right)\begin{pmatrix}(A_{it}-p_{a})\\
+e^{Z_{it}^{T}\alpha}Z_{it}
+\end{pmatrix}.\label{eq:ee-primary1}
+\end{equation}
+Here, $p_{a}=P(A_{it}=1)$ is the randomization probability (assumed
+constant across all time and all subjects). The superscript $T$ denotes
+matrix transpose. Note that as in linear regression, we add an intercept
+1 to the vector $Z_{it}$. It turns out that $\hat{\beta}$ is consistent
+for $\beta_{0}$ in (\ref{eq:estimand-primary1}) even if $e^{Z_{it}^{T}\alpha}$
+is a wrong model for $E(Y_{it}=1\mid A_{it}=0)$. In order words,
+the choice of $Z_{it}$ only affects the variance of $\hat{\beta}$,
+but does not affect the consistency of $\hat{\beta}$.
+
+Mathematically, solving (\ref{eq:ee-primary1}) for $\hat{\beta}$
+in this primary hypothesis is a special case of the estimating equation for the exploratory analysis
+in Section \ref{subsec:Technical-details-3}. Therefore, the formula for
+computing $\widehat{\text{Var}}(\hat{\beta})$ is deferred to Section
+\ref{sec:var}.
+
+\subsection{Primary hypothesis 2\label{subsec:Primary-hypothesis-2}}
+
+$H_{0}$: Among individuals who complete the survey, providing a post-survey-completion
+meme or gif will \textbf{not} yield a higher rate of completion of
+the survey or active task the next day than not providing meme/gif
+reinforcement after survey completion.
+
+$H_{1}$: Among individuals who complete the survey, providing a post-survey-completion
+meme or gif will not yield a higher rate of completion of the survey
+or active task the next day than not providing meme/gif reinforcement
+after survey completion.
+
+\subsubsection{Test statistic and critical value}
+
+\textbf{Data notation for testing this hypothesis.} The data collected
+from participant $i$ is denoted by $(Z_{i1},A_{i1},Y_{i1},\ldots,Z_{i,T_i},A_{i,T_i},Y_{i,T_i})$,
+where the subscript $1,2,\ldots,T_i$ denotes day in the study. $Y_{it}$
+denotes the binary outcome (full completion of either the survey or
+completion of both active tasks) on day $t$. $A_{it}$ is the indicator
+of treatment on day $t$ ($A_{it}=1$ if provided a post-survey-completion
+meme or gif, 0 if not). $Z_{it}$ is the control variables on day
+$t$, which can only include information that is available prior to
+$A_{it}$. Let the survey-completion indicator $S_{it}=1$ if participant
+$i$ completed the survey on day $t$, and set $S_{it}=0$ otherwise. Let $I_{it}$ denote the availability status indicator for day $t$: if unavailable, the treatment is not delivered. (Two notes: (i) $S_{it} = Y_{it}$. (ii) In the estimating equation we will multiply $S_{it}$ with $I_{it}$ to obtain the ``overall'' availability indicator, and the inference is conditional on these available dates. Here we separate those for conceptual clearness.)
+
+\textbf{Difference from primary hypothesis 1.} (i) In testing this
+hypothesis, $Z_{it}$ can include information that is available prior
+to the occurrence of post-survey-completion meme on day $t$. So here
+(unlike in primary hypothesis 1) we can include in the controls, $Z_{it}$,
+data collected by the survey on day $t$. (ii) In testing this hypothesis,
+we are interested in the effect of $A_{it}$ on $Y_{i,t+1}$. In using
+the software, however, do not recode the outcome manually because
+the algorithm already takes this into account.
+
+\textbf{Marginal treatment effect on log scale. }To form the test
+statistic, we consider the marginal treatment effect on the log scale
+for those who are available:
+\begin{align}
+\beta_{0} & :=\log\left(\frac{\sum_{t=1}^{T_i - 1}E[Y_{i,t+1}|A_{it}=1,I_{it}=1, S_{it} = 1]}{\sum_{t=1}^{T_i - 1}E[Y_{i,t+1}|A_{it}=0,I_{it}=1, S_{it} = 1]}\right)\nonumber \\
+ & =\log\left(\frac{\sum_{t=1}^{T_i - 1}e^{\beta_{0t}}E[Y_{i,t+1}|A_{it}=0,I_{it}=1, S_{it} = 1]}{\sum_{t=1}^{T_i - 1}E[Y_{i,t+1}|A_{it}=0,I_{it}=1, S_{it} = 1]}\right),\label{eq:estimand-primary2}
+\end{align}
+where $\beta_{0t}=\log\left(\frac{E[Y_{i,t+1}|A_{it}=1,I_{it}=1, S_{it} = 1]}{E[Y_{i,t+1}|A_{it}=0,I_{it}=1, S_{it} = 1]}\right)$.
+Thus the definition of $\beta_{0}$ given in (\ref{eq:estimand-primary2})
+is marginal both accross time as well as across users.
+
+\textbf{Test statistic and critical value.} In Section \ref{subsec:Technical-details-2},
+we describe how to construct an estimator $\hat{\beta}$ for this
+marginal treatment effect $\beta_{0}$, and an estimate of its variance
+$\widehat{\text{Var}}(\hat{\beta})$. The test statistic $T$ is defined
+by
+\begin{equation}
+T=\frac{\hat{\beta}}{\{\widehat{\text{Var}}(\hat{\beta})\}^{1/2}}.\label{eq:test-primary2}
+\end{equation}
+To conduct one-sided hypothesis test with significance level $0.025$,
+the critical value is $c=t_{n-1-q}^{-1}(1-0.025)$. If $T>c$, we
+reject $H_{0}$. Here, $n$ is the sample size, $q$ is the length
+of vector $Z_{it}$ (including the added intercept), and $t_{n-1-q}^{-1}(\gamma)$
+denotes the $\gamma$-quantile of $t$-distribution with $(n-1-q)$
+degrees of freedom. For example, suppose $Z_{it}$ includes two variables:
+the previous day adherence $Y_{i,t-1}$ and the weather of day $t$.
+Then $q=2+1=3$.
+
+\textbf{Software.} R function to conduct primary hypothesis 2 is
+\textsf{SARA\_primary\_hypothesis\_2} in \textsf{SARAanalysis.R}.
+
+\subsubsection{Statistical details{*} \label{subsec:Technical-details-2}}
+
+$\hat{\beta}$ in the test statistic (\ref{eq:test-primary2}) is
+obtained by solving the following estimating equation (simutaneously
+solving for $\hat{\alpha}$ and $\hat{\beta}$):
+\begin{equation}
+0=\sum_{i=1}^{n}\sum_{t=1}^{T_i - 1}S_{it} I_{it}e^{-A_{it}\beta}\left(Y_{i,t+1}-e^{Z_{it}^{T}\alpha+A_{it}\beta}\right)\begin{pmatrix}(A_{it}-p_{a})\\
+e^{Z_{it}^{T}\alpha}Z_{it}
+\end{pmatrix}.\label{eq:ee-primary2}
+\end{equation}
+Here, $p_{a}=P(A_{it}=1)$ is the randomization probability (assumed
+constant across all time and all subjects). The superscript $T$ denotes
+matrix transpose. Note that as in linear regression, we add an intercept
+1 to the vector $Z_{it}$. It turns out that $\hat{\beta}$ is consistent
+for $\beta_{0}$ in (\ref{eq:estimand-primary2}) even if $e^{Z_{it}^{T}\alpha}$
+is a wrong model for $E(Y_{it}=1\mid A_{it}=0)$. In order words,
+the choice of $Z_{it}$ only affects the variance of $\hat{\beta}$,
+but does not affect the consistency of $\hat{\beta}$.
+
+Mathematically, solving (\ref{eq:ee-primary2}) for $\hat{\beta}$
+in this primary hypothesis is a special case of the estimating equation for the exploratory analysis
+in Section \ref{subsec:Technical-details-3}. Therefore, the formula for
+computing $\widehat{\text{Var}}(\hat{\beta})$ is deferred to Section
+\ref{sec:var}.
+
+\section{Statistical method for secondary analysis}
+
+\subsection{Secondary hypothesis 1}
+
+$H_{0}$: The 6pm reminder notification with an extra persuasive message
+will not yield a higher rate of full completion of the survey or active
+task the same day than not providing the extra persuasive message.
+
+$H_{1}$: The 6pm reminder notification with an extra persuasive message
+will not yield a higher rate of full completion of the survey or active
+task the same day than not providing the extra persuasive message.
+
+\textbf{Note:} the statistical method for testing this secondary hypothesis
+is essentially the same as primary hypothesis 1 in Section \ref{subsec:Primary-hypothesis-1}.
+The differences are: (i) the treatment is defined differently; (ii)
+the variables allowed in $Z_{it}$ are information available prior
+to 6pm on day $t$.
+
+\subsection{Secondary hypothesis 2}
+
+$H_{0}$: Among individuals who complete the active tasks, offering
+a post-active-task-completion life-insight will not yield a higher
+rate of the full completion of the survey or active task the next
+day than not offering a life-insight after active tasks completion.
+
+$H_{1}$: Among individuals who complete the active tasks, offering
+a post-active-task-completion life-insight will yield a higher rate
+of the full completion of the survey or active task the next day than
+not offering a life-insight after active tasks completion.
+
+\textbf{Note:} the statistical method for testing this secondary hypothesis
+is essentially the same as primary hypothesis 2 in Section \ref{subsec:Primary-hypothesis-2}.
+The differences are: (i) the treatment is defined differently; (ii)
+the availability indicator $I_{it}=1$ if participant $i$ completed
+the active tasks on day $t$, and $I_{it}=0$ otherwise.
+
+\section{Statistical method for exploratory analysis}
+
+\subsection{Exploratory analysis}
+
+The following description of the exploratory analysis is an excerpt
+from Mash's working paper.
+
+``We plan to run exploratory analyses to examine how the effectiveness
+of engagement strategies changes over time (we conjecture the effectiveness
+will decrease). We will also run additional exploratory analysis to
+assess effect moderation. We will examine how the effect of engagement
+strategies is moderated by gender, weekdays/weekends, and whether
+the day is Sunday vs other days of the week (we expect the longer
+Sunday\textquoteright s daily surveys\textquoteright{} completion
+may be lower than other days).''
+
+% \textcolor{blue}{{[}SAM: Mash needs to rank order these potential moderators prior to seeing the data.{]}}
+
+This section describes the statistical method for the second part
+of the exploratory analysis, about effect moderation.
+
+\subsubsection{Model and Estimator}
+
+\textbf{Data notation for exploratory analysis.} The data collected
+from participant $i$ is denoted by $(Z_{i1},A_{i1},Y_{i1},\ldots,Z_{i,T_i},A_{i,T_i},Y_{i,T_i})$,
+where the subscript $1,2,\ldots,T_i$ denotes day in the study. $Y_{it}$
+denotes the binary outcome (full completion of either the survey or
+completion of both active tasks) on day $t$. $A_{it}$ is the indicator
+of treatment on day $t$ ($A_{it}=1$ if sent 4pm push notification,
+0 if not). $Z_{it}$ is the control variables on day $t$. The purpose
+of $Z_{it}$ is to reduce variance in the analysis. $X_{it}$ is the
+potential effect moderators on day $t$, which is a subset of $Z_{it}$.
+For example, $X_{it}$ could include gender, whether day $t$ is a
+weekday, and whether day $t$ is a Sunday. $Z_{it}$ could include
+$X_{it}$ and some other covariates such as the weather of day $t$. Let $I_{it}$ denote the availability status indicator for day $t$: if unavailable, the treatment is not delivered.
+
+\textbf{Moderated treatment effect on log scale.} Denote by $H_{it}$ the history
+of subject $i$ up to day $t$ prior to $A_{it}$: $H_{it}=\{Z_{i1},A_{i1},Y_{i1},\ldots,Z_{i,t-1},A_{i,t-1},Y_{i,t-1},Z_{it}\}$.
+To form the test statistic, we consider the moderated treatment effect
+on log scale:
+
+\begin{equation}
+\log\left(\frac{E\{E[Y_{it}|A_{it}=1,H_{it}, I_{it} = 1]\mid X_{it}, I_{it} = 1\}}{E\{E[Y_{it}|A_{it}=0,H_{it}, I_{it} = 1]\mid X_{it}, I_{it} = 1\}}\right)=X_{it}^{T}\beta,\qquad\text{for all }t=1,2,\ldots,T_i.\label{eq:estimand-exploratory}
+\end{equation}
+The superscript $T$ denotes matrix transpose. As in usual linear
+regression, we add an intercept 1 to the vector $X_{it}$. $\beta$
+characterizes the magnitude of effect moderation, and it is a vector
+of length $p$, where $p$ is the length of vector $X_{it}$ (including
+the intercept). Notice that here we assume model (\ref{eq:estimand-exploratory})
+holds for all $t=1,2,\ldots,T_i$; that is, the definition of $\beta$
+in (\ref{eq:estimand-exploratory}) is not marginal across time, unlike
+in (\ref{eq:estimand-primary1}) and (\ref{eq:estimand-primary2}).
+
+\textbf{Estimator and standard error.} In Section \ref{subsec:Technical-details-3},
+we describe how to construct an estimator $\hat{\beta}$ for this
+moderated treatment effect $\beta$, and an estimate of its variance-covariance
+matrix \textbf{$\widehat{\text{Var}}(\hat{\beta})$}. 
+% If one wishes
+%to test for $\beta=0$ (all entries of the vector $\beta$ being zero,
+%which is analogous to an $F$-test in a multivariate linear regression),
+%the test statistic $T$ is defined by
+%\begin{equation}
+%T=\hat{\beta}^{T}\{\widehat{\text{Var}}(\hat{\beta})\}^{-1}\hat{\beta}.\label{eq:estimand-exploratory}
+%\end{equation}
+%To conduct two-sided hypothesis test with significance level $0.025$,
+%the critical value is
+%\[
+%c=F_{p,n-q-p}^{-1}\left(\frac{(n-q-p)(1-0.025)}{p(n-q-1)}\right).
+%\]
+%If $T>c$, we reject $H_{0}:\beta=0$. Here, $n$ is the sample size,
+%$q$ is the length of vector $Z_{it}$ (including the added intercept),
+%$p$ is the length of vector $X_{it}$ (including the added intercept),
+%and $F_{p,n-q-p}^{-1}(\gamma)$ denotes the $\gamma$-quantile of
+%$F$-distribution with $(p,n-q-p)$ degrees of freedom. 
+
+\textbf{Software.} R function to conduct exploratory analysis is
+\textsf{SARA\_exploratory\_analysis} in \textsf{SARAanalysis.R}.
+
+\subsubsection{Statistical details{*} \label{subsec:Technical-details-3}}
+
+$\hat{\beta}$ in the test statistic (\ref{eq:estimand-exploratory})
+is obtained by solving the following estimating equation (simutaneously
+solving for $\hat{\alpha}$ and $\hat{\beta}$):
+\begin{equation}
+0=\sum_{i=1}^{n}\sum_{t=1}^{T_i} I_{it} e^{-A_{it}X_{it}^{T}\beta}\left(Y_{it}-e^{Z_{it}^{T}\alpha+A_{it}X_{it}^{T}\beta}\right)\begin{pmatrix}(A_{it}-p_{a})X_{it}\\
+e^{Z_{it}^{T}\alpha}Z_{it}
+\end{pmatrix}.\label{eq:ee-exploratory}
+\end{equation}
+Here, $p_{a}=P(A_{it}=1)$ is the randomization probability (assumed
+constant across all time and all subjects). Note that as in linear
+regression, we add an intercept 1 to both the vector $X_{it}$ and
+the vector $Z_{it}$. It turns out that $\hat{\beta}$ is consistent
+for $\beta$ in (\ref{eq:estimand-exploratory}) even if $e^{Z_{it}^{T}\alpha}$
+is a wrong model for $E(Y_{it}=1\mid A_{it}=0)$. In order words,
+the choice of $Z_{it}$ only affects the variance of $\hat{\beta}$,
+but does not affect the consistency of $\hat{\beta}$.
+
+We present the computation of $\widehat{\text{Var}}(\hat{\beta})$ in the next section.
+
+\section{Technical details on computing $\widehat{\text{Var}}(\hat{\beta})${*}}
+\label{sec:var}
+
+In this section, we describe the variance estimates $\widehat{\text{Var}}(\hat{\beta})$
+in each of the hypothesis tests.
+
+\subsection{General form}
+
+Consider the following estimating equation, where $n$ denotes sample
+size, and $T$ denotes the total number of time points (here the number
+of days),
+\begin{equation}
+0=\sum_{i=1}^{n}\sum_{t=1}^{T}I_{it} e^{-A_{it}X_{it}^{T}\beta}\left(Y_{it}-e^{Z_{it}^{T}\alpha+A_{it}X_{it}^{T}\beta}\right)\begin{pmatrix}(A_{it}-p_{a})X_{it}\\
+e^{Z_{it}^{T}\alpha}Z_{it}
+\end{pmatrix}.\label{eq:ee-general}
+\end{equation}
+For $(\hat{\beta},\hat{\alpha})$ that solves (\ref{eq:ee-general}),
+its estimated variance-covariance matrix $V$ equals
+\begin{equation}
+V=\frac{1}{n}M_{n}^{-1}\left\{ \frac{1}{n}\sum_{i=1}^{n}D_{i}^{T}(I_{i}-H_{i})^{-1}(Y_{i}-\mu_{i})(Y_{i}-\mu_{i})^{T}(I_{i}-H_{i}^{T})^{-1}D_{i}\right\} \left(M_{n}^{-1}\right)^{T}.\label{eq:V}
+\end{equation}
+The terms on the right hand side of (\ref{eq:V}) are defined as follows:
+\[
+M_{n}:=(1/n)\sum_{i=1}^{n}\sum_{t=1}^{T}\begin{bmatrix}-Y_{it}(A_{it}-p_{a})A_{it}e^{-A_{it}X_{it}^{T}\beta}X_{it}X_{it}^{T} & -(A_{it}-p_{a})e^{Z_{it}^{T}\alpha}X_{it}Z_{it}^{T}\\
+-Y_{it}e^{-A_{it}X_{it}^{T}\beta}A_{it}e^{Z_{it}^{T}\alpha}Z_{it}X_{it}^{T} & Y_{it}e^{-A_{it}X_{it}^{T}\beta}e^{Z_{it}^{T}\alpha}Z_{it}Z_{it}^{T}-2e^{2Z_{it}^{T}\alpha}Z_{it}Z_{it}^{T}
+\end{bmatrix},
+\]
+\[
+D_{i}:=\begin{bmatrix}e^{-A_{i1}X_{i1}^{T}\beta}(A_{i1}-p_{a})X_{i1}^{T} & e^{-A_{i1}X_{i1}^{T}\beta}e^{Z_{i1}^{T}\alpha}Z_{i1}^{T}\\
+\vdots & \vdots\\
+e^{-A_{iT}X_{iT}^{T}\beta}(A_{iT}-p_{a})X_{iT}^{T} & e^{-A_{iT}X_{iT}^{T}\beta}e^{Z_{iT}^{T}\alpha}Z_{iT}^{T}
+\end{bmatrix},
+\]
+\[
+E_{i}:=\begin{bmatrix}-e^{Z_{i1}^{T}\alpha+A_{i1}X_{i1}^{T}\beta}A_{i1}X_{i1}^{T} & -e^{Z_{i1}^{T}\alpha+A_{i1}X_{i1}^{T}\beta}Z_{i1}^{T}\\
+\vdots & \vdots\\
+-e^{Z_{iT}^{T}\alpha+A_{iT}X_{iT}^{T}\beta}A_{iT}X_{i1}^{T} & -e^{Z_{iT}^{T}\alpha+A_{iT}X_{iT}^{T}\beta}Z_{iT}^{T}
+\end{bmatrix},
+\]
+\[
+H_{i}:=\frac{1}{n}E_{i}M_{n}^{-1}D_{i}^{T},
+\]
+\[
+Y_{i}:=\begin{bmatrix}I_{i1} Y_{i1}\\
+\vdots\\
+I_{iT} Y_{iT}
+\end{bmatrix},\qquad\mu_{i}:=\begin{bmatrix}I_{i1} e^{Z_{i1}^{T}\alpha+A_{i1}X_{i1}^{T}\beta}\\
+\vdots\\
+I_{iT} e^{Z_{iT}^{T}\alpha+A_{iT}X_{iT}^{T}\beta}
+\end{bmatrix},
+\]
+and $I_{i}$ is a $T\times T$ identity matrix. The superscript $T$
+denotes matrix transpose.
+
+\subsection{For primary hypothesis 1}
+
+The $\widehat{\text{Var}}(\hat{\beta})$ in the test statistic (\ref{eq:test-primary1})
+of primary hypothesis 1 is obtained as follows. In (\ref{eq:ee-general}),
+set $X_{it}=1$ for all $i,t$, and set $T=T_i$. With these modification,
+(\ref{eq:ee-general}) becomes equivalent to the estimating equation
+(\ref{eq:ee-primary1}) presented in Section \ref{subsec:Technical-details-1}.
+Then the (1,1) entry of the matrix $V$ in (\ref{eq:V}) is the estimated
+variance $\widehat{\text{Var}}(\hat{\beta})$ in (\ref{eq:test-primary1}).
+
+\subsection{For primary hypothesis 2}
+
+The $\widehat{\text{Var}}(\hat{\beta})$ in the test statistic (\ref{eq:test-primary2})
+of primary hypothesis 2 is obtained as follows. In (\ref{eq:ee-general}),
+set $I_{it} \leftarrow I_{it} S_{it}$, replace $Y_{it}$ by $Y_{i,t+1}$, set
+$T= T_i - 1$. With these modification, (\ref{eq:ee-general}) becomes equivalent to the estimating equation (\ref{eq:ee-primary2})
+presented in Section \ref{subsec:Technical-details-2}.
+Then the (1,1) entry of the matrix $V$ in (\ref{eq:V}) is the estimated
+variance $\widehat{\text{Var}}(\hat{\beta})$ in (\ref{eq:test-primary2}).
+
+\subsection{For exploratory analysis}
+
+The $\widehat{\text{Var}}(\hat{\beta})$ in the test statistic (\ref{eq:estimand-exploratory})
+of exploratory analysis is obtained as follows. In (\ref{eq:ee-general}),
+set $T=T_i$. Suppose $p$ is the length of vector $X_{it}$ (including
+the added intercept). Then the $p$-th principal submatrix (i.e.,
+the top-left $p\times p$ submatrix) of the matrix $V$ in (\ref{eq:V})
+is the estimated variance-covariance matrix $\widehat{\text{Var}}(\hat{\beta})$
+in (\ref{eq:estimand-exploratory}).
+\end{document}
