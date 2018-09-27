@@ -1,4 +1,4 @@
-# sara
+# SARA
 SARA (Substance Abuse Research Assistant)
 
 ## Project Description # #
