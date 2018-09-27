@@ -28,11 +28,10 @@ For the SARA app:
 If you are interested in causal inference with binary outcome in a time-varying setting then please cite:
 
 ```tex
-The manuscript is under preparation. For early drafts please contact
+The manuscript is in preparation. For early drafts please contact
 Please contact mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
 
-Or see
-this link [analysis_code/SARA_analysis_documentation.pdf]
+For an informal description of the method see the "analysis_code" folder.
 ```
 
 
