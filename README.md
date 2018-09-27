@@ -35,25 +35,9 @@ For an informal description of the method see the "analysis_code" folder.
 ```
 
 
-## Code Description ##
+## Code Description 
+The code for SARA is divided into two folder. The individual folders contain readme files that describe how the individual folder codes work. 
 
-If there are steps to run the code list them as follows: 
+* [App_code](/Analysis_code): App code folder contains the code for the SARA mobile app. 
+* [Analysis_code](/Analysis_code): Contains code and description of time-varying causal effects of treatment with a binary outcome. 
 
-0. Dependencies. If there are any dependencies list them. 
-1. Get the data
-* Where is the data, who is in charge of it, how do they get it. 
-* Are there preprocessing steps? If so what folder are they in, for example: [the data preprocessing directory](/data_preprocessing)
-2. Run methods. Point people towards the folder with methods. [the methods directory](/methods)
-3. Evaluate. Point people towards the folder with evaluation functions [the evaluation directory](/evaluation)
-
-# Notes #
-
-To see more tips on README's see [here](https://github.com/tchapi/markdown-cheatsheet/blob/master/README.md)
-
-SOMETHING TO NOTE: Readmes are incredibly sensitive to spaces, if you are not sure why something isn't working double check the example and make sure you have the spacing right. 
-
-Here is an example code block:
-
-```
-mvn dependency:build-classpath -Dmdep.outputFile=classpath.out
-```
