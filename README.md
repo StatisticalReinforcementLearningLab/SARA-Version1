@@ -29,7 +29,7 @@ If you are interested in causal inference with binary outcome in a time-varying 
 
 ```tex
 The manuscript is in preparation. For early drafts please contact
-Please contact mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
+mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
 
 For an informal description of the method see the "analysis_code" folder.
 ```
