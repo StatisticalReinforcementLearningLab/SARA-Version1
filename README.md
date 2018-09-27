@@ -8,14 +8,18 @@ SARA is a novel app to engage users with ongoing tracking using timely rewards t
   <img src="https://raw.githubusercontent.com/StatisticalReinforcementLearningLab/sara/master/app_code/9850-169539-1-SP.png" width="650"/>
 </p>
 
-"Paper X/ Project X". If using this code please cite the paper using the following bibtex: 
+If you are using this code please cite the following paper using the following bibtex: 
 
 ```tex
-@InProceedings{author:conferenceYear,
-author = {Murphy, Susan},
-title = {Amazing Paper},
-booktitle = {Best Conference},
-year = {Year}}
+@article{rabbi2018toward,
+  title={Toward increasing engagement in substance use data collection: development of the Substance Abuse Research Assistant app and protocol for a microrandomized trial using adolescents and emerging adults},
+  author={Rabbi, Mashfiqui and Kotov, Meredith Philyaw and Cunningham, Rebecca and Bonar, Erin E and Nahum-Shani, Inbal and Klasnja, Predrag and Walton, Maureen and Murphy, Susan},
+  journal={JMIR research protocols},
+  volume={7},
+  number={7},
+  year={2018},
+  publisher={JMIR Publications Inc.}
+}
 ```
 
 
