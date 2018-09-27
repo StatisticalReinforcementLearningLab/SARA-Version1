@@ -38,6 +38,6 @@ For an informal description of the method see the "analysis_code" folder.
 ## Code Description 
 The code for SARA is divided into two folder. The individual folders contain readme files that describe how the individual folder codes work. 
 
-* [App_code](/Analysis_code): App code folder contains the code for the SARA mobile app. 
-* [Analysis_code](/Analysis_code): Contains code and description of time-varying causal effects of treatment with a binary outcome. 
+* [App_code](/app_code): App code folder contains the code for the SARA mobile app. 
+* [Analysis_code](/analysis_code): Contains code and description of time-varying causal effects of treatment with a binary outcome. 
 
