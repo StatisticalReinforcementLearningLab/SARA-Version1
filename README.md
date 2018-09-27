@@ -8,7 +8,10 @@ SARA is a novel app to engage users with ongoing tracking using timely rewards t
   <img src="https://raw.githubusercontent.com/StatisticalReinforcementLearningLab/sara/master/app_code/9850-169539-1-SP.png" width="650"/>
 </p>
 
-If you are using this code please cite the following paper using the following bibtex: 
+The code is divided into two folder. One folder contains the SARA mobile app code. The other folder contain the code to analyze the causal effect of the SARA app. If you want to cite our work then you can use the following two links:
+
+
+For the SARA app:
 
 ```tex
 @article{rabbi2018toward,
@@ -22,7 +25,11 @@ If you are using this code please cite the following paper using the following b
 }
 ```
 
+If you are interested in causal inference with binary outcome in a time-varying setting then please :
 
+```tex
+Public link to the paper is currently unavailable. Please contact mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
+```
 
 
 The goal of this project is to do. 
