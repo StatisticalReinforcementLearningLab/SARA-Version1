@@ -35,9 +35,6 @@ For an informal description of the method see the "analysis_code" folder.
 ```
 
 
-The goal of this project is to do. 
-
-
 ## Code Description ##
 
 If there are steps to run the code list them as follows: 
