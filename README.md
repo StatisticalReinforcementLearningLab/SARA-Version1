@@ -25,10 +25,14 @@ For the SARA app:
 }
 ```
 
-If you are interested in causal inference with binary outcome in a time-varying setting then please :
+If you are interested in causal inference with binary outcome in a time-varying setting then please cite:
 
 ```tex
-Public link to the paper is currently unavailable. Please contact mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
+The manuscript is under preparation. For early drafts please contact
+Please contact mrabbi@fas.harvard.edu or qiantianchen.thu@gmail.com 
+
+Or see
+this link [analysis_code/SARA_analysis_documentation.pdf]
 ```
 
 
