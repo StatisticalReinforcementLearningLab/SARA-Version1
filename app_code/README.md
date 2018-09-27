@@ -14,6 +14,15 @@ developed for adolescents and emerging adults at risk for substance abuse. The r
   publisher={JMIR Publications Inc.}
 }
 ```
+
+## Application Flow
+
+## Quick setup
+
+## Services
+
+
+
 ## Frontend /Client
 Ionic V1, Java, Some objective C.
 
