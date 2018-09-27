@@ -18,6 +18,10 @@ developed for adolescents and emerging adults at risk for substance abuse. The r
 ```
 
 ## Application Flow
+In the default state of this uploaded code, the aquairum, life-insights and self-reporting features enabled. 
+* Between 6PM - midnight, self-reporting is enabled. The top fish icon at the top can be clicked to report a daily survey and active task.
+* Please click the tropy icon at the top to see the different rewards that can be unlocked in SARA.
+
 
 ## Quick setup
 
