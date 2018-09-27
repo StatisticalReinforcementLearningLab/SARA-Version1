@@ -36,4 +36,7 @@ Ionic V1, Java, Some objective C.
 ## Backend / Server
 Python
 
+## Services
+Onesignal 
+
 This code is distributed under MIT license 
