@@ -19,6 +19,14 @@
 #    the updated version now handles availability in a more consistent way.
 #    Argument change: removed "no_intercept_for_moderator" argument.
 
+####################################
+# Update by Tianchen Qian, 2018/10/22
+#
+# 1. Corrected a previous mistake in calculating degrees of freedom for t-test.
+#    Now the degrees of freedom correctly takes into account the dimension of moderators.
+# 2. Modified the output of SARA_exploratory_analysis() to include test results
+#    of both t-test and F-test.
+
 
 library(rootSolve) # for solver function multiroot()
 
@@ -311,8 +319,8 @@ binary_outcome_moderated_effect <- function(
     # t test (one sided, because we are using significance_level instead of significance_level/2)
     
     test_stat <- beta_root / beta_se_ssa
-    critical_value <- qt(1 - significance_level, df = n - 1 - q)
-    p_val <- pt(abs(test_stat), df = n - 1 - q, lower.tail = FALSE)
+    critical_value <- qt(1 - significance_level, df = n - p - q)
+    p_val <- pt(abs(test_stat), df = n - p - q, lower.tail = FALSE)
     names(test_stat) <- names(p_val) <- Xnames
     test_result_t <- list(test_stat = test_stat,
                           critical_value = critical_value,
@@ -551,6 +559,12 @@ SARA_exploratory_analysis <- function(
     ##
     ## beta..................estimated beta (moderated treatment effect)
     ## beta_se...............standard error for beta, with small sample correction
+    ## test_stat_t.............(one sided) t-test statsitic for testing beta = 0
+    ## critical_value_t........(one sided) critical value for t-test with the input significance level 
+    ## p_value_t...............(one sided) p-value for t-test
+    ## test_stat_f.............F-test statsitic for testing all beta's = 0
+    ## critical_value_f........critical value for F-test with the input significance level 
+    ## p_value_f...............p-value for F-test
     
     
     # make sure dta is sorted by id_var then day_var
@@ -566,13 +580,13 @@ SARA_exploratory_analysis <- function(
                                               prob_treatment = prob_treatment,
                                               significance_level = significance_level)
     output <- list(beta = result$beta_hat,
-                   beta_se = result$beta_se_ssa)
-                   # test_stat = result$test_result_f$test_stat,
-                   # critical_value = result$test_result_f$critical_value,
-                   # p_value = result$test_result_f$p_value
-    ## test_stat.............F-test statsitic for testing beta = 0
-    ## critical_value........critical value for F-test with the input significance level 
-    ## p_value...............p-value for F-test
+                   beta_se = result$beta_se_ssa,
+                   test_stat_t = as.numeric(result$test_result_t$test_stat),
+                   critical_value_t = result$test_result_t$critical_value,
+                   p_value_t = as.numeric(result$test_result_t$p_value),
+                   test_stat_f = result$test_result_f$test_stat,
+                   critical_value_f = result$test_result_f$critical_value,
+                   p_value_f = result$test_result_f$p_value)
     return(output)
 }
 
@@ -596,6 +610,8 @@ if (0) {
     # previous day's at_tapcount
     dta$at_tapcount_lag1 <- c(0, dta$at_tapcount[1:(nrow(dta)-1)])
     dta$at_tapcount_lag1[is.na(dta$at_tapcount_lag1)] <- 0 # fill in 0 for at_tapcount_lag1 = NA
+    # Note: this fill-in 0's is just to make the code run.
+    # In practice missing data should be handled more thoughtfully.
     
     ### try out the three analysis functions ###
     
@@ -623,13 +639,13 @@ if (0) {
 
 if (0) {
     # output of the above example
-    # Version: 2018/9/25
+    # Version: 2018/10/22
     
     
     >     ### try out the three analysis functions ###
-    >     
-    >     # primary hypothesis 1
-    >     SARA_primary_hypothesis_1(dta, control_var = c("Y_lag1", "at_tapcount_lag1"))
+        >     
+        >     # primary hypothesis 1
+        >     SARA_primary_hypothesis_1(dta, control_var = c("Y_lag1", "at_tapcount_lag1"))
     $beta
     [1] 0.1761973
     
@@ -646,8 +662,8 @@ if (0) {
     [1] 5.112921e-15
     
     >     
-    >     # primary hypothesis 2
-    >     SARA_primary_hypothesis_2(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y")
+        >     # primary hypothesis 2
+        >     SARA_primary_hypothesis_2(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y")
     $beta
     [1] 0.006871496
     
@@ -664,8 +680,8 @@ if (0) {
     [1] 0.3619496
     
     >     
-    >     # exploratory analysis
-    >     SARA_exploratory_analysis(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1")
+        >     # exploratory analysis
+        >     SARA_exploratory_analysis(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1")
     $beta
     Intercept     Y_lag1 
     0.3493801 -0.2138751 
@@ -674,10 +690,28 @@ if (0) {
     Intercept     Y_lag1 
     0.05310572 0.05948923 
     
+    $test_stat_t
+    [1]  6.578955 -3.595191
+    
+    $critical_value_t
+    [1] 1.985251
+    
+    $p_value_t
+    [1] 1.285891e-09 2.581879e-04
+    
+    $test_stat_f
+    [1] 95.53464
+    
+    $critical_value_f
+    [1] 0.6631817
+    
+    $p_value_f
+    [1] 1.81756e-23
+    
     >     
-    >     
-    >     ### create fake availability indicator, and try the three analysis functions with availability ###
-    >     set.seed(123)
+        >     
+        >     ### create fake availability indicator, and try the three analysis functions with availability ###
+        >     set.seed(123)
     >     dta2 <- dta
     >     dta2$avail <- rbinom(nrow(dta2), 1, 0.2)
     >     dta2$A[dta2$avail == 0] <- NA
@@ -721,4 +755,22 @@ if (0) {
     $beta_se
     Intercept    Y_lag1 
     0.1104629 0.1155651 
+    
+    $test_stat_t
+    [1]  1.2637142 -0.5852992
+    
+    $critical_value_t
+    [1] 1.985251
+    
+    $p_value_t
+    [1] 0.1047124 0.2798671
+    
+    $test_stat_f
+    [1] 4.588463
+    
+    $critical_value_f
+    [1] 0.6631817
+    
+    $p_value_f
+    [1] 0.01252342
 }
