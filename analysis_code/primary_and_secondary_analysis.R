@@ -27,6 +27,10 @@
 # 2. Modified the output of SARA_exploratory_analysis() to include test results
 #    of both t-test and F-test.
 
+####################################
+# Update by Tianchen Qian, 2018/11/1
+#
+# 1. Implement general F-test for linear combinations in SARA_exploratory_analysis_general_F_test().
 
 library(rootSolve) # for solver function multiroot()
 
@@ -207,7 +211,6 @@ binary_outcome_moderated_effect <- function(
         exp_Zalpha <- as.vector(exp(Zalpha))
         exp_negAXbeta <- as.vector(exp(- A[it] * Xbeta))
         exp_2Zalpha <- as.vector(exp(2 * Zalpha))
-        # browser()
         Mn_summand[it, 1:p, 1:p] <-
             - as.numeric(Y[it] * exp_negAXbeta * A[it] * cA[it]) * (Xdm[it, ] %o% Xdm[it, ]) * avail[it]
         Mn_summand[it, 1:p, (p+1):(p+q)] <-
@@ -243,7 +246,7 @@ binary_outcome_moderated_effect <- function(
     }
     Sigman <- Sigman / sample_size
     
-    # Compute the asymptotic variance matrix
+    # Compute the asymptotic variance matrix ( this is on the scale of \sqrt{n}(\hat{\beta} - \beta) )
     
     asymp_varcov <- Mn_inv %*% Sigman %*% t(Mn_inv)
     asymp_var <- diag(asymp_varcov)
@@ -331,6 +334,7 @@ binary_outcome_moderated_effect <- function(
     test_stat <- as.numeric( t(beta_root) %*% solve(asymp_varcov_ssa[1:p, 1:p] / sample_size) %*% beta_root )
     n <- sample_size
     critical_value <- qf((n-q-p) * (1-significance_level) / (p * (n-q-1)), df1 = p, df2 = n-q-p)
+    # browser()
     p_val <- pf(test_stat, df1 = p, df2 = n-q-p, lower.tail = FALSE)
     test_result_f <- list(test_stat = test_stat,
                          critical_value = critical_value,
@@ -350,7 +354,8 @@ binary_outcome_moderated_effect <- function(
                 test_result_f = test_result_f,
                 varcov = asymp_varcov / sample_size,
                 varcov_ssa = asymp_varcov_ssa / sample_size,
-                dims = list(p = p, q = q)))
+                dims = list(p = p, q = q),
+                sample_size = sample_size))
 }
 
 
@@ -566,6 +571,8 @@ SARA_exploratory_analysis <- function(
     ## critical_value_f........critical value for F-test with the input significance level 
     ## p_value_f...............p-value for F-test
     
+    ## Note: all tests are using standard error estimates with small sample correction
+    
     
     # make sure dta is sorted by id_var then day_var
     dta <- dta[order(dta[, id_var], dta[, day_var]), ]
@@ -591,7 +598,116 @@ SARA_exploratory_analysis <- function(
 }
 
 
+## In a future update, it may be desirable to merge SARA_exploratory_analysis_general_F_test()
+## with SARA_exploratory_analysis().
+SARA_exploratory_analysis_general_F_test <- function(
+    dta,
+    control_var,
+    moderator,
+    id_var = "userid",
+    day_var = "Day",
+    trt_var = "A",
+    outcome_var = "Y",
+    avail_var = NULL,
+    prob_treatment = 1/2,
+    significance_level = 0.025,
+    F_test_L,
+    F_test_c = NULL
+) {
+    ############## description ###############
+    ##
+    ## This function does exploratory analysis for SARA:
+    ## it estimates moderated treatment effect, and test for no treatment by using an F-test.
+    ##
+    ## For more details, refer to the writeup for SARA analysis.
+    
+    ############## arguments ###############
+    ##
+    ## dta.............the data set in long format
+    ## control_var...........vector of variable names used to reduce noise (Z in the model),
+    ##                       could be NULL (no control covariates)
+    ## moderator.............vector of variable names as effect modifiers (X in the model),
+    ##                       could be NULL (no effect modifier)
+    ## id_var................variable name for subject id (to distinguish between subjects in dta)
+    ## day_var...............variable name for day in study (from 1 to max_days)
+    ## trt_var...............variable name for treatment indicator
+    ## outcome_var...........variable name for outcome variable
+    ## avail_var.............variable name for availability variable
+    ##                       NULL (default) means always-available
+    ## prob_treatment........probability of treatment (default to 1/2)
+    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## F_test_L, F_test_c....test for H_0: F_test_L %*% beta_hat = F_test_c,
+    ##                       where dim(beta) = p * 1, dim(F_test_L) = p1 * p, dim(F_test_c) = p1 * 1.
+    ##                       If F_test_L is passed in as a vector, it will be treated as a row vector.
+    ##                       If F_test_c is unspecified, it will be default to 0.
+    
+    ############## return value ###############
+    ##
+    ## This function returns a list of the following components:
+    ##
+    ## beta..................estimated beta (moderated treatment effect)
+    ## beta_se...............standard error for beta, with small sample correction
+    ## test_stat_t.............(one sided) t-test statsitic for testing beta = 0
+    ## critical_value_t........(one sided) critical value for t-test with the input significance level 
+    ## p_value_t...............(one sided) p-value for t-test
+    ## test_stat_f.............F-test statsitic for testing F_test_L %*% beta_hat = F_test_c
+    ## critical_value_f........critical value for F-test with the input significance level 
+    ## p_value_f...............p-value for F-test
+    
+    ## Note: all tests are using standard error estimates with small sample correction
+    
+    
+    # make sure dta is sorted by id_var then day_var
+    dta <- dta[order(dta[, id_var], dta[, day_var]), ]
+    
+    result <- binary_outcome_moderated_effect(dta = dta,
+                                              control_var = control_var,
+                                              moderator = moderator,
+                                              id_var = id_var,
+                                              trt_var = trt_var,
+                                              outcome_var = outcome_var,
+                                              avail_var = avail_var,
+                                              prob_treatment = prob_treatment,
+                                              significance_level = significance_level)
 
+    n <- result$sample_size
+    q <- length(result$alpha_hat)
+    
+    beta_hat <- result$beta_hat
+    p <- length(beta_hat)
+    beta_hat <- matrix(beta_hat, ncol = 1)
+    varcov_beta_hat <- result$varcov_ssa[1:p, 1:p]
+    ## general F test for F_test_L %*% beta_hat = F_test_c ##
+    if (is.vector(F_test_L)) {
+        F_test_L <- matrix(F_test_L, nrow = 1)
+    }
+    p1 <- dim(F_test_L)[1]
+    if (is.null(F_test_c)) {
+        F_test_c <- matrix(rep(0, p1), ncol = 1)
+    }
+    if (dim(F_test_L)[1] != dim(F_test_c)[1]) {
+        stop("The dimensions of F_test_L and F_test_c are not coherent.")
+    }
+    
+    tmp <- F_test_L %*% beta_hat - F_test_c
+    test_stat_f <- (t(tmp) %*% solve(F_test_L %*% varcov_beta_hat %*% t(F_test_L)) %*% tmp)
+    # test statistic is computed in the same manner as in Liao et al. (2016)
+    test_stat_f <- as.numeric(test_stat_f)
+    critical_value_f <- qf((n-q-p1) * (1-significance_level) / (p1 * (n-q-1)), df1 = p1, df2 = n-q-p)
+    # critical value is computed as in Section 5 of Boruvka et al. (2018)
+    p_value_f <- pf(test_stat_f, df1 = p1, df2 = n-q-p, lower.tail = FALSE)
+    
+    
+    output <- list(beta = result$beta_hat,
+                   beta_se = result$beta_se_ssa,
+                   test_stat_t = as.numeric(result$test_result_t$test_stat),
+                   critical_value_t = result$test_result_t$critical_value,
+                   p_value_t = as.numeric(result$test_result_t$p_value),
+                   test_stat_f = test_stat_f,
+                   critical_value_f = critical_value_f,
+                   p_value_f = p_value_f)
+    return(output)
+}
 
 
 
@@ -623,6 +739,11 @@ if (0) {
     
     # exploratory analysis
     SARA_exploratory_analysis(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1")
+    
+    # this will give the same F-test result as SARA_exploratory_analysis()
+    SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = diag(2))
+    
+    SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = rep(1, 2))
     
     
     ### create fake availability indicator, and try the three analysis functions with availability ###
@@ -680,7 +801,7 @@ if (0) {
     [1] 0.3619496
     
     >     
-        >     # exploratory analysis
+        > # exploratory analysis
         >     SARA_exploratory_analysis(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1")
     $beta
     Intercept     Y_lag1 
@@ -707,6 +828,61 @@ if (0) {
     
     $p_value_f
     [1] 1.81756e-23
+    
+    > # this will give the same F-test result as SARA_exploratory_analysis()
+        >     SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = diag(2))
+    $beta
+    Intercept     Y_lag1 
+    0.3493801 -0.2138751 
+    
+    $beta_se
+    Intercept     Y_lag1 
+    0.05310572 0.05948923 
+    
+    $test_stat_t
+    [1]  6.578955 -3.595191
+    
+    $critical_value_t
+    [1] 1.985251
+    
+    $p_value_t
+    [1] 1.285891e-09 2.581879e-04
+    
+    $test_stat_f
+    [1] 95.53464
+    
+    $critical_value_f
+    [1] 0.6631817
+    
+    $p_value_f
+    [1] 1.81756e-23
+    
+    > SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = rep(1, 2))
+    $beta
+    Intercept     Y_lag1 
+    0.3493801 -0.2138751 
+    
+    $beta_se
+    Intercept     Y_lag1 
+    0.05310572 0.05948923 
+    
+    $test_stat_t
+    [1]  6.578955 -3.595191
+    
+    $critical_value_t
+    [1] 1.985251
+    
+    $p_value_t
+    [1] 1.285891e-09 2.581879e-04
+    
+    $test_stat_f
+    [1] 40.83885
+    
+    $critical_value_f
+    [1] 5.186928
+    
+    $p_value_f
+    [1] 6.113323e-09
     
     >     
         >     
