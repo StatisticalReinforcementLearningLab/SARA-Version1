@@ -18,7 +18,7 @@
 
 \author{Tianchen Qian, Mashfiqui Rabbi, Susan Murphy}
 
-\date{2018.09.25}
+\date{2019.02.05}
 
 \maketitle
 In this document, we describe the statistical methods to conduct the
@@ -80,8 +80,8 @@ by
 \begin{equation}
 T=\frac{\hat{\beta}}{\{\widehat{\text{Var}}(\hat{\beta})\}^{1/2}}.\label{eq:test-primary1}
 \end{equation}
-To conduct one-sided hypothesis test with significance level $0.025$,
-the critical value is $c=t_{n-1-q}^{-1}(1-0.025)$. If $T>c$, we
+To conduct two-sided hypothesis test with significance level $\eta$,
+the critical value is $c=t_{n-1-q}^{-1}(1 - \eta / 2)$. If $|T|>c$, we
 reject $H_{0}$. Here, $n$ is the sample size, $q$ is the length
 of vector $Z_{it}$ (including the added intercept), and $t_{n-1-q}^{-1}(\gamma)$
 denotes the $\gamma$-quantile of $t$-distribution with $(n-1-q)$
@@ -170,8 +170,8 @@ by
 \begin{equation}
 T=\frac{\hat{\beta}}{\{\widehat{\text{Var}}(\hat{\beta})\}^{1/2}}.\label{eq:test-primary2}
 \end{equation}
-To conduct one-sided hypothesis test with significance level $0.025$,
-the critical value is $c=t_{n-1-q}^{-1}(1-0.025)$. If $T>c$, we
+To conduct two-sided hypothesis test with significance level $\eta$,
+the critical value is $c=t_{n-1-q}^{-1}(1 - \eta / 2)$. If $|T|>c$, we
 reject $H_{0}$. Here, $n$ is the sample size, $q$ is the length
 of vector $Z_{it}$ (including the added intercept), and $t_{n-1-q}^{-1}(\gamma)$
 denotes the $\gamma$-quantile of $t$-distribution with $(n-1-q)$

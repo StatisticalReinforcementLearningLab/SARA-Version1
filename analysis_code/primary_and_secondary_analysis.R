@@ -32,6 +32,12 @@
 #
 # 1. Implement general F-test for linear combinations in SARA_exploratory_analysis_general_F_test().
 
+####################################
+# Update by Tianchen Qian, 2019/2/5
+#
+# 1. Changed from one-sided test to two-sided test in all t-tests
+
+
 library(rootSolve) # for solver function multiroot()
 
 ##########################################
@@ -62,7 +68,7 @@ binary_outcome_moderated_effect <- function(
         outcome_var = "Y",
         avail_var = NULL,
         prob_treatment = 1/2,
-        significance_level = 0.025)
+        significance_level = 0.05)
 {
     ############## description ###############
     ##
@@ -93,7 +99,7 @@ binary_outcome_moderated_effect <- function(
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
-    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## significance_level....significance level for the hypothesis testing (default to 0.05)
 
 
     ############## return value ###############
@@ -106,7 +112,7 @@ binary_outcome_moderated_effect <- function(
     ## alpha_se..............standard error for alpha_hat
     ## beta_se_ssa...........standard error for beta_hat, with small sample correction (hat matrix)
     ## alpha_se..............standard error for alpha_hat, with small sample correction (hat matrix)
-    ## test_result_t.........(one-sided) t-test result for each entry in beta_hat, which is a list consisting of test_stat, critical_value, p_value
+    ## test_result_t.........(two-sided) t-test result for each entry in beta_hat, which is a list consisting of test_stat, critical_value, p_value
     ## test_result_f.........F-test result for beta = 0, which is a list consisting of test_stat, critical_value, p_value
     ## varcov................estimated variance-covariance matrix for (beta_hat, alpha_hat)
     ## varcov_ssa............estimated variance-covariance matrix for (beta_hat, alpha_hat), with small sample correction (hat matrix)
@@ -319,11 +325,11 @@ binary_outcome_moderated_effect <- function(
     
     ############## part 5 :: p-value with small sample correction ###############
     
-    # t test (one sided, because we are using significance_level instead of significance_level/2)
+    # t test (two-sided -- note the use of significance_level/2)
     
     test_stat <- beta_root / beta_se_ssa
-    critical_value <- qt(1 - significance_level, df = n - p - q)
-    p_val <- pt(abs(test_stat), df = n - p - q, lower.tail = FALSE)
+    critical_value <- qt(1 - significance_level/2, df = n - p - q) # two-sided
+    p_val <- 2 * pt(abs(test_stat), df = n - p - q, lower.tail = FALSE) # two-sided
     names(test_stat) <- names(p_val) <- Xnames
     test_result_t <- list(test_stat = test_stat,
                           critical_value = critical_value,
@@ -334,7 +340,6 @@ binary_outcome_moderated_effect <- function(
     test_stat <- as.numeric( t(beta_root) %*% solve(asymp_varcov_ssa[1:p, 1:p] / sample_size) %*% beta_root )
     n <- sample_size
     critical_value <- qf((n-q-p) * (1-significance_level) / (p * (n-q-1)), df1 = p, df2 = n-q-p)
-    # browser()
     p_val <- pf(test_stat, df1 = p, df2 = n-q-p, lower.tail = FALSE)
     test_result_f <- list(test_stat = test_stat,
                          critical_value = critical_value,
@@ -369,7 +374,7 @@ SARA_primary_hypothesis_1 <- function(
     outcome_var = "Y",
     avail_var = NULL,
     prob_treatment = 1/2,
-    significance_level = 0.025
+    significance_level = 0.05
 ) {
     ############## description ###############
     ##
@@ -392,7 +397,7 @@ SARA_primary_hypothesis_1 <- function(
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
-    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## significance_level....significance level for the hypothesis testing (default to 0.05)
 
     ############## return value ###############
     ##
@@ -400,9 +405,9 @@ SARA_primary_hypothesis_1 <- function(
     ##
     ## beta..................estimated beta (marginal treatment effect)
     ## beta_se...............standard error for beta, with small sample correction
-    ## test_stat.............(one sided) t-test statsitic for testing beta = 0
-    ## critical_value........(one sided) critical value for t-test with the input significance level 
-    ## p_value...............(one sided) p-value for t-test
+    ## test_stat.............(two-sided) t-test statsitic for testing beta = 0
+    ## critical_value........(two-sided) critical value for t-test with the input significance level 
+    ## p_value...............(two-sided) p-value for t-test
 
     # make sure dta is sorted by id_var then day_var
     dta <- dta[order(dta[, id_var], dta[, day_var]), ]
@@ -437,7 +442,7 @@ SARA_primary_hypothesis_2 <- function(
     outcome_var = "Y",
     avail_var = NULL,
     prob_treatment = 1/2,
-    significance_level = 0.025
+    significance_level = 0.05
 ) {
     
     ############## description ###############
@@ -463,7 +468,7 @@ SARA_primary_hypothesis_2 <- function(
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
-    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## significance_level....significance level for the hypothesis testing (default to 0.05)
     
     ############## return value ###############
     ##
@@ -471,9 +476,9 @@ SARA_primary_hypothesis_2 <- function(
     ##
     ## beta..................estimated beta (marginal treatment effect)
     ## beta_se...............standard error for beta, with small sample correction
-    ## test_stat.............(one sided) t-test statsitic for testing beta = 0
-    ## critical_value........(one sided) critical value for t-test with the input significance level 
-    ## p_value...............(one sided) p-value for t-test
+    ## test_stat.............(two-sided) t-test statsitic for testing beta = 0
+    ## critical_value........(two-sided) critical value for t-test with the input significance level 
+    ## p_value...............(two-sided) p-value for t-test
 
     # make sure survey_completion_var is binary
     stopifnot(all(dta[, survey_completion_var] %in% c(0, 1)))
@@ -533,7 +538,7 @@ SARA_exploratory_analysis <- function(
     outcome_var = "Y",
     avail_var = NULL,
     prob_treatment = 1/2,
-    significance_level = 0.025
+    significance_level = 0.05
 ) {
     ############## description ###############
     ##
@@ -556,7 +561,7 @@ SARA_exploratory_analysis <- function(
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
-    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## significance_level....significance level for the hypothesis testing (default to 0.05)
     
     ############## return value ###############
     ##
@@ -564,9 +569,9 @@ SARA_exploratory_analysis <- function(
     ##
     ## beta..................estimated beta (moderated treatment effect)
     ## beta_se...............standard error for beta, with small sample correction
-    ## test_stat_t.............(one sided) t-test statsitic for testing beta = 0
-    ## critical_value_t........(one sided) critical value for t-test with the input significance level 
-    ## p_value_t...............(one sided) p-value for t-test
+    ## test_stat_t.............(two-sided) t-test statsitic for testing beta = 0
+    ## critical_value_t........(two-sided) critical value for t-test with the input significance level 
+    ## p_value_t...............(two-sided) p-value for t-test
     ## test_stat_f.............F-test statsitic for testing all beta's = 0
     ## critical_value_f........critical value for F-test with the input significance level 
     ## p_value_f...............p-value for F-test
@@ -610,7 +615,7 @@ SARA_exploratory_analysis_general_F_test <- function(
     outcome_var = "Y",
     avail_var = NULL,
     prob_treatment = 1/2,
-    significance_level = 0.025,
+    significance_level = 0.05,
     F_test_L,
     F_test_c = NULL
 ) {
@@ -635,7 +640,7 @@ SARA_exploratory_analysis_general_F_test <- function(
     ## avail_var.............variable name for availability variable
     ##                       NULL (default) means always-available
     ## prob_treatment........probability of treatment (default to 1/2)
-    ## significance_level....significance level for the hypothesis testing (default to 0.025)
+    ## significance_level....significance level for the hypothesis testing (default to 0.05)
     ## F_test_L, F_test_c....test for H_0: F_test_L %*% beta_hat = F_test_c,
     ##                       where dim(beta) = p * 1, dim(F_test_L) = p1 * p, dim(F_test_c) = p1 * 1.
     ##                       If F_test_L is passed in as a vector, it will be treated as a row vector.
@@ -647,9 +652,9 @@ SARA_exploratory_analysis_general_F_test <- function(
     ##
     ## beta..................estimated beta (moderated treatment effect)
     ## beta_se...............standard error for beta, with small sample correction
-    ## test_stat_t.............(one sided) t-test statsitic for testing beta = 0
-    ## critical_value_t........(one sided) critical value for t-test with the input significance level 
-    ## p_value_t...............(one sided) p-value for t-test
+    ## test_stat_t.............(two-sided) t-test statsitic for testing beta = 0
+    ## critical_value_t........(two-sided) critical value for t-test with the input significance level 
+    ## p_value_t...............(two-sided) p-value for t-test
     ## test_stat_f.............F-test statsitic for testing F_test_L %*% beta_hat = F_test_c
     ## critical_value_f........critical value for F-test with the input significance level 
     ## p_value_f...............p-value for F-test
@@ -677,6 +682,7 @@ SARA_exploratory_analysis_general_F_test <- function(
     p <- length(beta_hat)
     beta_hat <- matrix(beta_hat, ncol = 1)
     varcov_beta_hat <- result$varcov_ssa[1:p, 1:p]
+    
     ## general F test for F_test_L %*% beta_hat = F_test_c ##
     if (is.vector(F_test_L)) {
         F_test_L <- matrix(F_test_L, nrow = 1)
@@ -760,7 +766,10 @@ if (0) {
 
 if (0) {
     # output of the above example
-    # Version: 2018/10/22
+    # Version: 2019/2/5
+    
+    # All the p-values for t-tests are doubled compared to the previous version.
+    # This is as expected, because we changed from one-sided to two-sided test.
     
     
     >     ### try out the three analysis functions ###
@@ -780,7 +789,7 @@ if (0) {
     [1] 1.984984
     
     $p_value
-    [1] 5.112921e-15
+    [1] 1.022584e-14
     
     >     
         >     # primary hypothesis 2
@@ -798,7 +807,7 @@ if (0) {
     [1] 1.984984
     
     $p_value
-    [1] 0.3619496
+    [1] 0.7238992
     
     >     
         > # exploratory analysis
@@ -818,7 +827,7 @@ if (0) {
     [1] 1.985251
     
     $p_value_t
-    [1] 1.285891e-09 2.581879e-04
+    [1] 2.571782e-09 5.163757e-04
     
     $test_stat_f
     [1] 95.53464
@@ -846,7 +855,7 @@ if (0) {
     [1] 1.985251
     
     $p_value_t
-    [1] 1.285891e-09 2.581879e-04
+    [1] 2.571782e-09 5.163757e-04
     
     $test_stat_f
     [1] 95.53464
@@ -873,7 +882,7 @@ if (0) {
     [1] 1.985251
     
     $p_value_t
-    [1] 1.285891e-09 2.581879e-04
+    [1] 2.571782e-09 5.163757e-04
     
     $test_stat_f
     [1] 40.83885
@@ -905,7 +914,7 @@ if (0) {
     [1] 1.984984
     
     $p_value
-    [1] 0.01703565
+    [1] 0.03407131
     
     >     SARA_primary_hypothesis_2(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y", avail_var = "avail")
     $beta
@@ -921,7 +930,7 @@ if (0) {
     [1] 1.984984
     
     $p_value
-    [1] 0.3034204
+    [1] 0.6068408
     
     >     SARA_exploratory_analysis(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", avail_var = "avail")
     $beta
@@ -939,7 +948,7 @@ if (0) {
     [1] 1.985251
     
     $p_value_t
-    [1] 0.1047124 0.2798671
+    [1] 0.2094249 0.5597343
     
     $test_stat_f
     [1] 4.588463
