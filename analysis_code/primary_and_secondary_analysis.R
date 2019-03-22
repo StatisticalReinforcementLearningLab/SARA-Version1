@@ -37,6 +37,12 @@
 #
 # 1. Changed from one-sided test to two-sided test in all t-tests
 
+####################################
+# Update by Tianchen Qian, 2019/3/21
+#
+# 1. Add alpha and alpha_se to the output.
+
+
 
 library(rootSolve) # for solver function multiroot()
 
@@ -426,7 +432,9 @@ SARA_primary_hypothesis_1 <- function(
                    beta_se = as.numeric(result$beta_se_ssa),
                    test_stat = as.numeric(result$test_result_t$test_stat),
                    critical_value = result$test_result_t$critical_value,
-                   p_value = as.numeric(result$test_result_t$p_value))
+                   p_value = as.numeric(result$test_result_t$p_value),
+                   alpha = as.numeric(result$alpha_hat),
+                   alpha_se = as.numeric(result$alpha_se_ssa))
     return(output)
 }
 
@@ -522,7 +530,9 @@ SARA_primary_hypothesis_2 <- function(
                    beta_se = as.numeric(result$beta_se_ssa),
                    test_stat = as.numeric(result$test_result_t$test_stat),
                    critical_value = result$test_result_t$critical_value,
-                   p_value = as.numeric(result$test_result_t$p_value))
+                   p_value = as.numeric(result$test_result_t$p_value),
+                   alpha = as.numeric(result$alpha_hat),
+                   alpha_se = as.numeric(result$alpha_se_ssa))
     return(output)
 }
 
@@ -591,14 +601,16 @@ SARA_exploratory_analysis <- function(
                                               avail_var = avail_var,
                                               prob_treatment = prob_treatment,
                                               significance_level = significance_level)
-    output <- list(beta = result$beta_hat,
-                   beta_se = result$beta_se_ssa,
+    output <- list(beta = as.numeric(result$beta_hat),
+                   beta_se = as.numeric(result$beta_se_ssa),
                    test_stat_t = as.numeric(result$test_result_t$test_stat),
                    critical_value_t = result$test_result_t$critical_value,
                    p_value_t = as.numeric(result$test_result_t$p_value),
                    test_stat_f = result$test_result_f$test_stat,
                    critical_value_f = result$test_result_f$critical_value,
-                   p_value_f = result$test_result_f$p_value)
+                   p_value_f = result$test_result_f$p_value,
+                   alpha = as.numeric(result$alpha_hat),
+                   alpha_se = as.numeric(result$alpha_se_ssa))
     return(output)
 }
 
@@ -704,14 +716,16 @@ SARA_exploratory_analysis_general_F_test <- function(
     p_value_f <- pf(test_stat_f, df1 = p1, df2 = n-q-p, lower.tail = FALSE)
     
     
-    output <- list(beta = result$beta_hat,
-                   beta_se = result$beta_se_ssa,
+    output <- list(beta = as.numeric(result$beta_hat),
+                   beta_se = as.numeric(result$beta_se_ssa),
                    test_stat_t = as.numeric(result$test_result_t$test_stat),
                    critical_value_t = result$test_result_t$critical_value,
                    p_value_t = as.numeric(result$test_result_t$p_value),
                    test_stat_f = test_stat_f,
                    critical_value_f = critical_value_f,
-                   p_value_f = p_value_f)
+                   p_value_f = p_value_f,
+                   alpha = as.numeric(result$alpha_hat),
+                   alpha_se = as.numeric(result$alpha_se_ssa))
     return(output)
 }
 
@@ -791,6 +805,12 @@ if (0) {
     $p_value
     [1] 1.022584e-14
     
+    $alpha
+    [1] -0.4286552699  0.0001338947  0.0022651338
+    
+    $alpha_se
+    [1] 0.0271394442 0.0292520053 0.0003041147
+    
     >     
         >     # primary hypothesis 2
         >     SARA_primary_hypothesis_2(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y")
@@ -808,6 +828,12 @@ if (0) {
     
     $p_value
     [1] 0.7238992
+    
+    $alpha
+    [1] -0.1914996030 -0.0078097155  0.0001918152
+    
+    $alpha_se
+    [1] 0.0287537133 0.0294240517 0.0003142004
     
     >     
         > # exploratory analysis
@@ -838,6 +864,12 @@ if (0) {
     $p_value_f
     [1] 1.81756e-23
     
+    $alpha
+    [1] -0.522625830  0.121815023  0.002169604
+    
+    $alpha_se
+    [1] 0.0449813807 0.0515054456 0.0003145783
+    
     > # this will give the same F-test result as SARA_exploratory_analysis()
         >     SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = diag(2))
     $beta
@@ -866,6 +898,12 @@ if (0) {
     $p_value_f
     [1] 1.81756e-23
     
+    $alpha
+    [1] -0.522625830  0.121815023  0.002169604
+    
+    $alpha_se
+    [1] 0.0449813807 0.0515054456 0.0003145783
+    
     > SARA_exploratory_analysis_general_F_test(dta, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", F_test_L = rep(1, 2))
     $beta
     Intercept     Y_lag1 
@@ -893,6 +931,12 @@ if (0) {
     $p_value_f
     [1] 6.113323e-09
     
+    $alpha
+    [1] -0.522625830  0.121815023  0.002169604
+    
+    $alpha_se
+    [1] 0.0449813807 0.0515054456 0.0003145783
+    
     >     
         >     
         >     ### create fake availability indicator, and try the three analysis functions with availability ###
@@ -916,6 +960,12 @@ if (0) {
     $p_value
     [1] 0.03407131
     
+    $alpha
+    [1] -0.32417513 -0.03184334  0.00195437
+    
+    $alpha_se
+    [1] 0.0563985798 0.0640324410 0.0006506912
+    
     >     SARA_primary_hypothesis_2(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), survey_completion_var = "Y", avail_var = "avail")
     $beta
     [1] 0.02120382
@@ -931,6 +981,12 @@ if (0) {
     
     $p_value
     [1] 0.6068408
+    
+    $alpha
+    [1] -0.2131429183  0.0033599799  0.0000873171
+    
+    $alpha_se
+    [1] 0.0485193353 0.0605234082 0.0008457411
     
     >     SARA_exploratory_analysis(dta2, control_var = c("Y_lag1", "at_tapcount_lag1"), moderator = "Y_lag1", avail_var = "avail")
     $beta
@@ -958,4 +1014,10 @@ if (0) {
     
     $p_value_f
     [1] 0.01252342
+    
+    $alpha
+    [1] -0.352447929  0.006808953  0.001907070
+    
+    $alpha_se
+    [1] 0.0873681644 0.1024315444 0.0006620606
 }
