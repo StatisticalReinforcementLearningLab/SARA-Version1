@@ -8,7 +8,7 @@
         "cordova-ios": "^4.4.0",
         "cordova-plugin-console": "~1.0.5",
         "cordova-plugin-device": "~1.1.4",
-        "cordova-plugin-ionic-webview": "^1.1.16",
+        "cordova-plugin-ionic-webview": "^2.2.0",
         "cordova-plugin-progressindicator": "^1.2.0",
         "cordova-plugin-splashscreen": "~4.0.1",
         "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
