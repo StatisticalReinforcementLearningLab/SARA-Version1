@@ -1,6 +1,7 @@
 # SARA
 SARA (Substance Abuse Research Assistant)
 
+See https://github.com/mashfiqui-rabbi/SARAv2 for SARA version 2
 ## Project Description
 SARA is a novel app to engage users with ongoing tracking using timely rewards thereby reinforcing users for data input. SARA is developed for adolescents and emerging adults at risk for substance abuse. The rewards in SARA are designed to be developmentally and culturally appropriate to the target demographic. For more details please check out the following paper or contact mrabbi@fas.harvard.edu
 
